@@ -1,6 +1,6 @@
 +++
-title = '如何在 Go 中使用 POSIX 命名信号量'
-date = 2024-08-30T16:01:29+08:00
+title = '如何在Go中使用POSIX命名信号量'
+date = 2024-08-30T17:18:48+08:00
 draft = false
 +++
 

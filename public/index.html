@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>zzhaolei的博客</title>
+<title>俺的博客</title>
 
 <meta name="description" content="">
 <meta name="author" content="">
@@ -20,6 +20,7 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" type="application/json" href="http://localhost:1313/index.json">
 <link rel="alternate" hreflang="en" href="http://localhost:1313/">
 <noscript>
     <style>
@@ -75,7 +76,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="zzhaolei的博客 (Alt + H)">zzhaolei的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -104,10 +105,40 @@
     </nav>
 </header>
 <main class="main"> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>正大光明</h1>
+    </header>
+    <div class="entry-content">
+        至若范公之心，则其正大光明，固无宿怨，而惓惓之义，实在国家。
+    </div>
+    <footer class="entry-footer">
+        <div class="social-icons" >
+    <a href="https://github.com/zzhaolei" target="_blank" rel="noopener noreferrer me"
+        title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+    <a href="https://www.cnblogs.com/zzhaolei" target="_blank" rel="noopener noreferrer me"
+        title="OldBlog">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+    </a>
+</div>
 
-<article class="first-entry"> 
+    </footer>
+</article>
+
+<article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">如何在 Go 中使用 POSIX 命名信号量
+    <h2 class="entry-hint-parent">如何在Go中使用POSIX命名信号量
     </h2>
   </header>
   <div class="entry-content">
@@ -121,13 +152,13 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
 例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
 sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-08-30 16:01:29 +0800 CST'>August 30, 2024</span></footer>
-  <a class="entry-link" aria-label="post link to 如何在 Go 中使用 POSIX 命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
+  <footer class="entry-footer"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 如何在Go中使用POSIX命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">zzhaolei的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
 
     <span>
         Powered by

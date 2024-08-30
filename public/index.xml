@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>zzhaolei的博客</title>
+    <title>俺的博客</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content on zzhaolei的博客</description>
+    <description>Recent content on 俺的博客</description>
     <generator>Hugo -- 0.133.1</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Aug 2024 16:01:29 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 30 Aug 2024 17:18:48 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>如何在 Go 中使用 POSIX 命名信号量</title>
+      <title>如何在Go中使用POSIX命名信号量</title>
       <link>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
-      <pubDate>Fri, 30 Aug 2024 16:01:29 +0800</pubDate>
+      <pubDate>Fri, 30 Aug 2024 17:18:48 +0800</pubDate>
       <guid>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
       <description>go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。

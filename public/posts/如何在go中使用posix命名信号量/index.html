@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>如何在 Go 中使用 POSIX 命名信号量 | zzhaolei的博客</title>
+<title>如何在Go中使用POSIX命名信号量 | 俺的博客</title>
 <meta name="keywords" content="">
 <meta name="description" content="go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
@@ -81,7 +81,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="zzhaolei的博客 (Alt + H)">zzhaolei的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -113,11 +113,11 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
 
 <article class="post-single">
   <header class="post-header">
-    
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
     <h1 class="post-title entry-hint-parent">
-      如何在 Go 中使用 POSIX 命名信号量
+      如何在Go中使用POSIX命名信号量
     </h1>
-    <div class="post-meta"><span title='2024-08-30 16:01:29 +0800 CST'>August 30, 2024</span>
+    <div class="post-meta"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min
 
 </div>
   </header> <div class="toc">
@@ -301,12 +301,29 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
   <footer class="post-footer">
     <ul class="post-tags">
     </ul>
-  </footer>
+
+  </footer><script
+    src="https://giscus.app/client.js"
+    data-repo="zzhaolei/zzhaolei.github.io"
+    data-repo-id="R_kgDOMn_okw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOMn_ok84CiEHA"
+    data-mapping="title"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async
+></script>
+
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">zzhaolei的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
 
     <span>
         Powered by
@@ -373,6 +390,53 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 
