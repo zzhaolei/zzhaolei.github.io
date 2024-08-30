@@ -2,3 +2,6 @@ baseURL = 'https://zzhaolei.github.io/'
 languageCode = 'zh-cn'
 title = 'zzhaolei的博客'
 theme = 'PaperMod'
+
+[params]
+ShowToc = true
