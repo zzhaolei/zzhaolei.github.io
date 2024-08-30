@@ -17,6 +17,9 @@ ShowRssButtonInSectionTermList = true
 ShowAllPagesInArchive = true
 comments = true
 
+[params.meta]
+favicon = false
+
 [params.homeInfoParams]
 Title = "正大光明"
 Content = "至若范公之心，则其正大光明，固无宿怨，而惓惓之义，实在国家。"
