@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Rust Main 函数是如何被执行的 | 俺的博客</title>
+<meta name="keywords" content="Rust">
+<meta name="description" content="Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
+use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
+接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
+Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
+而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
+你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
+让我们先从 init 开始：
+// 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.">
+<meta name="author" content="磊">
+<link rel="canonical" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tag">
+                    <span>Tag</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Rust Main 函数是如何被执行的
+    </h1>
+    <div class="post-meta"><span title='2024-08-30 17:21:31 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#rust-main-%e5%87%bd%e6%95%b0%e5%88%b0%e5%ba%95%e6%98%af%e5%a6%82%e4%bd%95%e8%a2%ab%e6%89%a7%e8%a1%8c%e7%9a%84%e5%91%a2" aria-label="Rust main 函数到底是如何被执行的呢？">Rust main 函数到底是如何被执行的呢？</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#rust-%e8%bf%90%e8%a1%8c%e6%97%b6" aria-label="Rust 运行时">Rust 运行时</a></li>
+                <li>
+                    <a href="#%e6%96%b0%e7%9a%84%e9%97%ae%e9%a2%98%e5%8f%88%e5%87%ba%e7%8e%b0%e4%ba%86" aria-label="新的问题又出现了">新的问题又出现了</a></li>
+                <li>
+                    <a href="#%e8%a1%a5%e5%85%85%e8%b5%84%e6%96%99" aria-label="补充资料">补充资料</a>
+                </li>
+            </ul>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="rust-main-函数到底是如何被执行的呢">Rust main 函数到底是如何被执行的呢？<a hidden class="anchor" aria-hidden="true" href="#rust-main-函数到底是如何被执行的呢">#</a></h1>
+<p>让我们看一个关于 main 函数的示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::error::Error;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() -&gt; Result<span style="color:#f92672">&lt;</span>(), Box<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">dyn</span> Error<span style="color:#f92672">&gt;&gt;</span> {
+</span></span><span style="display:flex;"><span>    println!(<span style="color:#e6db74">&#34;hello world&#34;</span>);
+</span></span><span style="display:flex;"><span>    Ok(())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？</p>
+<p>接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。</p>
+<h3 id="rust-运行时">Rust 运行时<a hidden class="anchor" aria-hidden="true" href="#rust-运行时">#</a></h3>
+<p>首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。</p>
+<p>而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。</p>
+<p>你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。</p>
+<p>让我们先从 <code>init</code> 开始：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">// 在执行 main 之前执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsafe</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">init</span>(argc: <span style="color:#66d9ef">isize</span>, argv: <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">u8</span>, sigpipe: <span style="color:#66d9ef">u8</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#[cfg_attr(target_os = </span><span style="color:#e6db74">&#34;teeos&#34;</span><span style="color:#75715e">, allow(unused_unsafe))]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsafe</span> {
+</span></span><span style="display:flex;"><span>		    <span style="color:#75715e">// 实际的资源初始化逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        sys::init(argc, argv, sigpipe)
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 设置主线程，并设置一个名字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> thread <span style="color:#f92672">=</span> Thread::new_main();
+</span></span><span style="display:flex;"><span>    thread::set_current(thread);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 运行时只会执行一次 cleanup。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 在 main 或程序退出的时候执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// NOTE: 当程序被终止的时候，不能保证执行 cleanup
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">pub</span>(<span style="color:#66d9ef">crate</span>) <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">cleanup</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">CLEANUP</span>: <span style="color:#a6e22e">Once</span> <span style="color:#f92672">=</span> Once::new();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CLEANUP</span>.call_once(<span style="color:#f92672">||</span> <span style="color:#66d9ef">unsafe</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 刷新 stdout 缓冲区的数据，并禁用缓冲区
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">crate</span>::io::cleanup();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// SAFETY: 通过 Once 保证，只会执行一次 cleanup
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        sys::cleanup();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>系统资源的初始化和清理在 <code>sys::init</code> 和 <code>sys::cleanup</code> 中
+<ul>
+<li><code>sys::init</code> 在 <code>ffi</code> 中不保证被调用</li>
+</ul>
+</li>
+<li><code>sys::init</code> 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读<a href="https://github.com/rust-lang/rust/blob/4074d4902dc19ff1bbce1d74ef9ceae15b5f41ce/library/std/src/sys/pal/unix/mod.rs#L44">源码</a></li>
+</ul>
+<p>现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">#[lang = </span><span style="color:#e6db74">&#34;start&#34;</span><span style="color:#75715e">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">lang_start</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">crate</span>::process::Termination <span style="color:#f92672">+</span> &#39;static<span style="color:#f92672">&gt;</span>(
+</span></span><span style="display:flex;"><span>    main: <span style="color:#a6e22e">fn</span>() -&gt; <span style="color:#a6e22e">T</span>,
+</span></span><span style="display:flex;"><span>    argc: <span style="color:#66d9ef">isize</span>,
+</span></span><span style="display:flex;"><span>    argv: <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">u8</span>,
+</span></span><span style="display:flex;"><span>    sigpipe: <span style="color:#66d9ef">u8</span>
+</span></span><span style="display:flex;"><span>) -&gt; <span style="color:#66d9ef">isize</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> Ok(v) <span style="color:#f92672">=</span> lang_start_internal(
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>(<span style="color:#66d9ef">move</span> <span style="color:#f92672">||</span> <span style="color:#66d9ef">crate</span>::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()),
+</span></span><span style="display:flex;"><span>        argc,
+</span></span><span style="display:flex;"><span>        argv,
+</span></span><span style="display:flex;"><span>        sigpipe
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    v
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">lang_start_internal</span>(
+</span></span><span style="display:flex;"><span>    main: <span style="color:#66d9ef">&amp;</span>(<span style="color:#66d9ef">dyn</span> (Fn() -&gt; <span style="color:#66d9ef">i32</span>) <span style="color:#f92672">+</span> Sync <span style="color:#f92672">+</span> <span style="color:#66d9ef">crate</span>::panic::RefUnwindSafe),
+</span></span><span style="display:flex;"><span>    argc: <span style="color:#66d9ef">isize</span>,
+</span></span><span style="display:flex;"><span>    argv: <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">u8</span>,
+</span></span><span style="display:flex;"><span>    sigpipe: <span style="color:#66d9ef">u8</span>
+</span></span><span style="display:flex;"><span>) -&gt; Result<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">isize</span>, <span style="color:#f92672">!&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">use</span> <span style="color:#66d9ef">crate</span>::{ mem, panic };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> rt_abort <span style="color:#f92672">=</span> <span style="color:#66d9ef">move</span> <span style="color:#f92672">|</span>e<span style="color:#f92672">|</span> {
+</span></span><span style="display:flex;"><span>        mem::forget(e);
+</span></span><span style="display:flex;"><span>        rtabort!(<span style="color:#e6db74">&#34;initialization or cleanup bug&#34;</span>);
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 初始化参数、栈等信息，并捕获可能的异常信息，展开异常的栈调用路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    panic::catch_unwind(<span style="color:#66d9ef">move</span> <span style="color:#f92672">||</span> <span style="color:#66d9ef">unsafe</span> { init(argc, argv, sigpipe) }).map_err(rt_abort)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用用户定义的 main 函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 这里会尝试获取用户返回的 exitcode，通过 Termination::report
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> ret_code <span style="color:#f92672">=</span> panic
+</span></span><span style="display:flex;"><span>        ::catch_unwind(<span style="color:#66d9ef">move</span> <span style="color:#f92672">||</span> panic::catch_unwind(main).unwrap_or(<span style="color:#ae81ff">101</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">isize</span>)
+</span></span><span style="display:flex;"><span>        .map_err(<span style="color:#66d9ef">move</span> <span style="color:#f92672">|</span>e<span style="color:#f92672">|</span> {
+</span></span><span style="display:flex;"><span>            mem::forget(e);
+</span></span><span style="display:flex;"><span>            rtabort!(<span style="color:#e6db74">&#34;drop of the panic payload panicked&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 执行清理程序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    panic::catch_unwind(cleanup).map_err(rt_abort)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 退出主线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    panic::catch_unwind(<span style="color:#f92672">||</span> <span style="color:#66d9ef">crate</span>::sys::exit_guard::unique_thread_exit()).map_err(rt_abort)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>    ret_code
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>让我们一步步分析 <code>lang_start</code> 函数：</p>
+<ol>
+<li>
+<p>在 <code>lang_start</code> 中我们可以看到这个函数被标记了 <code>#[lang = &quot;start&quot;]</code> 这表明是语言的入口函数。</p>
+</li>
+<li>
+<p><code>lang_start</code> 本质是调用的 <code>lang_start_internal</code> ，在 <code>lang_start_internal</code> 中对资源进行初始化、执行 main、清理资源。</p>
+</li>
+<li>
+<p>我们可以看到 <code>lang_start</code> 函数的参数有一个 <code>main</code>，而 <code>main</code> 的类型是一个函数，类型声明为 <code>fn() → T</code>，T 的约束是 <code>T: crate::process::Termination + 'static</code> ，对于我们这次分析来说，最重要的是 <code>trait Termination</code> 。</p>
+<p>Termination 相关签名（删除了一些属性宏，不影响理解）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">#[derive(PartialEq, Eq, Clone, Copy)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">ExitCode</span>(<span style="color:#66d9ef">u8</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> ExitCode {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">SUCCESS</span>: <span style="color:#a6e22e">ExitCode</span> <span style="color:#f92672">=</span> ExitCode(<span style="color:#66d9ef">EXIT_SUCCESS</span> <span style="color:#66d9ef">as</span> _);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">FAILURE</span>: <span style="color:#a6e22e">ExitCode</span> <span style="color:#f92672">=</span> ExitCode(<span style="color:#66d9ef">EXIT_FAILURE</span> <span style="color:#66d9ef">as</span> _);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#[inline]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">as_i32</span>(<span style="color:#f92672">&amp;</span>self) -&gt; <span style="color:#66d9ef">i32</span> {
+</span></span><span style="display:flex;"><span>        self.<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">i32</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> From<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">for</span> ExitCode {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">from</span>(code: <span style="color:#66d9ef">u8</span>) -&gt; <span style="color:#a6e22e">Self</span> {
+</span></span><span style="display:flex;"><span>        Self(code)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">trait</span> Termination {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">/// Is called to get the representation of the value as status code.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#e6db74">/// This status code is returned to the operating system.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#75715e">#[stable(feature = </span><span style="color:#e6db74">&#34;termination_trait_lib&#34;</span><span style="color:#75715e">, since = </span><span style="color:#e6db74">&#34;1.61.0&#34;</span><span style="color:#75715e">)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">report</span>(self) -&gt; <span style="color:#a6e22e">ExitCode</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ol>
+<p>现在我们的疑问有了答案，是因为 <code>Result</code> 枚举实现了 <code>Termination</code>，所以用户定义的 main 函数可以返回 Result 枚举：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">#[stable(feature = </span><span style="color:#e6db74">&#34;termination_trait_lib&#34;</span><span style="color:#75715e">, since = </span><span style="color:#e6db74">&#34;1.61.0&#34;</span><span style="color:#75715e">)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">Termination</span>, E: <span style="color:#a6e22e">fmt</span>::Debug<span style="color:#f92672">&gt;</span> Termination <span style="color:#66d9ef">for</span> Result<span style="color:#f92672">&lt;</span>T, E<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">report</span>(self) -&gt; <span style="color:#a6e22e">ExitCode</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">match</span> self {
+</span></span><span style="display:flex;"><span>            Ok(val) <span style="color:#f92672">=&gt;</span> val.report(),
+</span></span><span style="display:flex;"><span>            Err(err) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>                io::attempt_print_to_stderr(format_args_nl!(<span style="color:#e6db74">&#34;Error: {err:?}&#34;</span>));
+</span></span><span style="display:flex;"><span>                ExitCode::<span style="color:#66d9ef">FAILURE</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>通过代码 <code>crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()</code> 可以看到，实际调用了 main 返回值的 report 函数，也就是 <code>Result::report</code>，这会返回一个 i32 值，用于标识程序是否正常退出。</li>
+<li><code>__rust_begin_short_backtrace</code> 实际就是一个包装函数，用于防止尾部调用优化的。</li>
+</ul>
+<h3 id="新的问题又出现了">新的问题又出现了<a hidden class="anchor" aria-hidden="true" href="#新的问题又出现了">#</a></h3>
+<p>最开始的问题解决了，但是我们又想到了一个新的问题。</p>
+<p>既然 rust 的 lang_start 需要一个 <code>fn → T, T: crate::process::Termination + 'static</code> 的类型约束，为什么 main 函数什么也不返回也可以呢？</p>
+<p>看这个示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    println!(<span style="color:#e6db74">&#34;hello world!&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>回答这个问题，我们首先要知道，在 rust 中函数什么也没返回的情况下，其实也是有返回的，只是可以省略不写而已，上面示例的实际脱糖（剥离语法糖）形式为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() -&gt; () {
+</span></span><span style="display:flex;"><span>    println!(<span style="color:#e6db74">&#34;hello world!&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>即：默认会返回一个<code>()</code>，实际类型名字叫做 <code>unit</code> ，中文一般称作单元类型。</p>
+<p>恰好，unit 类型，也实现了 Termination trai，所以 main 函数什么也不返回也是可以的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">#[stable(feature = </span><span style="color:#e6db74">&#34;termination_trait_lib&#34;</span><span style="color:#75715e">, since = </span><span style="color:#e6db74">&#34;1.61.0&#34;</span><span style="color:#75715e">)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Termination <span style="color:#66d9ef">for</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#[inline]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">report</span>(self) -&gt; <span style="color:#a6e22e">ExitCode</span> {
+</span></span><span style="display:flex;"><span>        ExitCode::<span style="color:#66d9ef">SUCCESS</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>并且 <code>Termination::report</code> 签名要求返回一个 <code>ExitCode</code>，而 <code>ExitCode</code> 又实现了 <code>From&lt;u8&gt;</code>，所以实际上还可以在 <code>main</code> 函数中返回一个 <code>u8</code> 的数字。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::process::ExitCode;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() -&gt; <span style="color:#a6e22e">ExitCode</span> {
+</span></span><span style="display:flex;"><span>    println!(<span style="color:#e6db74">&#34;hello world!&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">0.</span>into() <span style="color:#75715e">// program success
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>还可以自定义返回类型，只要实现了 Termination 即可，下面是一个示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::process::{ExitCode, Termination};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">MyExit</span> {
+</span></span><span style="display:flex;"><span>    msg: String,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> MyExit {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(msg: String) -&gt; <span style="color:#a6e22e">Self</span> {
+</span></span><span style="display:flex;"><span>        MyExit { msg }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Termination <span style="color:#66d9ef">for</span> MyExit {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">report</span>(self) -&gt; <span style="color:#a6e22e">ExitCode</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self.msg.eq(<span style="color:#e6db74">&#34;ok&#34;</span>.into()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0.</span>into()
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1.</span>into()
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() -&gt; <span style="color:#a6e22e">MyExit</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> exit <span style="color:#f92672">=</span> MyExit::new(<span style="color:#e6db74">&#34;ok&#34;</span>.into());
+</span></span><span style="display:flex;"><span>    exit
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="补充资料">补充资料<a hidden class="anchor" aria-hidden="true" href="#补充资料">#</a></h3>
+<ol>
+<li>rust 的 lang_start 也是被调用者，是调用的它呢？在 rust 中有一个 <code>create_entry_fn</code> 负责创建 entry 函数，这个函数中会调用 lang_start 函数。<a href="https://github.com/rust-lang/rust/blob/38030ffb4e735b26260848b744c0910a5641e1db/compiler/rustc_codegen_ssa/src/base.rs#L382-L454">源码</a>。</li>
+<li>在裸机开发中（no_std），通常 main 函数是不会返回的，所以是没有 exitcode 的。</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/rust/">Rust</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/">
+    <span class="title">Next »</span>
+    <br>
+    <span>如何在Go中使用POSIX命名信号量</span>
+  </a>
+</nav>
+
+  </footer><script
+    src="https://giscus.app/client.js"
+    data-repo="zzhaolei/zzhaolei.github.io"
+    data-repo-id="R_kgDOMn_okw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOMn_ok84CiEHA"
+    data-mapping="title"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async
+></script>
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

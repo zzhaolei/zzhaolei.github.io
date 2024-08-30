@@ -1,8 +1,7 @@
----
-title: "Search" # in any language you want
-layout: "search" # necessary for search
-url: "/archive"
-description: "搜索本站"
-summary: "search"
-placeholder: "输入你想搜的内容"
----
++++
+menus = "main"
+title = "Search"
+layout = "search"
+summary = "search"
+placeholder = "在这里输入你想搜索的内容"
++++

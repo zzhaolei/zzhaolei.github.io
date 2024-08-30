@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
 <title>如何在Go中使用POSIX命名信号量 | 俺的博客</title>
-<meta name="keywords" content="">
+<meta name="keywords" content="Rust">
 <meta name="description" content="go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
 trap go 在 syscall 包中定义了大量的系统调用码，具体定义在文件1.20.6/go/src/syscall/zsysnum_darwin_arm64.go 。不同操作系统上，定义所使用的文件是不同的，这些定义都是通过不同系统的c 语言头文件自动生成的。比如 linux amd64 操作系统的定义在1.20.6/go/src/syscall/zerrors_linux_amd64.go。
@@ -16,7 +16,7 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
 如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
 例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
 sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：">
-<meta name="author" content="">
+<meta name="author" content="磊">
 <link rel="canonical" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
@@ -106,6 +106,21 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
             </div>
         </div>
         <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tag">
+                    <span>Tag</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -117,7 +132,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
     <h1 class="post-title entry-hint-parent">
       如何在Go中使用POSIX命名信号量
     </h1>
-    <div class="post-meta"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min
+    <div class="post-meta"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊
 
 </div>
   </header> <div class="toc">
@@ -300,7 +315,15 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); �
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/rust/">Rust</a></li>
     </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Rust Main 函数是如何被执行的</span>
+  </a>
+</nav>
 
   </footer><script
     src="https://giscus.app/client.js"
