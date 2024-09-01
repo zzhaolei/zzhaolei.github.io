@@ -1,7 +1,6 @@
 +++
 title = 'Rust Main 函数是如何被执行的'
-date = 2024-08-30T17:21:31+08:00
-author = '磊'
+date = 2024-09-01T10:20:00+08:00
 tags = [ "Rust" ]
 draft = false
 +++

@@ -1,8 +1,7 @@
 +++
 title = '如何在Go中使用POSIX命名信号量'
-date = 2024-08-30T17:18:48+08:00
-author = '磊'
-tags = [ "Rust" ]
+date = 2024-09-01T10:09:00+08:00
+tags = [ "Go" ]
 draft = false
 +++
 

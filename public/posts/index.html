@@ -147,8 +147,85 @@ Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个�
 让我们先从 init 开始：
 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP....</p>
   </div>
-  <footer class="entry-footer"><span title='2024-08-30 17:21:31 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊</footer>
+  <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Rust Main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">使用AWS S3 SDK访问阿里云oss
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 package main import ( &#34;context&#34; &#34;log&#34; &#34;os&#34; &#34;github.com/aws/aws-sdk-go-v2/aws&#34; &#34;github.com/aws/aws-sdk-go-v2/config&#34; &#34;github.com/aws/aws-sdk-go-v2/credentials&#34; &#34;github.com/aws/aws-sdk-go-v2/service/s3&#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;) accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &#34;aws-cn&#34;, URL: &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;, SigningRegion: &#34;cn-northwest-1&#34;, }, nil }), ), ) if err != nil { log....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:14:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 使用AWS S3 SDK访问阿里云oss" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">通过docker配置MySQL主从服务
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>目录结构 . ├── master │ └── my.cnf ├── slave │ └── my.cnf └── docker-compose.yml master：主配置
+slave：从配置
+docker-compose：通过 docker-compose 进行容器配置和启动
+master/my.cnf
+# For advice on how to change settings please see # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html [mysqld] host-cache-size=0 skip-name-resolve datadir=/var/lib/mysql socket=/var/run/mysqld/mysqld.sock secure-file-priv=/var/lib/mysql-files user=mysql pid-file=/var/run/mysqld/mysqld.pid # 自定义部分 log-bin=master-bin binlog-format=row # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制 binlog-do-db=test # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置 server-id=1 # server-id 不能和任何 主或从 重复 # 自定义部分 [client] socket=/var/run/mysqld/mysqld....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:13:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 通过docker配置MySQL主从服务" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——单例模式
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 单例模式同时解决了两个问题：
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式 代码 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } 单元测试 package tests import ( &#34;testing&#34; &#34;design-pattern/singleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:12:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——单例模式" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——开闭原则
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 简单的说就是：对扩展开放，对修改关闭。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。
+开闭原则也包含了单一职责原则。
+我们以消息队列来进行举例。
+坏的 // Package main 开闭原则 Open-Closed Principle // 开闭原则包含了：单一职责原则 package main import &#34;fmt&#34; type KafkaQueue struct{} func (k *KafkaQueue) SendMSG(msg string) error { fmt.Println(&#34;Kafka send msg success&#34;) return nil } type RabbitQueue struct{} func (r *RabbitQueue) SendMSG(msg string) error { fmt.Println(&#34;Rabbitmq send msg success&#34;) return nil } type Demo struct{} func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error { return queue.SendMSG(msg) } func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error { return queue....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:11:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——开闭原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——单一职责原则
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。
+我们现在以银行工作人员举例：
+坏的 // Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&#34;成功存入: %d\n&#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&#34;成功向: %s转入: %d\n&#34;, to, money) return nil } 单一职责原则要求一个类/接口只有一个职责，而引起类变化的原因只能有一个。
+从原则上讲，我们为Banker定义存钱和转账的操作是有道理的，因为我们接口中定义的都是银行工作人员可以执行的操作，引起变化的原因只能是Banker的属性和行为发生变化。
+从这方便考虑，这种设计是有合理性的，如果能保证需求不会变化或者需求变化的可能行很小，那么这种设计就是合理的。
+但是实际上我们知道，需求是不断变化的，今日增加一个股票业务，那么我们就需要增加一个股票的相关属性和行为，我们的接口和实现就需要全部变动。
+最好的方式就是当我们开始定义的时候，根据属性和行为进行细分，抽象不同的接口出来，在Go里面也是主张小接口，这样我们可以通过组合的手段来随意构造我们想要的大接口。
+好的 我们将Banker进行抽象，这样可以更好的进行扩展：
+// Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Config struct { Money uint64 To string } type Banker interface { DoSomething(Config) error } type SaveBanker struct{} func (sb *SaveBanker) DoSomething(cfg Config) error { fmt....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:10:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——单一职责原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -167,9 +244,55 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
 例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
 sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊</footer>
+  <footer class="entry-footer"><span title='2024-09-01 10:09:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to 如何在Go中使用POSIX命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
 </article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Python源码笔记——Python中的列表对象
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1.列表结构体 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;5 min</footer>
+  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Python源码笔记——Python中的字符串对象
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
+typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的字符串对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Python源码笔记——Python中的整数对象
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
+#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; 通过PyObject_VAR_HEAD我们可以确定，在新版Python中，整形是一个不定长对象。
+通过前面的文章，我们知道，对于Python中的对象，与对象相关的元信息实际上都保存在与对象对应的类型对象中，对于PyLongObject，这个类型对象是PyLong_Type。
+PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;PyType_Type, 0) &#34;int&#34;, /* tp_name */ offsetof(PyLongObject, ob_digit), /* tp_basicsize */ sizeof(digit), /* tp_itemsize */ 0, /* tp_dealloc */ 0, /* tp_vectorcall_offset */ 0, /* tp_getattr */ 0, /* tp_setattr */ 0, /* tp_as_async */ long_to_decimal_string, /* tp_repr */ &amp;long_as_number, /* tp_as_number */ 0, /* tp_as_sequence */ 0, /* tp_as_mapping */ (hashfunc)long_hash, /* tp_hash */ 0, /* tp_call */ 0, /* tp_str */ PyObject_GenericGetAttr, /* tp_getattro */ 0, /* tp_setattro */ 0, /* tp_as_buffer */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LONG_SUBCLASS | _Py_TPFLAGS_MATCH_SELF, /* tp_flags */ long_doc, /* tp_doc */ 0, /* tp_traverse */ 0, /* tp_clear */ long_richcompare, /* tp_richcompare */ 0, /* tp_weaklistoffset */ 0, /* tp_iter */ 0, /* tp_iternext */ long_methods, /* tp_methods */ 0, /* tp_members */ long_getset, /* tp_getset */ 0, /* tp_base */ 0, /* tp_dict */ 0, /* tp_descr_get */ 0, /* tp_descr_set */ 0, /* tp_dictoffset */ 0, /* tp_init */ 0, /* tp_alloc */ long_new, /* tp_new */ PyObject_Free, /* tp_free */ }; PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-07 13:45:10 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的整数对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/posts/page/2/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

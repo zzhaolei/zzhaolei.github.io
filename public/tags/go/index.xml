@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Go on 俺的博客</title>
+    <link>http://localhost:1313/tags/go/</link>
+    <description>Recent content in Go on 俺的博客</description>
+    <generator>Hugo -- 0.133.1</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 01 Sep 2024 10:14:00 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用AWS S3 SDK访问阿里云oss</title>
+      <link>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</link>
+      <pubDate>Sun, 01 Sep 2024 10:14:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</guid>
+      <description>目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 package main import ( &amp;#34;context&amp;#34; &amp;#34;log&amp;#34; &amp;#34;os&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/aws&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/config&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/credentials&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/service/s3&amp;#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&amp;#34;ACCESS_KEY_ID&amp;#34;) accessKeySecret := os.Getenv(&amp;#34;ACCESS_KEY_SECRET&amp;#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &amp;#34;&amp;#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &amp;#34;aws-cn&amp;#34;, URL: &amp;#34;https://s3.cn-northwest-1.amazonaws.com.cn&amp;#34;, SigningRegion: &amp;#34;cn-northwest-1&amp;#34;, }, nil }), ), ) if err != nil { log.</description>
+    </item>
+    <item>
+      <title>Go设计模式——单例模式</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sun, 01 Sep 2024 10:12:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>介绍 单例模式同时解决了两个问题：
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式 代码 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;amp;File{} } func GetInstance() *File { return singleton } 单元测试 package tests import ( &amp;#34;testing&amp;#34; &amp;#34;design-pattern/singleton&amp;#34; &amp;#34;github.com/stretchr/testify/assert&amp;#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.</description>
+    </item>
+    <item>
+      <title>Go设计模式——开闭原则</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Sun, 01 Sep 2024 10:11:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</guid>
+      <description>介绍 简单的说就是：对扩展开放，对修改关闭。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。
+开闭原则也包含了单一职责原则。
+我们以消息队列来进行举例。
+坏的 // Package main 开闭原则 Open-Closed Principle // 开闭原则包含了：单一职责原则 package main import &amp;#34;fmt&amp;#34; type KafkaQueue struct{} func (k *KafkaQueue) SendMSG(msg string) error { fmt.Println(&amp;#34;Kafka send msg success&amp;#34;) return nil } type RabbitQueue struct{} func (r *RabbitQueue) SendMSG(msg string) error { fmt.Println(&amp;#34;Rabbitmq send msg success&amp;#34;) return nil } type Demo struct{} func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error { return queue.SendMSG(msg) } func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error { return queue.</description>
+    </item>
+    <item>
+      <title>Go设计模式——单一职责原则</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Sun, 01 Sep 2024 10:10:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</guid>
+      <description>介绍 类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。
+我们现在以银行工作人员举例：
+坏的 // Package main 单一职责原则 Single-Responsibility Principle package main import &amp;#34;fmt&amp;#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&amp;#34;成功存入: %d\n&amp;#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&amp;#34;成功向: %s转入: %d\n&amp;#34;, to, money) return nil } 单一职责原则要求一个类/接口只有一个职责，而引起类变化的原因只能有一个。
+从原则上讲，我们为Banker定义存钱和转账的操作是有道理的，因为我们接口中定义的都是银行工作人员可以执行的操作，引起变化的原因只能是Banker的属性和行为发生变化。
+从这方便考虑，这种设计是有合理性的，如果能保证需求不会变化或者需求变化的可能行很小，那么这种设计就是合理的。
+但是实际上我们知道，需求是不断变化的，今日增加一个股票业务，那么我们就需要增加一个股票的相关属性和行为，我们的接口和实现就需要全部变动。
+最好的方式就是当我们开始定义的时候，根据属性和行为进行细分，抽象不同的接口出来，在Go里面也是主张小接口，这样我们可以通过组合的手段来随意构造我们想要的大接口。
+好的 我们将Banker进行抽象，这样可以更好的进行扩展：
+// Package main 单一职责原则 Single-Responsibility Principle package main import &amp;#34;fmt&amp;#34; type Config struct { Money uint64 To string } type Banker interface { DoSomething(Config) error } type SaveBanker struct{} func (sb *SaveBanker) DoSomething(cfg Config) error { fmt.</description>
+    </item>
+    <item>
+      <title>如何在Go中使用POSIX命名信号量</title>
+      <link>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
+      <pubDate>Sun, 01 Sep 2024 10:09:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
+      <description>go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
+Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
+trap go 在 syscall 包中定义了大量的系统调用码，具体定义在文件1.20.6/go/src/syscall/zsysnum_darwin_arm64.go 。不同操作系统上，定义所使用的文件是不同的，这些定义都是通过不同系统的c 语言头文件自动生成的。比如 linux amd64 操作系统的定义在1.20.6/go/src/syscall/zerrors_linux_amd64.go。
+不同长度的参数 syscall 包有 Syscall、Syscall6 两个函数，对应于不同的操作系统调用参数长度的情况。
+Syscall 总共接收 4 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 3 个是系统调用所需的参数。
+Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 6 个是系统调用所需的参数。
+如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
+例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：</description>
+    </item>
+    <item>
+      <title>关于Go Modules的一些内容</title>
+      <link>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</link>
+      <pubDate>Sat, 01 Jun 2019 10:08:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</guid>
+      <description>启用Go Modules go mod在Go &amp;gt;= 1.13才默认启用，在Go &amp;gt;= 1.11已经开始支持了go mod。
+设置环境变量
+# 启用go module export GO111MODULE=on # 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包 export GOPATH=~/go_modules # 设置go代理，在运行go test/build等时会自动下载依赖 # 使用go get下载依赖需要在GOPATH中执行才会使用代理 export GOPROXY=https://goproxy.io go mod使用 在$GOPATH/src之外的任意目录创建一个目录，
+mkdir -p /home/gopher/project cd /home/gopher/project 这个目录就是你项目的根目录，在目录中创建mod管理文件
+go mod init project 如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称
+go mod init github.com/YourName/project go.mod的初始内容cat go.mod为:
+module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
+关于包的定义和自定义包的导入 一个目录下只能由一个定义的package
+比如在project项目中有了一个hello.go的文件，文中定义了package hello， 这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package 每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。
+project ├── go.mod ├── hello │ ├── hello.go │ └── hello1.</description>
+    </item>
+  </channel>
+</rss>

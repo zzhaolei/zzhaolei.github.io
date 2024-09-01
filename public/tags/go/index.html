@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Go | 俺的博客</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/tags/go/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/go/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/go/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tag">
+                    <span>Tag</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a></div>
+  <h1>
+    Go
+    <a href="/tags/go/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">使用AWS S3 SDK访问阿里云oss
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 package main import ( &#34;context&#34; &#34;log&#34; &#34;os&#34; &#34;github.com/aws/aws-sdk-go-v2/aws&#34; &#34;github.com/aws/aws-sdk-go-v2/config&#34; &#34;github.com/aws/aws-sdk-go-v2/credentials&#34; &#34;github.com/aws/aws-sdk-go-v2/service/s3&#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;) accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &#34;aws-cn&#34;, URL: &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;, SigningRegion: &#34;cn-northwest-1&#34;, }, nil }), ), ) if err != nil { log....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:14:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 使用AWS S3 SDK访问阿里云oss" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——单例模式
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 单例模式同时解决了两个问题：
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式 代码 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } 单元测试 package tests import ( &#34;testing&#34; &#34;design-pattern/singleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:12:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——单例模式" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——开闭原则
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 简单的说就是：对扩展开放，对修改关闭。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。
+开闭原则也包含了单一职责原则。
+我们以消息队列来进行举例。
+坏的 // Package main 开闭原则 Open-Closed Principle // 开闭原则包含了：单一职责原则 package main import &#34;fmt&#34; type KafkaQueue struct{} func (k *KafkaQueue) SendMSG(msg string) error { fmt.Println(&#34;Kafka send msg success&#34;) return nil } type RabbitQueue struct{} func (r *RabbitQueue) SendMSG(msg string) error { fmt.Println(&#34;Rabbitmq send msg success&#34;) return nil } type Demo struct{} func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error { return queue.SendMSG(msg) } func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error { return queue....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:11:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——开闭原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Go设计模式——单一职责原则
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>介绍 类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。
+我们现在以银行工作人员举例：
+坏的 // Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&#34;成功存入: %d\n&#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&#34;成功向: %s转入: %d\n&#34;, to, money) return nil } 单一职责原则要求一个类/接口只有一个职责，而引起类变化的原因只能有一个。
+从原则上讲，我们为Banker定义存钱和转账的操作是有道理的，因为我们接口中定义的都是银行工作人员可以执行的操作，引起变化的原因只能是Banker的属性和行为发生变化。
+从这方便考虑，这种设计是有合理性的，如果能保证需求不会变化或者需求变化的可能行很小，那么这种设计就是合理的。
+但是实际上我们知道，需求是不断变化的，今日增加一个股票业务，那么我们就需要增加一个股票的相关属性和行为，我们的接口和实现就需要全部变动。
+最好的方式就是当我们开始定义的时候，根据属性和行为进行细分，抽象不同的接口出来，在Go里面也是主张小接口，这样我们可以通过组合的手段来随意构造我们想要的大接口。
+好的 我们将Banker进行抽象，这样可以更好的进行扩展：
+// Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Config struct { Money uint64 To string } type Banker interface { DoSomething(Config) error } type SaveBanker struct{} func (sb *SaveBanker) DoSomething(cfg Config) error { fmt....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:10:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Go设计模式——单一职责原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">如何在Go中使用POSIX命名信号量
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
+Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
+trap go 在 syscall 包中定义了大量的系统调用码，具体定义在文件1.20.6/go/src/syscall/zsysnum_darwin_arm64.go 。不同操作系统上，定义所使用的文件是不同的，这些定义都是通过不同系统的c 语言头文件自动生成的。比如 linux amd64 操作系统的定义在1.20.6/go/src/syscall/zerrors_linux_amd64.go。
+不同长度的参数 syscall 包有 Syscall、Syscall6 两个函数，对应于不同的操作系统调用参数长度的情况。
+Syscall 总共接收 4 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 3 个是系统调用所需的参数。
+Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 6 个是系统调用所需的参数。
+如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
+例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-09-01 10:09:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 如何在Go中使用POSIX命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">关于Go Modules的一些内容
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>启用Go Modules go mod在Go &gt;= 1.13才默认启用，在Go &gt;= 1.11已经开始支持了go mod。
+设置环境变量
+# 启用go module export GO111MODULE=on # 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包 export GOPATH=~/go_modules # 设置go代理，在运行go test/build等时会自动下载依赖 # 使用go get下载依赖需要在GOPATH中执行才会使用代理 export GOPROXY=https://goproxy.io go mod使用 在$GOPATH/src之外的任意目录创建一个目录，
+mkdir -p /home/gopher/project cd /home/gopher/project 这个目录就是你项目的根目录，在目录中创建mod管理文件
+go mod init project 如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称
+go mod init github.com/YourName/project go.mod的初始内容cat go.mod为:
+module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
+关于包的定义和自定义包的导入 一个目录下只能由一个定义的package
+比如在project项目中有了一个hello.go的文件，文中定义了package hello， 这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package 每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。
+project ├── go.mod ├── hello │ ├── hello.go │ └── hello1....</p>
+  </div>
+  <footer class="entry-footer"><span title='2019-06-01 10:08:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 关于Go Modules的一些内容" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

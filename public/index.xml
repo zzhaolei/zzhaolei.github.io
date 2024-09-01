@@ -6,12 +6,12 @@
     <description>Recent content on 俺的博客</description>
     <generator>Hugo -- 0.133.1</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 30 Aug 2024 17:21:31 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 01 Sep 2024 10:20:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Rust Main 函数是如何被执行的</title>
       <link>http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/</link>
-      <pubDate>Fri, 30 Aug 2024 17:21:31 +0800</pubDate>
+      <pubDate>Sun, 01 Sep 2024 10:20:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/</guid>
       <description>Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
 use std::error::Error; fn main() -&amp;gt; Result&amp;lt;(), Box&amp;lt;dyn Error&amp;gt;&amp;gt; { println!(&amp;#34;hello world&amp;#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
@@ -23,9 +23,61 @@ Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个�
 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &amp;#34;teeos&amp;#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.</description>
     </item>
     <item>
+      <title>使用AWS S3 SDK访问阿里云oss</title>
+      <link>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</link>
+      <pubDate>Sun, 01 Sep 2024 10:14:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</guid>
+      <description>目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 package main import ( &amp;#34;context&amp;#34; &amp;#34;log&amp;#34; &amp;#34;os&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/aws&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/config&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/credentials&amp;#34; &amp;#34;github.com/aws/aws-sdk-go-v2/service/s3&amp;#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&amp;#34;ACCESS_KEY_ID&amp;#34;) accessKeySecret := os.Getenv(&amp;#34;ACCESS_KEY_SECRET&amp;#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &amp;#34;&amp;#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &amp;#34;aws-cn&amp;#34;, URL: &amp;#34;https://s3.cn-northwest-1.amazonaws.com.cn&amp;#34;, SigningRegion: &amp;#34;cn-northwest-1&amp;#34;, }, nil }), ), ) if err != nil { log.</description>
+    </item>
+    <item>
+      <title>通过docker配置MySQL主从服务</title>
+      <link>http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Sun, 01 Sep 2024 10:13:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</guid>
+      <description>目录结构 . ├── master │ └── my.cnf ├── slave │ └── my.cnf └── docker-compose.yml master：主配置
+slave：从配置
+docker-compose：通过 docker-compose 进行容器配置和启动
+master/my.cnf
+# For advice on how to change settings please see # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html [mysqld] host-cache-size=0 skip-name-resolve datadir=/var/lib/mysql socket=/var/run/mysqld/mysqld.sock secure-file-priv=/var/lib/mysql-files user=mysql pid-file=/var/run/mysqld/mysqld.pid # 自定义部分 log-bin=master-bin binlog-format=row # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制 binlog-do-db=test # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置 server-id=1 # server-id 不能和任何 主或从 重复 # 自定义部分 [client] socket=/var/run/mysqld/mysqld.</description>
+    </item>
+    <item>
+      <title>Go设计模式——单例模式</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sun, 01 Sep 2024 10:12:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>介绍 单例模式同时解决了两个问题：
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式 代码 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;amp;File{} } func GetInstance() *File { return singleton } 单元测试 package tests import ( &amp;#34;testing&amp;#34; &amp;#34;design-pattern/singleton&amp;#34; &amp;#34;github.com/stretchr/testify/assert&amp;#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.</description>
+    </item>
+    <item>
+      <title>Go设计模式——开闭原则</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Sun, 01 Sep 2024 10:11:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</guid>
+      <description>介绍 简单的说就是：对扩展开放，对修改关闭。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。
+开闭原则也包含了单一职责原则。
+我们以消息队列来进行举例。
+坏的 // Package main 开闭原则 Open-Closed Principle // 开闭原则包含了：单一职责原则 package main import &amp;#34;fmt&amp;#34; type KafkaQueue struct{} func (k *KafkaQueue) SendMSG(msg string) error { fmt.Println(&amp;#34;Kafka send msg success&amp;#34;) return nil } type RabbitQueue struct{} func (r *RabbitQueue) SendMSG(msg string) error { fmt.Println(&amp;#34;Rabbitmq send msg success&amp;#34;) return nil } type Demo struct{} func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error { return queue.SendMSG(msg) } func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error { return queue.</description>
+    </item>
+    <item>
+      <title>Go设计模式——单一职责原则</title>
+      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Sun, 01 Sep 2024 10:10:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</guid>
+      <description>介绍 类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。
+我们现在以银行工作人员举例：
+坏的 // Package main 单一职责原则 Single-Responsibility Principle package main import &amp;#34;fmt&amp;#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&amp;#34;成功存入: %d\n&amp;#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&amp;#34;成功向: %s转入: %d\n&amp;#34;, to, money) return nil } 单一职责原则要求一个类/接口只有一个职责，而引起类变化的原因只能有一个。
+从原则上讲，我们为Banker定义存钱和转账的操作是有道理的，因为我们接口中定义的都是银行工作人员可以执行的操作，引起变化的原因只能是Banker的属性和行为发生变化。
+从这方便考虑，这种设计是有合理性的，如果能保证需求不会变化或者需求变化的可能行很小，那么这种设计就是合理的。
+但是实际上我们知道，需求是不断变化的，今日增加一个股票业务，那么我们就需要增加一个股票的相关属性和行为，我们的接口和实现就需要全部变动。
+最好的方式就是当我们开始定义的时候，根据属性和行为进行细分，抽象不同的接口出来，在Go里面也是主张小接口，这样我们可以通过组合的手段来随意构造我们想要的大接口。
+好的 我们将Banker进行抽象，这样可以更好的进行扩展：
+// Package main 单一职责原则 Single-Responsibility Principle package main import &amp;#34;fmt&amp;#34; type Config struct { Money uint64 To string } type Banker interface { DoSomething(Config) error } type SaveBanker struct{} func (sb *SaveBanker) DoSomething(cfg Config) error { fmt.</description>
+    </item>
+    <item>
       <title>如何在Go中使用POSIX命名信号量</title>
       <link>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
-      <pubDate>Fri, 30 Aug 2024 17:18:48 +0800</pubDate>
+      <pubDate>Sun, 01 Sep 2024 10:09:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
       <description>go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
@@ -36,6 +88,176 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
 如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
 例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
 sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：</description>
+    </item>
+    <item>
+      <title>Python源码笔记——Python中的列表对象</title>
+      <link>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Fri, 07 Apr 2023 14:00:50 +0800</pubDate>
+      <guid>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/</guid>
+      <description>1.列表结构体 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &amp;#39;allocated&amp;#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &amp;lt;= ob_size &amp;lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.</description>
+    </item>
+    <item>
+      <title>Python源码笔记——Python中的字符串对象</title>
+      <link>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Fri, 07 Apr 2023 13:53:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/</guid>
+      <description>1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
+typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points.</description>
+    </item>
+    <item>
+      <title>Python源码笔记——Python中的整数对象</title>
+      <link>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Fri, 07 Apr 2023 13:45:10 +0800</pubDate>
+      <guid>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/</guid>
+      <description>1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
+#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &amp;#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&amp;#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; 通过PyObject_VAR_HEAD我们可以确定，在新版Python中，整形是一个不定长对象。
+通过前面的文章，我们知道，对于Python中的对象，与对象相关的元信息实际上都保存在与对象对应的类型对象中，对于PyLongObject，这个类型对象是PyLong_Type。
+PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;amp;PyType_Type, 0) &amp;#34;int&amp;#34;, /* tp_name */ offsetof(PyLongObject, ob_digit), /* tp_basicsize */ sizeof(digit), /* tp_itemsize */ 0, /* tp_dealloc */ 0, /* tp_vectorcall_offset */ 0, /* tp_getattr */ 0, /* tp_setattr */ 0, /* tp_as_async */ long_to_decimal_string, /* tp_repr */ &amp;amp;long_as_number, /* tp_as_number */ 0, /* tp_as_sequence */ 0, /* tp_as_mapping */ (hashfunc)long_hash, /* tp_hash */ 0, /* tp_call */ 0, /* tp_str */ PyObject_GenericGetAttr, /* tp_getattro */ 0, /* tp_setattro */ 0, /* tp_as_buffer */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LONG_SUBCLASS | _Py_TPFLAGS_MATCH_SELF, /* tp_flags */ long_doc, /* tp_doc */ 0, /* tp_traverse */ 0, /* tp_clear */ long_richcompare, /* tp_richcompare */ 0, /* tp_weaklistoffset */ 0, /* tp_iter */ 0, /* tp_iternext */ long_methods, /* tp_methods */ 0, /* tp_members */ long_getset, /* tp_getset */ 0, /* tp_base */ 0, /* tp_dict */ 0, /* tp_descr_get */ 0, /* tp_descr_set */ 0, /* tp_dictoffset */ 0, /* tp_init */ 0, /* tp_alloc */ long_new, /* tp_new */ PyObject_Free, /* tp_free */ }; PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。</description>
+    </item>
+    <item>
+      <title>Python源码笔记——Python对象机制的基石【PyObject】</title>
+      <link>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/</link>
+      <pubDate>Fri, 07 Apr 2023 13:43:34 +0800</pubDate>
+      <guid>http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/</guid>
+      <description>所有源码均基于Python 3.11.2
+1.PyObject定义 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。 typedef struct _object { _PyObject_HEAD_EXTRA // 定义指针以支持所有活动堆对象的双向链表refchain Py_ssize_t ob_refcnt; PyTypeObject *ob_type; } PyObject; Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
+_PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-refs，那么Py_TRACE_REFS 会被定义。
+#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。
+2.定长对象和变长对象 在Python中除了PyObject结构体之外，还有PyVarObject结构体。
+#define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; 我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。</description>
+    </item>
+    <item>
+      <title>Mosh连接服务器时终端颜色显示问题</title>
+      <link>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Sat, 01 Jun 2019 10:09:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</guid>
+      <description>在使用mosh连接到服务器Ubuntu 20.04时，发现终端(终端是Kitty，支持256color)的颜色不能正常显示。
+使用命令查看了一下$TERM的设置
+$ echo $TERM xterm-256color 显示的是xterm-256color，说明配置的是没问题的。
+查看mosh的版本：
+$ mosh --version 1.3.2 可以看到mosh的版本是1.3.2，这个版本的发布日期是2017-07-22，但是github上master分支一直在开发中。
+想着时间已经过去这么久了，官方应该已经解决了这个问题，毕竟现在的很多终端都是支持256color的，所以就在issue中搜索了一下，真的找到了一个解决方案。
+定位问题 在2017年11月23号就有人提过关于mosh的256color显示支持问题，而官方也已经解决了这个问题，但是不知道为什么都已经过去这么久了还没有发布新的版本。
+具体的issue。不过评论中说的PPA也已经很久没有更新了。所以我们需要新的方案解决Linux系统的问题。
+解决方案 想要让mosh能正确的显示256color，就只能手动编译mosh的master分支。
+可以查看官方的安装教程，包含手动编译的教程。
+记得先将之前的安装卸载掉。
+Mac 在MacOS平台上，可以使用brew来进行自动的编译和安装。
+$ brew uninstall mosh $ brew install --HEAD mosh Mac在编译安装的时候，会提示更新或者安装xcode命令行工具，就按照brew执行过程中的提示操作即可。
+Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前中，需要安装依赖，Ubuntu最新版本的依赖，比较少。如果你是比较旧的版本，可以参考官方的编译教程，里面有详细的依赖。
+$ sudo apt install libncurses5-dev protobuf-compiler $ git clone https://github.com/mobile-shell/mosh.git $ cd mosh $ ./autogen.sh $ ./configure $ make $ sudo make install 最后执行make install的时候，最好添加sudo，因为涉及到将编译生成的可执行文件复制到系统可查找到的bin目录下。
+结尾 现在再使用mosh username@server_host连接服务器，就可以显示256color了。</description>
+    </item>
+    <item>
+      <title>关于Go Modules的一些内容</title>
+      <link>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</link>
+      <pubDate>Sat, 01 Jun 2019 10:08:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</guid>
+      <description>启用Go Modules go mod在Go &amp;gt;= 1.13才默认启用，在Go &amp;gt;= 1.11已经开始支持了go mod。
+设置环境变量
+# 启用go module export GO111MODULE=on # 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包 export GOPATH=~/go_modules # 设置go代理，在运行go test/build等时会自动下载依赖 # 使用go get下载依赖需要在GOPATH中执行才会使用代理 export GOPROXY=https://goproxy.io go mod使用 在$GOPATH/src之外的任意目录创建一个目录，
+mkdir -p /home/gopher/project cd /home/gopher/project 这个目录就是你项目的根目录，在目录中创建mod管理文件
+go mod init project 如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称
+go mod init github.com/YourName/project go.mod的初始内容cat go.mod为:
+module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
+关于包的定义和自定义包的导入 一个目录下只能由一个定义的package
+比如在project项目中有了一个hello.go的文件，文中定义了package hello， 这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package 每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。
+project ├── go.mod ├── hello │ ├── hello.go │ └── hello1.</description>
+    </item>
+    <item>
+      <title>Jenkins处理GitLab Hook</title>
+      <link>http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</link>
+      <pubDate>Sat, 01 Jun 2019 10:07:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</guid>
+      <description>jenkins安装Generic Webhook Trigger Plugin插件
+{% asset_img Generic_Webhook_Trgger.png Generic\ Webhook\ Trgger具体配置 %}
+创建任务，在构建触发器中勾选Generic Webhook Trigger, 在展开的页面中会有一个URL, 这个URL是配置Webhook使用的，一般形式是http://JENKINS_URL/generic-webhook-trigger/invoke, JENKINS_URL是初始配置jenkins时会有的，一般是http://IP:8080的形式。
+如果之前有配置过GitLab webhook, 请去除这个，不然Generic Webhook Trigger不会生效。
+如果Git仓库的验证使用的是用户名和密码，那么就不需要配置Token.
+复制这个URL，将JENKINS_URL替换为自己的真实数据，在GitLab的对应的项目的设置--&amp;gt;集成中输入，没有安全令牌，勾选自己需要的触发器事件，SSL证书验证可以开启，也可以不开启，推荐开启。
+任务设置界面还有Post content parameters, Header parameters, Request parameters, 分别是请求的post数据，header头，请求头。
+一般我们只需要post的数据里的内容就够了。
+图片的3，4分别是变量名（3），值（4）。值是直接从post的json格式的数据中取出来的，注意，值的获取方式是JSONPath，并且里面有点，如果json数据有多层，那么就多点几次，比如$.project.name等，可以配置多个变量组。
+我们还可以Generic Webhook Trigger配置Optional filter，设置一个触发事件，比如只有当你推送的分支是develop的时候，才去构建。
+在Optional filter的Expression框中输入^(refs/heads/develop)$, 在下面的Text框中输入步骤3的变量名，这里写$ref。
+在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。
+配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。
+GitLab的push的hook数据：
+{ &amp;#34;object_kind&amp;#34;: &amp;#34;push&amp;#34;, &amp;#34;before&amp;#34;: &amp;#34;95790bf891e76fee5e1747ab589903a6a1f80f22&amp;#34;, &amp;#34;after&amp;#34;: &amp;#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&amp;#34;, &amp;#34;ref&amp;#34;: &amp;#34;refs/heads/master&amp;#34;, &amp;#34;checkout_sha&amp;#34;: &amp;#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&amp;#34;, &amp;#34;user_id&amp;#34;: 4, &amp;#34;user_name&amp;#34;: &amp;#34;John Smith&amp;#34;, &amp;#34;user_username&amp;#34;: &amp;#34;jsmith&amp;#34;, &amp;#34;user_email&amp;#34;: &amp;#34;john@example.com&amp;#34;, &amp;#34;user_avatar&amp;#34;: &amp;#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&amp;#34;, &amp;#34;project_id&amp;#34;: 15, &amp;#34;project&amp;#34;:{ &amp;#34;id&amp;#34;: 15, &amp;#34;name&amp;#34;:&amp;#34;Diaspora&amp;#34;, &amp;#34;description&amp;#34;:&amp;#34;&amp;#34;, &amp;#34;web_url&amp;#34;:&amp;#34;http://example.</description>
+    </item>
+    <item>
+      <title>Jenkins与RocketChat集成</title>
+      <link>http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</link>
+      <pubDate>Sat, 01 Jun 2019 10:06:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</guid>
+      <description>Jenkins与RocketChat集成 在Jenkins中安装插件RocketChat Notifier 配置信息 点击Jenkins左侧的系统管理--&amp;gt;系统设置, 找到Global RocketChat Notifier Settings.
+配置Rocket Server URL, 是URL:PORT的类型, 例: http://chat.xxxx.com:80.
+配置Login Username和Login password, 是RocketChat的账号密码.
+Channel, 发送的频道.
+Build Server URL, 构建的服务器和端口, http://192.168.0.1:8080
+点击Test Connection, Success表示配置成功.</description>
+    </item>
+    <item>
+      <title>Jenkins&#43;Python&#43;GitLab持续集成</title>
+      <link>http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</link>
+      <pubDate>Sat, 01 Jun 2019 10:05:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</guid>
+      <description>创建任务 登录Jenkins，点击左侧列表的新建选项。输入任务名称，选择构建一个自由风格的软件项目，点击确定。
+配置 在任务配置界面，可以设置General标签中的丢弃旧的构建选项，设置保持构建的天数和保持构建的最大个数。
+点击源码管理标签，选择git，在Repository URL中输入Git仓库的链接。
+如果是HTTP链接，选择Credentials一行的Add &amp;gt; Jenkins,在Kind一行下拉选择Username with password,在下方Username和Password框中输入用户名和密码。
+使用docker jenkins容器里面的ssh-key。 直接使用服务器的ssh key就可以了。如果指定Path to key需要使用docker中的ssh key。如果使用Source files那么需要使用docker容器中的key, 因为Source files的相对路径不是固化到本地的路径, 而是docker中的路径.
+如果是SSH链接，选择SSH Username with private key,在Username框中输入用户名，Private Key	选择为Enter directly,在显示的key框中输入私钥。（生成秘钥ssh-keygen -t rsa -C &amp;quot;email.com&amp;quot;,生成的文件在home目录下的.ssh目录下,使用命令cat id_rsa查看私钥，复制到key框中）。点击最下方的Add按钮，保存设置。
+在Credentials的下拉选项中选择刚刚创建Username。
+使用定时任务 在构建触发器标签里选择Poll SCM,输入H/2 * * * *, 最后点击保存。 这是一个定时任务，每隔2分钟查询一次代码，如果有更新，就执行任务。
+使用webhook 使用webhook比定时任务更好，webhook只有在push或指定操作时，jenkins会拉取代码，不用定时访问，耗费资源。
+需要安装的插件Gitlab Hook、GitLab、Gitlab Authentication、Build Authorization Token Root 配置job，在构建触发器中勾选Build when a change is pushed to GitLab. GitLab CI Service URL: http://服务器IP:8080/project/demo ，URL后面是回调地址，再点击高级，再Secret token行，点击Generate生成token。
+在GitLab服务器上的相对应的项目的Settings里面的Integrations中，配置webhook,输入在jenkins中获取的URL,和token，可以根据需要勾选事件，开启SSL，点击Add webhook。会在Add webhook按钮下生成一个webhook，点击test,会弹出勾选的事件，选择相应的事件，会在页顶弹出Hook executed successfully: HTTP 200,到此，webhook配置完成。</description>
+    </item>
+    <item>
+      <title>Jenkins&#43;Git子模块自动拉取代码</title>
+      <link>http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Sat, 01 Jun 2019 10:04:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</guid>
+      <description>jenkins+Git子模块自动拉取代码 添加Git子模块 先克隆想要添加子模块的仓库git clone ssh://git@ip:port/user/project.git，这个是主目录。
+进入仓库，添加子模块git submodule add ssh://git@ip:port/user/project.git，和主仓库不同。
+ls查看，会有.gitmodules和子模块的项目名。
+将生成的文件和目录push到主仓库中。
+克隆有子模块的仓库 添加过子模块的仓库，如果想重新克隆，和普通克隆一样，不过克隆后需要在仓库目录下执行 git submodule init和git submodule update，如果不执行，子模块中会没有文件。
+更改子模块的分支 切换到子模块目录，默认子模块是master分支，git submodule foreach git checkout dev， 然后使用git submodule foreach git pull切换分支。
+需要在jenkins任务的构建步骤中添加git submodule init和git submodule update，以及上述操作（写在这两个命令后面）， jenkins才能拉取到代码。
+submodule可以进行tag和merge git submodule foreach可以分别对子模块进行操作, 所以对所有子模块进行tag和merge操作, 就相当于对总项目进行相应的操作.</description>
+    </item>
+    <item>
+      <title>Jenkins Email Extension插件模板</title>
+      <link>http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</link>
+      <pubDate>Sat, 01 Jun 2019 10:03:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</guid>
+      <description>&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;UTF-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;${ENV, var=&amp;#34;JOB_NAME&amp;#34;}-第${BUILD_NUMBER}次构建日志&amp;lt;/title&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body leftmargin=&amp;#34;8&amp;#34; marginwidth=&amp;#34;0&amp;#34; topmargin=&amp;#34;8&amp;#34; marginheight=&amp;#34;4&amp;#34; offset=&amp;#34;0&amp;#34;&amp;gt; &amp;lt;table width=&amp;#34;95%&amp;#34; cellpadding=&amp;#34;0&amp;#34; cellspacing=&amp;#34;0&amp;#34; style=&amp;#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&amp;#34;&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt;(本邮件由程序自动下发，请勿回复！)&amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;h2&amp;gt;&amp;lt;font color=&amp;#34;#FF0000&amp;#34;&amp;gt;构建结果 - ${BUILD_STATUS}&amp;lt;/font&amp;gt;&amp;lt;/h2&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;br /&amp;gt; &amp;lt;b&amp;gt;&amp;lt;font color=&amp;#34;#0B610B&amp;#34;&amp;gt;构建信息&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt; &amp;lt;hr size=&amp;#34;2&amp;#34; width=&amp;#34;100%&amp;#34; align=&amp;#34;center&amp;#34; /&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; SVN_URL &amp;lt;td&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt;项目名称：${PROJECT_NAME}&amp;lt;/li&amp;gt; &amp;lt;li&amp;gt;GIT路径：${GIT_URL}&amp;lt;/li&amp;gt; &amp;lt;li&amp;gt;构建编号：${BUILD_NUMBER}&amp;lt;/li&amp;gt; &amp;lt;li&amp;gt;GIT分支：${GIT_BRANCH}&amp;lt;/li&amp;gt; &amp;lt;li&amp;gt;触发原因：${CAUSE}&amp;lt;/li&amp;gt; &amp;lt;li&amp;gt;构建日志：&amp;lt;a href=&amp;#34;${BUILD_URL}console&amp;#34;&amp;gt;${BUILD_URL}console&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;b&amp;gt;&amp;lt;font color=&amp;#34;#0B610B&amp;#34;&amp;gt;变更信息:&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt; &amp;lt;hr size=&amp;#34;2&amp;#34; width=&amp;#34;100%&amp;#34; align=&amp;#34;center&amp;#34; /&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt;上次构建成功后变化 : ${CHANGES_SINCE_LAST_SUCCESS}&amp;lt;/a&amp;gt; &amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt;上次构建不稳定后变化 : ${CHANGES_SINCE_LAST_UNSTABLE}&amp;lt;/a&amp;gt; &amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt;历史变更记录 : &amp;lt;a href=&amp;#34;${PROJECT_URL}changes&amp;#34;&amp;gt;${PROJECT_URL}changes&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;tr&amp;gt; &amp;lt;td&amp;gt; &amp;lt;ul&amp;gt; &amp;lt;li&amp;gt;变更集:${JELLY_SCRIPT,template=&amp;#34;html&amp;#34;}&amp;lt;/a&amp;gt; &amp;lt;/li&amp;gt; &amp;lt;/ul&amp;gt; &amp;lt;/td&amp;gt; &amp;lt;/tr&amp;gt; &amp;lt;!</description>
+    </item>
+    <item>
+      <title>Git使用</title>
+      <link>http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Sat, 01 Jun 2019 10:02:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/</guid>
+      <description>Git换行符 Git会自动处理换行符的问题, 但是这个在实际开发中会出现问题, 所以, 在Windows上使用提交时转换为LF，检出时不转换功能, 统一使用Unix换行符(也可以在类Unix上启用这个功能, 将拉取的没有改变的换行符更换).
+Windows打开安装好的Git Bash, 类Unix直接输入:
+git config --global core.autocrlf input git config --global core.safecrlf warn 含义：
+AutoCRLF # 提交时转换为LF，检出时转换为CRLF git config --global core.autocrlf true # 提交时转换为LF，检出时不转换 git config --global core.autocrlf input # 提交检出均不转换 git config --global core.autocrlf false SafeCRLF # 拒绝提交包含混合换行符的文件 git config --global core.safecrlf true # 允许提交包含混合换行符的文件 git config --global core.safecrlf false # 提交包含混合换行符的文件时给出警告 git config --global core.safecrlf warn Git创建分支、 删除本地和远程分支、 创建tag、 修改tag名称 创建分支: git checkout -b develop</description>
+    </item>
+    <item>
+      <title>Docker安装GitLab Runner</title>
+      <link>http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</link>
+      <pubDate>Sat, 01 Jun 2019 10:01:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</guid>
+      <description>docker pull gitlab/gitlab-runner:latest安装gitlab-runner
+打开自己搭建的GitLab网站，点击顶栏的Snippets后面的小扳手，再点击左侧列表中Overview中的Runners，在打开的网页下面，可以看到How to setup a shared Runner for a new project行，2是Runners设置时需要指定的URL,3是在设置是的Runners。
+运行镜像 docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:latest
+注册gitlab-runner docker exec -it gitlab-runner gitlab-runner register，
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):输入域名或者服务器ip地址，格式为https://gitlab.com。和token Please enter the gitlab-ci token for this runner:。
+Please enter the gitlab-ci description for this runner:输入runner描述。
+Please enter the gitlab-ci tags for this runner (comma separated):给这个Runner指定tags，稍后也可以在GitLab&#39;s UI中修改。
+Whether to run untagged builds [true/false]:选择Runner是否接受未指定tags的任务,稍后可修改。默认值为false。</description>
     </item>
     <item>
       <title>Tag</title>

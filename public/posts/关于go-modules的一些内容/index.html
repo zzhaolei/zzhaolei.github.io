@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>关于Go Modules的一些内容 | 俺的博客</title>
+<meta name="keywords" content="Go">
+<meta name="description" content="启用Go Modules go mod在Go &gt;= 1.13才默认启用，在Go &gt;= 1.11已经开始支持了go mod。
+设置环境变量
+# 启用go module export GO111MODULE=on # 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包 export GOPATH=~/go_modules # 设置go代理，在运行go test/build等时会自动下载依赖 # 使用go get下载依赖需要在GOPATH中执行才会使用代理 export GOPROXY=https://goproxy.io go mod使用 在$GOPATH/src之外的任意目录创建一个目录，
+mkdir -p /home/gopher/project cd /home/gopher/project 这个目录就是你项目的根目录，在目录中创建mod管理文件
+go mod init project 如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称
+go mod init github.com/YourName/project go.mod的初始内容cat go.mod为:
+module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
+关于包的定义和自定义包的导入 一个目录下只能由一个定义的package
+比如在project项目中有了一个hello.go的文件，文中定义了package hello， 这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package 每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。
+project ├── go.mod ├── hello │ ├── hello.go │ └── hello1.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tag">
+                    <span>Tag</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      关于Go Modules的一些内容
+    </h1>
+    <div class="post-meta"><span title='2019-06-01 10:08:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%90%af%e7%94%a8go-modules" aria-label="启用Go Modules">启用Go Modules</a></li>
+                <li>
+                    <a href="#go-mod%e4%bd%bf%e7%94%a8" aria-label="go mod使用">go mod使用</a></li>
+                <li>
+                    <a href="#%e5%85%b3%e4%ba%8e%e5%8c%85%e7%9a%84%e5%ae%9a%e4%b9%89%e5%92%8c%e8%87%aa%e5%ae%9a%e4%b9%89%e5%8c%85%e7%9a%84%e5%af%bc%e5%85%a5" aria-label="关于包的定义和自定义包的导入">关于包的定义和自定义包的导入</a></li>
+                <li>
+                    <a href="#go-mod%e7%ae%a1%e7%90%86" aria-label="go mod管理">go mod管理</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="启用go-modules">启用Go Modules<a hidden class="anchor" aria-hidden="true" href="#启用go-modules">#</a></h2>
+<p><code>go mod</code>在<code>Go &gt;= 1.13</code>才默认启用，在<code>Go &gt;= 1.11</code>已经开始支持了<code>go mod</code>。</p>
+<p>设置环境变量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 启用go module</span>
+</span></span><span style="display:flex;"><span>export GO111MODULE<span style="color:#f92672">=</span>on
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包</span>
+</span></span><span style="display:flex;"><span>export GOPATH<span style="color:#f92672">=</span>~/go_modules
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置go代理，在运行go test/build等时会自动下载依赖</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用go get下载依赖需要在GOPATH中执行才会使用代理</span>
+</span></span><span style="display:flex;"><span>export GOPROXY<span style="color:#f92672">=</span>https://goproxy.io
+</span></span></code></pre></div><h2 id="go-mod使用">go mod使用<a hidden class="anchor" aria-hidden="true" href="#go-mod使用">#</a></h2>
+<p>在<code>$GOPATH/src</code>之外的任意目录创建一个目录，</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir -p /home/gopher/project
+</span></span><span style="display:flex;"><span>cd /home/gopher/project
+</span></span></code></pre></div><p>这个目录就是你项目的根目录，在目录中创建mod管理文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go mod init project
+</span></span></code></pre></div><p>如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称</p>
+<pre tabindex="0"><code>go mod init github.com/YourName/project
+</code></pre><p><code>go.mod</code>的初始内容<code>cat go.mod</code>为:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>module project
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>go 1.12
+</span></span></code></pre></div><p><code>go.mod</code>只需要在项目的根目录创建一次即可，在项目中<code>Go</code>会自动查找当前目录的全部<code>父级目录</code>，直到找到<code>go.mod</code>。</p>
+<h2 id="关于包的定义和自定义包的导入">关于包的定义和自定义包的导入<a hidden class="anchor" aria-hidden="true" href="#关于包的定义和自定义包的导入">#</a></h2>
+<ul>
+<li>
+<p>一个目录下只能由一个定义的package</p>
+<pre tabindex="0"><code>比如在project项目中有了一个hello.go的文件，文中定义了package hello，
+这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package
+</code></pre></li>
+<li>
+<p>每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。</p>
+<pre tabindex="0"><code>project
+├── go.mod
+├── hello
+│   ├── hello.go
+│   └── hello1.go
+├── main.go
+└── world
+    ├── world.go
+    └── world1.go
+
+其中hello目录中所有文件的包定义均为package hello，hello目录中所有文件的包定义均为package world
+</code></pre></li>
+</ul>
+<h2 id="go-mod管理">go mod管理<a hidden class="anchor" aria-hidden="true" href="#go-mod管理">#</a></h2>
+<ul>
+<li>
+<p>创建新的模块</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建了一个新的模块，初始化 `go.mod` 文件并且生成相应的描述</span>
+</span></span><span style="display:flex;"><span>go mod init
+</span></span></code></pre></div></li>
+<li>
+<p>添加依赖项</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># build，test和其它构建代码包的命令，会在需要的时候在go.mod文件中添加新的依赖项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 最好不要自己修改go.mod文件，因为在Go在向go.mod中添加依赖项的时候</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 同时会向go.sum中的hash对比，确定依赖是否修改。</span>
+</span></span><span style="display:flex;"><span>go build
+</span></span><span style="display:flex;"><span>go test
+</span></span></code></pre></div></li>
+<li>
+<p>查看当前全部依赖项</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 列出了当前模块所有的依赖项</span>
+</span></span><span style="display:flex;"><span>go list -m all
+</span></span></code></pre></div></li>
+<li>
+<p>修改指定依赖项的版本（或添加一个新的依赖项）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 修改或添加</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># go get -u 会更新依赖</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取指定版本的形式 go get rsc.io/sampler@v1.3.1</span>
+</span></span><span style="display:flex;"><span>go get
+</span></span></code></pre></div></li>
+<li>
+<p>移除无用的依赖项</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go mod tidy
+</span></span></code></pre></div></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Mosh连接服务器时终端颜色显示问题</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Jenkins处理GitLab Hook</span>
+  </a>
+</nav>
+
+  </footer><script
+    src="https://giscus.app/client.js"
+    data-repo="zzhaolei/zzhaolei.github.io"
+    data-repo-id="R_kgDOMn_okw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOMn_ok84CiEHA"
+    data-mapping="title"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async
+></script>
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

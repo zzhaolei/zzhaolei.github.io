@@ -147,28 +147,8 @@ Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个�
 让我们先从 init 开始：
 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP....</p>
   </div>
-  <footer class="entry-footer"><span title='2024-08-30 17:21:31 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊</footer>
+  <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Rust Main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">如何在Go中使用POSIX命名信号量
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
-Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
-trap go 在 syscall 包中定义了大量的系统调用码，具体定义在文件1.20.6/go/src/syscall/zsysnum_darwin_arm64.go 。不同操作系统上，定义所使用的文件是不同的，这些定义都是通过不同系统的c 语言头文件自动生成的。比如 linux amd64 操作系统的定义在1.20.6/go/src/syscall/zerrors_linux_amd64.go。
-不同长度的参数 syscall 包有 Syscall、Syscall6 两个函数，对应于不同的操作系统调用参数长度的情况。
-Syscall 总共接收 4 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 3 个是系统调用所需的参数。
-Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 6 个是系统调用所需的参数。
-如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
-例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
-sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-08-30 17:18:48 +0800 CST'>August 30, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;磊</footer>
-  <a class="entry-link" aria-label="post link to 如何在Go中使用POSIX命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
 </article>
     </main>
     

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Jenkins&#43;Python&#43;GitLab持续集成 | 俺的博客</title>
+<meta name="keywords" content="Jenkins">
+<meta name="description" content="创建任务 登录Jenkins，点击左侧列表的新建选项。输入任务名称，选择构建一个自由风格的软件项目，点击确定。
+配置 在任务配置界面，可以设置General标签中的丢弃旧的构建选项，设置保持构建的天数和保持构建的最大个数。
+点击源码管理标签，选择git，在Repository URL中输入Git仓库的链接。
+如果是HTTP链接，选择Credentials一行的Add &gt; Jenkins,在Kind一行下拉选择Username with password,在下方Username和Password框中输入用户名和密码。
+使用docker jenkins容器里面的ssh-key。 直接使用服务器的ssh key就可以了。如果指定Path to key需要使用docker中的ssh key。如果使用Source files那么需要使用docker容器中的key, 因为Source files的相对路径不是固化到本地的路径, 而是docker中的路径.
+如果是SSH链接，选择SSH Username with private key,在Username框中输入用户名，Private Key	选择为Enter directly,在显示的key框中输入私钥。（生成秘钥ssh-keygen -t rsa -C &quot;email.com&quot;,生成的文件在home目录下的.ssh目录下,使用命令cat id_rsa查看私钥，复制到key框中）。点击最下方的Add按钮，保存设置。
+在Credentials的下拉选项中选择刚刚创建Username。
+使用定时任务 在构建触发器标签里选择Poll SCM,输入H/2 * * * *, 最后点击保存。 这是一个定时任务，每隔2分钟查询一次代码，如果有更新，就执行任务。
+使用webhook 使用webhook比定时任务更好，webhook只有在push或指定操作时，jenkins会拉取代码，不用定时访问，耗费资源。
+需要安装的插件Gitlab Hook、GitLab、Gitlab Authentication、Build Authorization Token Root 配置job，在构建触发器中勾选Build when a change is pushed to GitLab. GitLab CI Service URL: http://服务器IP:8080/project/demo ，URL后面是回调地址，再点击高级，再Secret token行，点击Generate生成token。
+在GitLab服务器上的相对应的项目的Settings里面的Integrations中，配置webhook,输入在jenkins中获取的URL,和token，可以根据需要勾选事件，开启SSL，点击Add webhook。会在Add webhook按钮下生成一个webhook，点击test,会弹出勾选的事件，选择相应的事件，会在页顶弹出Hook executed successfully: HTTP 200,到此，webhook配置完成。">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tag">
+                    <span>Tag</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Jenkins&#43;Python&#43;GitLab持续集成
+    </h1>
+    <div class="post-meta"><span title='2019-06-01 10:05:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e4%bb%bb%e5%8a%a1" aria-label="创建任务">创建任务</a></li>
+                <li>
+                    <a href="#%e9%85%8d%e7%bd%ae" aria-label="配置">配置</a></li>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8%e5%ae%9a%e6%97%b6%e4%bb%bb%e5%8a%a1" aria-label="使用定时任务">使用定时任务</a></li>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8webhook" aria-label="使用webhook">使用webhook</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#%e6%b3%a8%e6%84%8f%e5%9c%a8%e8%84%9a%e6%9c%ac%e4%b8%ad%e4%bd%bf%e7%94%a8docker-exec%e6%89%a7%e8%a1%8c%e5%ae%b9%e5%99%a8%e4%b8%ad%e7%9a%84%e5%91%bd%e4%bb%a4%e6%98%af-%e4%b8%8d%e8%a6%81%e6%8c%87%e5%ae%9a-it--t%e6%98%af%e6%8c%87%e5%ae%9atty-%e8%80%8cjenkins%e4%b8%ad%e6%b2%a1%e6%9c%89tty-%e5%8f%aa%e9%9c%80%e8%a6%81%e6%8c%87%e5%ae%9a-i%e5%8d%b3%e5%8f%af" aria-label="注意：在脚本中使用docker exec执行容器中的命令是, 不要指定-it, -t是指定tty, 而jenkins中没有tty, 只需要指定-i即可.">注意：在脚本中使用docker exec执行容器中的命令是, 不要指定-it, -t是指定tty, 而jenkins中没有tty, 只需要指定-i即可.</a></li></ul>
+                    
+                <li>
+                    <a href="#1-%e5%b0%86%e4%bb%a3%e7%a0%81%e9%83%a8%e7%bd%b2%e5%88%b0%e8%bf%9c%e7%a8%8b%e6%9c%8d%e5%8a%a1%e5%99%a8" aria-label="1 将代码部署到远程服务器">1 将代码部署到远程服务器</a><ul>
+                        
+                <li>
+                    <a href="#11%e8%bf%9c%e7%a8%8b%e9%83%a8%e7%bd%b2%e4%bb%bb%e5%8a%a1" aria-label="1.1远程部署任务">1.1远程部署任务</a></li></ul>
+                </li>
+                <li>
+                    <a href="#2-ssh%e6%8f%92%e4%bb%b6%e9%83%a8%e7%bd%b2" aria-label="2 SSH插件部署">2 SSH插件部署</a><ul>
+                        
+                <li>
+                    <a href="#21-%e8%bf%9c%e7%a8%8b%e9%83%a8%e7%bd%b2%e4%bb%bb%e5%8a%a1" aria-label="2.1 远程部署任务">2.1 远程部署任务</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e9%85%8d%e7%bd%ae%e9%82%ae%e4%bb%b6" aria-label="配置邮件">配置邮件</a></li>
+                <li>
+                    <a href="#%e9%ab%98%e7%ba%a7%e7%89%88%e9%82%ae%e4%bb%b6%e9%80%9a%e7%9f%a5" aria-label="高级版邮件通知">高级版邮件通知</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="创建任务">创建任务<a hidden class="anchor" aria-hidden="true" href="#创建任务">#</a></h2>
+<p>登录<code>Jenkins</code>，点击左侧列表的<code>新建</code>选项。输入任务名称，选择<code>构建一个自由风格的软件项目</code>，点击<code>确定</code>。</p>
+<h2 id="配置">配置<a hidden class="anchor" aria-hidden="true" href="#配置">#</a></h2>
+<p>在<code>任务配置</code>界面，可以设置<code>General标签</code>中的<code>丢弃旧的构建</code>选项，设置<code>保持构建的天数</code>和<code>保持构建的最大个数</code>。</p>
+<p>点击<code>源码管理</code>标签，选择<code>git</code>，在<code>Repository URL</code>中输入Git仓库的链接。</p>
+<p>如果是HTTP链接，选择<code>Credentials</code>一行的<code>Add &gt; Jenkins</code>,在<code>Kind</code>一行下拉选择<code>Username with password</code>,在下方<code>Username</code>和<code>Password</code>框中输入用户名和密码。</p>
+<p><del>使用docker jenkins容器里面的ssh-key。</del>
+直接使用服务器的<code>ssh key</code>就可以了。如果指定<code>Path to key</code>需要使用<code>docker</code>中的<code>ssh key</code>。如果使用<code>Source files</code>那么需要使用<code>docker</code>容器中的<code>key</code>, 因为<code>Source files</code>的相对路径不是固化到本地的路径, 而是<code>docker</code>中的路径.</p>
+<p>如果是<code>SSH</code>链接，选择<code>SSH Username with private key</code>,在<code>Username</code>框中输入用户名，<code>Private Key	</code>选择为<code>Enter directly</code>,在显示的<code>key</code>框中输入私钥。（生成秘钥<code>ssh-keygen -t rsa -C &quot;email.com&quot;</code>,生成的文件在<code>home</code>目录下的<code>.ssh</code>目录下,使用命令<code>cat id_rsa</code>查看私钥，复制到<code>key</code>框中）。点击最下方的<code>Add</code>按钮，保存设置。</p>
+<p>在<code>Credentials</code>的下拉选项中选择刚刚创建<code>Username</code>。</p>
+<h2 id="使用定时任务">使用定时任务<a hidden class="anchor" aria-hidden="true" href="#使用定时任务">#</a></h2>
+<p>在<code>构建触发器</code>标签里选择<code>Poll SCM</code>,输入<code>H/2 * * * *</code>, 最后点击<code>保存</code>。
+这是一个定时任务，每隔2分钟查询一次代码，如果有更新，就执行任务。</p>
+<h2 id="使用webhook">使用webhook<a hidden class="anchor" aria-hidden="true" href="#使用webhook">#</a></h2>
+<p>使用webhook比定时任务更好，webhook只有在push或指定操作时，jenkins会拉取代码，不用定时访问，耗费资源。</p>
+<p>需要安装的插件<code>Gitlab Hook、GitLab、Gitlab Authentication、Build Authorization Token Root</code>
+配置<code>job</code>，在<code>构建触发器</code>中勾选<code>Build when a change is pushed to GitLab. GitLab CI Service URL: http://服务器IP:8080/project/demo</code> ，<code>URL</code>后面是回调地址，再点击<code>高级</code>，再<code>Secret token</code>行，点击<code>Generate</code>生成<code>token</code>。</p>
+<p>在<code>GitLab</code>服务器上的相对应的项目的<code>Settings</code>里面的<code>Integrations</code>中，配置<code>webhook</code>,输入在jenkins中获取的<code>URL</code>,和<code>token</code>，可以根据需要勾选事件，开启SSL，点击<code>Add webhook</code>。会在<code>Add webhook</code>按钮下生成一个<code>webhook</code>，点击<code>test</code>,会弹出勾选的事件，选择相应的事件，会在页顶弹出<code>Hook executed successfully: HTTP 200</code>,到此，<code>webhook</code>配置完成。</p>
+<h4 id="注意在脚本中使用docker-exec执行容器中的命令是-不要指定-it--t是指定tty-而jenkins中没有tty-只需要指定-i即可">注意：在脚本中使用<code>docker exec</code>执行容器中的命令是, 不要指定<code>-it</code>, <code>-t</code>是指定<code>tty</code>, 而<code>jenkins</code>中没有<code>tty</code>, 只需要指定<code>-i</code>即可.<a hidden class="anchor" aria-hidden="true" href="#注意在脚本中使用docker-exec执行容器中的命令是-不要指定-it--t是指定tty-而jenkins中没有tty-只需要指定-i即可">#</a></h4>
+<h3 id="1-将代码部署到远程服务器">1 将代码部署到远程服务器<a hidden class="anchor" aria-hidden="true" href="#1-将代码部署到远程服务器">#</a></h3>
+<p>不需要使用容器中的ssh-key。
+在jenkins服务器上生成key<code>ssh-keygen -t rsa -C &quot;email.com&quot;</code>，
+使用<code>ssh-copy-id -i ~/.ssh/id_rsa.pub user@ip</code>(如果端口不是22，可以添加参数<code>-p port</code>进行修改，<code>port</code>为端口数值), 将生成的公钥保存在目标服务器。这样可以免密码登录。</p>
+<p>安装<code>Publish over SSH</code>插件，在<code>系统管理</code>&ndash;&gt;<code>系统设置</code>里面找到<code>Publish over SSH</code>。
+配置<code>Jenkins SSH Key</code>，如果key在生成时设置了密码，就在<code>Passphrase</code>里输入密码，没有则忽略。
+复制私钥，粘贴进<code>Key</code>里面。</p>
+<p>配置<code>SSH Servers</code>,点击<code>增加</code>。<code>Name</code>为SSH的名称，<code>Hostname</code>是远程服务器的IP地址，<code>Username</code>是登录的用户名，<code>Remote Directory</code>是远程服务器的目录，必须是真实存在的，插件不会自动创建。</p>
+<p>点击<code>Test Configuration</code>测试配置是否成功。成功会显示<code>Success</code>。</p>
+<h4 id="11远程部署任务">1.1远程部署任务<a hidden class="anchor" aria-hidden="true" href="#11远程部署任务">#</a></h4>
+<p>再创建一个构建任务，当有触发任务时，构建任务运行。</p>
+<p>还是点击<code>新建</code>，输入一个任务名称，不点击<code>构建一个自由风格的软件项目</code>,在最下面的复制框中，输入刚刚创建的触发任务名称。
+点击<code>确定</code>。如果输入的任务名不存在，会报错，并让你重新输入一次。</p>
+<p>在<code>构建触发器</code>中选择<code>Build after other projects are built</code>，在其他项目建成后进行构建，<code>Projects to watch</code>选择第一个任务，可能会报错<code>No such project ‘gol’. Did you mean ‘golismero’?</code>，不用理会，如果是单个任务，可以把最后面的<code>, </code>逗号和空格删除，就不会报错了，不删也没有影响。
+勾选下面的<code>Trigger only if build is stable</code>，只有在构建稳定时才触发。</p>
+<p>其他设置不变，<code>构建后操作</code>中<code>增加构建后操作步骤</code>，在弹出的选项中选择<code>Send build artifacts SSH</code>,输入<code>SSH Server Name</code>(是远程主机IP)，然后在<code>Transfers</code>中的<code>Exec command</code>中输入脚本命令，其他选项暂时不用填写。</p>
+<p><code>Source files</code>是相对于<code>workspace</code>下项目目录的目录, 是一个相对目录, 如果在<code>workspace</code>目录, 即<code>jenkins</code>的工作目录, 那么需要填写<code>**/</code>, 后面可以跟工作目录下的文件或文件夹.</p>
+<p><code>Remove prefix</code>文件复制时要过滤的目录.</p>
+<p><code>Remote directory</code>文件得到到远程机上的目录，此目录是相对于<code>SSH Server</code>中的<code>Remote directory</code>的，如果不存在将会自动创建。</p>
+<p>保存，即可看到触发任务和构建任务。</p>
+<p>还有另一种方式可以部署</p>
+<h3 id="2-ssh插件部署">2 SSH插件部署<a hidden class="anchor" aria-hidden="true" href="#2-ssh插件部署">#</a></h3>
+<p>这种方式需要安装<code>SSH</code>插件。</p>
+<p>点击<code>Credentials</code>&ndash;&gt;<code>System</code>&ndash;&gt;<code>Add domain</code>，在<code>Domain Name</code>中输入名称，<code>Description</code>描述，可写可不写，<code>Specification</code>保持默认为<code>Add</code>，点击<code>ok</code>。在新页面点击左上的<code>Add Credentials</code>，输入远程登录的<code>Username</code>和<code>Password</code>，点击<code>OK</code>。
+点击<code>系统管理</code>&ndash;&gt;<code>系统设置</code>，找到<code>SSH remote hosts</code>，配置<code>SSH site</code>，点击<code>增加</code>，输入<code>Hostname</code>主机IP，<code>Port</code>远程连接端口（一般为22），<code>Credentials</code>选择刚刚创建<code>Domain</code>，和<code>Username</code>相同，点击<code>Check connection</code>，显示<code>Successfull connection</code>，成功，点击<code>保存</code>。</p>
+<h4 id="21-远程部署任务">2.1 远程部署任务<a hidden class="anchor" aria-hidden="true" href="#21-远程部署任务">#</a></h4>
+<p>基本和<code>1.1</code>相同，但是这个是在<code>构建</code>中<code>增加构建步骤</code>，在弹出的选项中选择<code>Execute shell script on remote host using ssh</code>，默认会自动填写<code>SSH site</code>（如果没有填写，点击输入框看看有没有，如果没有可能是前面出现错误），可能会有红字报错<code>SSH Site not specified</code>，不用理。在<code>Command</code>输入框中输入<code>shell</code>脚本。<code>保存</code>即可。</p>
+<p>这种方式没有第一种构建的快。</p>
+<h2 id="配置邮件">配置邮件<a hidden class="anchor" aria-hidden="true" href="#配置邮件">#</a></h2>
+<p>可以安装<code>Email Extension Plugin</code>插件，扩展邮箱功能。</p>
+<p>点击左侧的<code>系统管理</code>，在<code>管理Jenkins</code>列点击<code>系统设置</code>，在新页面找到<code>Jenkins Location</code>,在<code>系统管理员邮件地址</code>栏中输入发件人，格式为<code>标题&lt;email.com&gt;</code>,再找到<code>邮件通知</code>，点击<code>高级</code>按钮，添加<code>SMTP服务器</code>,以及邮件后缀(<code>@xxx.com</code>)，使用<code>SMTP</code>验证的用户名为完整的邮箱账号，密码是授权码。（腾讯企业邮箱如果绑定了微信，在设置-微信绑定-客户端专用密码，生成授权码，保存设置。）勾选使用<code>SSL</code>协议，<code>SMTP</code>端口是<code>465</code>, <code>Reply-To Address</code>填写收件人地址。</p>
+<h2 id="高级版邮件通知">高级版邮件通知<a hidden class="anchor" aria-hidden="true" href="#高级版邮件通知">#</a></h2>
+<p>需要安装<code>Email Extension</code>插件，安装好后，点击<code>系统管理</code>&ndash;&gt;<code>系统设置</code>找到<code>Extended E-mail Notification</code>，配置<code>SMTP server</code>服务器地，格式为<code>smtp.exmail.qq.com</code>(这里用腾讯企业邮箱作为例子).</p>
+<p><code>Default user E-mail suffix</code>设置邮箱后缀，就是@及后面的字符<code>@xxx.com</code>.</p>
+<p><code>Default Content Type</code>默认发送的内容类型选择<code>HTML/(text/html)</code>.</p>
+<p><code>Default Recipients</code>默认收件人，可以设置多个收件人，中间用<code>, </code>隔开，英文状态下的符号.</p>
+<p><code>Default Subject</code>默认主题不用改，也可以在最前面加一些文字，比如<code>构建通知</code>.</p>
+<p><code>Default Content</code>这里面是默认模板，可以在网上找模板更改，也可以自己写，html类型。</p>
+<p>点击上面的<code>高级</code>按钮，勾选<code>Use SMTP Authentication</code>，输入<code>Username</code>和<code>Password</code>，<code>Password</code>是客户端授权密码要和<code>配置邮件</code>中的授权码一样，勾选<code>SSL</code>，点击<code>保存</code>。</p>
+<p>为单个的<code>Job</code>增加<code>构建后步骤</code>,
+选择<code>Editable Email Notification</code>, 在<code>Project Recipient List</code>收件人列表中输入收件人邮箱, 多个可以用<code>, </code>分割, 想使用全局默认配置的话, 可以使用<code>$DEFAULT_RECIPIENTS</code>.</p>
+<p><code>Project Reply-To List</code>允许回复人列表, 默认值<code>$DEFAULT_REPLYTO</code>。</p>
+<p><code>Content Type</code>文档类型, 可以设置<code>HTML</code>。</p>
+<p><code>Attach Build Log</code>发送的邮件是否包含日志。</p>
+<p>点击<code>Advanced Settings</code>, 在<code>Triggers</code>中, 删除<code>Sent To</code>默认的<code>Developer List</code>, 点击<code>Add</code>添加<code>Recipient List</code>, 保存完成。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/jenkins/">Jenkins</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Jenkins与RocketChat集成</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Jenkins&#43;Git子模块自动拉取代码</span>
+  </a>
+</nav>
+
+  </footer><script
+    src="https://giscus.app/client.js"
+    data-repo="zzhaolei/zzhaolei.github.io"
+    data-repo-id="R_kgDOMn_okw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOMn_ok84CiEHA"
+    data-mapping="title"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async
+></script>
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
