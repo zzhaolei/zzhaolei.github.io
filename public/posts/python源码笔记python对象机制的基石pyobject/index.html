@@ -7,12 +7,33 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Python源码笔记——Python对象机制的基石【PyObject】 | 俺的博客</title>
 <meta name="keywords" content="Python">
-<meta name="description" content="所有源码均基于Python 3.11.2
-1.PyObject定义 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。 typedef struct _object { _PyObject_HEAD_EXTRA // 定义指针以支持所有活动堆对象的双向链表refchain Py_ssize_t ob_refcnt; PyTypeObject *ob_type; } PyObject; Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
+<meta name="description" content="
+所有源码均基于Python 3.11.2
+
+1.PyObject定义
+// 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。
+// 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。
+typedef struct _object {
+		_PyObject_HEAD_EXTRA  // 定义指针以支持所有活动堆对象的双向链表refchain
+
+		Py_ssize_t ob_refcnt;
+    PyTypeObject *ob_type;
+} PyObject;
+Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
 _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-refs，那么Py_TRACE_REFS 会被定义。
-#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。
-2.定长对象和变长对象 在Python中除了PyObject结构体之外，还有PyVarObject结构体。
-#define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; 我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。">
+#ifdef Py_TRACE_REFS
+/* Define pointers to support a doubly-linked list of all live heap objects. */
+#define _PyObject_HEAD_EXTRA            \
+    PyObject *_ob_next;           \
+    PyObject *_ob_prev;
+
+#define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL,
+
+#else
+#  define _PyObject_HEAD_EXTRA
+#  define _PyObject_EXTRA_INIT
+#endif
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

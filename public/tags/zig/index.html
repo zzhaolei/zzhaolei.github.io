@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Rust | 俺的博客</title>
+<title>Zig | 俺的博客</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/tags/rust/">
+<link rel="canonical" href="http://localhost:1313/tags/zig/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
@@ -18,8 +18,8 @@
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/rust/index.xml">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/rust/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/zig/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/zig/">
 <noscript>
     <style>
         #theme-toggle,
@@ -120,8 +120,8 @@
 <main class="main"> 
 <header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
   <h1>
-    Rust
-    <a href="/tags/rust/index.xml" title="RSS" aria-label="RSS">
+    Zig
+    <a href="/tags/zig/index.xml" title="RSS" aria-label="RSS">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" height="23">
         <path d="M4 11a9 9 0 0 1 9 9" />
@@ -134,18 +134,21 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Rust Main 函数是如何被执行的
+    <h2 class="entry-hint-parent">Go 在 Mac 或 Linux 上构建动态库
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
     </h2>
   </header>
   <div class="entry-content">
-    <p>Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
-use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
-接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
-Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-...</p>
+    <p>Go 可以导出 C ABI，然后再其它支持 C ABI 的语言中调用。下面详细讲解一下用法：
+Go 构建动态库 定义一个 go 文件，包含以下代码： package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Rust Main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
+  <footer class="entry-footer"><span title='2024-09-11 10:55:43 +0800 CST'>September 11, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Go 在 Mac 或 Linux 上构建动态库" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/"></a>
 </article>
     </main>
     

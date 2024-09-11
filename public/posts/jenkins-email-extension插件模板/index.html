@@ -7,7 +7,119 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Jenkins Email Extension插件模板 | 俺的博客</title>
 <meta name="keywords" content="Jenkins">
-<meta name="description" content="&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset=&#34;UTF-8&#34;&gt; &lt;title&gt;${ENV, var=&#34;JOB_NAME&#34;}-第${BUILD_NUMBER}次构建日志&lt;/title&gt; &lt;/head&gt; &lt;body leftmargin=&#34;8&#34; marginwidth=&#34;0&#34; topmargin=&#34;8&#34; marginheight=&#34;4&#34; offset=&#34;0&#34;&gt; &lt;table width=&#34;95%&#34; cellpadding=&#34;0&#34; cellspacing=&#34;0&#34; style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt; &lt;tr&gt; &lt;td&gt;(本邮件由程序自动下发，请勿回复！)&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;h2&gt;&lt;font color=&#34;#FF0000&#34;&gt;构建结果 - ${BUILD_STATUS}&lt;/font&gt;&lt;/h2&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;br /&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建信息&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; SVN_URL &lt;td&gt; &lt;ul&gt; &lt;li&gt;项目名称：${PROJECT_NAME}&lt;/li&gt; &lt;li&gt;GIT路径：${GIT_URL}&lt;/li&gt; &lt;li&gt;构建编号：${BUILD_NUMBER}&lt;/li&gt; &lt;li&gt;GIT分支：${GIT_BRANCH}&lt;/li&gt; &lt;li&gt;触发原因：${CAUSE}&lt;/li&gt; &lt;li&gt;构建日志：&lt;a href=&#34;${BUILD_URL}console&#34;&gt;${BUILD_URL}console&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;变更信息:&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建成功后变化 : ${CHANGES_SINCE_LAST_SUCCESS}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建不稳定后变化 : ${CHANGES_SINCE_LAST_UNSTABLE}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;历史变更记录 : &lt;a href=&#34;${PROJECT_URL}changes&#34;&gt;${PROJECT_URL}changes&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;变更集:${JELLY_SCRIPT,template=&#34;html&#34;}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;!">
+<meta name="description" content="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;title&gt;${ENV, var=&#34;JOB_NAME&#34;}-第${BUILD_NUMBER}次构建日志&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body leftmargin=&#34;8&#34; marginwidth=&#34;0&#34; topmargin=&#34;8&#34; marginheight=&#34;4&#34; offset=&#34;0&#34;&gt;
+    &lt;table width=&#34;95%&#34; cellpadding=&#34;0&#34; cellspacing=&#34;0&#34; style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt;
+        &lt;tr&gt;
+            &lt;td&gt;(本邮件由程序自动下发，请勿回复！)&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;h2&gt;&lt;font color=&#34;#FF0000&#34;&gt;构建结果 - ${BUILD_STATUS}&lt;/font&gt;&lt;/h2&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;br /&gt;
+                &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建信息&lt;/font&gt;&lt;/b&gt;
+                &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt; SVN_URL
+            &lt;td&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;项目名称：${PROJECT_NAME}&lt;/li&gt;
+                    &lt;li&gt;GIT路径：${GIT_URL}&lt;/li&gt;
+                    &lt;li&gt;构建编号：${BUILD_NUMBER}&lt;/li&gt;
+                    &lt;li&gt;GIT分支：${GIT_BRANCH}&lt;/li&gt;
+                    &lt;li&gt;触发原因：${CAUSE}&lt;/li&gt;
+                    &lt;li&gt;构建日志：&lt;a href=&#34;${BUILD_URL}console&#34;&gt;${BUILD_URL}console&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;变更信息:&lt;/font&gt;&lt;/b&gt;
+                &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;上次构建成功后变化 : ${CHANGES_SINCE_LAST_SUCCESS}&lt;/a&gt;
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;上次构建不稳定后变化 : ${CHANGES_SINCE_LAST_UNSTABLE}&lt;/a&gt;
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;历史变更记录 : &lt;a href=&#34;${PROJECT_URL}changes&#34;&gt;${PROJECT_URL}changes&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;变更集:${JELLY_SCRIPT,template=&#34;html&#34;}&lt;/a&gt;
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!--
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;Failed Test Results&lt;/font&gt;&lt;/b&gt;
+                &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;pre style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt;$FAILED_TESTS&lt;/pre&gt;
+                &lt;br /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建日志 (最后 100行):&lt;/font&gt;&lt;/b&gt;
+                &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;--&gt;
+        &lt;!-- &lt;tr&gt;
+            &lt;td&gt;Test Logs (if test has ran): &lt;a
+                href=&#34;${PROJECT_URL}ws/TestResult/archive_logs/Log-Build-${BUILD_NUMBER}.zip&#34;&gt;${PROJECT_URL}/ws/TestResult/archive_logs/Log-Build-${BUILD_NUMBER}.zip&lt;/a&gt;
+                &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt; --&gt;
+        &lt;!--
+        &lt;tr&gt;
+            &lt;td&gt;
+                &lt;textarea cols=&#34;80&#34; rows=&#34;30&#34; readonly=&#34;readonly&#34; style=&#34;font-family: Courier New&#34;&gt;${BUILD_LOG, maxLines=100,escapeHtml=true}&lt;/textarea&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;--&gt;
+        &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

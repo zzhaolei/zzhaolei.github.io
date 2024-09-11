@@ -4,7 +4,7 @@
     <title>Shell on 俺的博客</title>
     <link>http://localhost:1313/tags/shell/</link>
     <description>Recent content in Shell on 俺的博客</description>
-    <generator>Hugo -- 0.133.1</generator>
+    <generator>Hugo -- 0.134.1</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 01 Jun 2019 10:09:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/shell/index.xml" rel="self" type="application/rss+xml" />
@@ -13,22 +13,30 @@
       <link>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</link>
       <pubDate>Sat, 01 Jun 2019 10:09:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</guid>
-      <description>在使用mosh连接到服务器Ubuntu 20.04时，发现终端(终端是Kitty，支持256color)的颜色不能正常显示。
-使用命令查看了一下$TERM的设置
-$ echo $TERM xterm-256color 显示的是xterm-256color，说明配置的是没问题的。
-查看mosh的版本：
-$ mosh --version 1.3.2 可以看到mosh的版本是1.3.2，这个版本的发布日期是2017-07-22，但是github上master分支一直在开发中。
-想着时间已经过去这么久了，官方应该已经解决了这个问题，毕竟现在的很多终端都是支持256color的，所以就在issue中搜索了一下，真的找到了一个解决方案。
-定位问题 在2017年11月23号就有人提过关于mosh的256color显示支持问题，而官方也已经解决了这个问题，但是不知道为什么都已经过去这么久了还没有发布新的版本。
-具体的issue。不过评论中说的PPA也已经很久没有更新了。所以我们需要新的方案解决Linux系统的问题。
-解决方案 想要让mosh能正确的显示256color，就只能手动编译mosh的master分支。
-可以查看官方的安装教程，包含手动编译的教程。
-记得先将之前的安装卸载掉。
-Mac 在MacOS平台上，可以使用brew来进行自动的编译和安装。
-$ brew uninstall mosh $ brew install --HEAD mosh Mac在编译安装的时候，会提示更新或者安装xcode命令行工具，就按照brew执行过程中的提示操作即可。
-Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前中，需要安装依赖，Ubuntu最新版本的依赖，比较少。如果你是比较旧的版本，可以参考官方的编译教程，里面有详细的依赖。
-$ sudo apt install libncurses5-dev protobuf-compiler $ git clone https://github.com/mobile-shell/mosh.git $ cd mosh $ ./autogen.sh $ ./configure $ make $ sudo make install 最后执行make install的时候，最好添加sudo，因为涉及到将编译生成的可执行文件复制到系统可查找到的bin目录下。
-结尾 现在再使用mosh username@server_host连接服务器，就可以显示256color了。</description>
+      <description>&lt;p&gt;在使用&lt;code&gt;mosh&lt;/code&gt;连接到服务器&lt;code&gt;Ubuntu 20.04&lt;/code&gt;时，发现终端(&lt;code&gt;终端是Kitty，支持256color&lt;/code&gt;)的颜色不能正常显示。&lt;/p&gt;
+&lt;p&gt;使用命令查看了一下&lt;code&gt;$TERM&lt;/code&gt;的设置&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ echo $TERM
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;xterm-256color
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;显示的是&lt;code&gt;xterm-256color&lt;/code&gt;，说明配置的是没问题的。&lt;/p&gt;
+&lt;p&gt;查看&lt;code&gt;mosh&lt;/code&gt;的版本：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ mosh --version
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;1.3.2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到&lt;code&gt;mosh&lt;/code&gt;的版本是&lt;code&gt;1.3.2&lt;/code&gt;，这个版本的&lt;code&gt;发布日期是2017-07-22&lt;/code&gt;，但是&lt;code&gt;github&lt;/code&gt;上&lt;code&gt;master&lt;/code&gt;分支一直在开发中。&lt;/p&gt;
+&lt;p&gt;想着时间已经过去这么久了，官方应该已经解决了这个问题，毕竟现在的很多终端都是支持&lt;code&gt;256color&lt;/code&gt;的，所以就在&lt;code&gt;issue&lt;/code&gt;中搜索了一下，真的找到了一个解决方案。&lt;/p&gt;
+&lt;h3 id=&#34;定位问题&#34;&gt;定位问题&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;2017年11月23号&lt;/code&gt;就有人提过关于&lt;code&gt;mosh的256color&lt;/code&gt;显示支持问题，而官方也已经解决了这个问题，但是不知道为什么都已经过去这么久了还没有发布新的版本。&lt;/p&gt;
+&lt;p&gt;具体的&lt;a href=&#34;https://github.com/mobile-shell/mosh/issues/945#issuecomment-346627355&#34;&gt;issue&lt;/a&gt;。不过评论中说的&lt;code&gt;PPA&lt;/code&gt;也已经很久没有更新了。所以我们需要新的方案解决&lt;code&gt;Linux&lt;/code&gt;系统的问题。&lt;/p&gt;
+&lt;h3 id=&#34;解决方案&#34;&gt;解决方案&lt;/h3&gt;
+&lt;p&gt;想要让&lt;code&gt;mosh&lt;/code&gt;能正确的显示&lt;code&gt;256color&lt;/code&gt;，就只能&lt;code&gt;手动编译mosh的master分支&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;可以查看官方的安装&lt;a href=&#34;https://mosh.org/#getting&#34;&gt;教程&lt;/a&gt;，包含手动编译的教程。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;记得先将之前的安装卸载掉。&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mac&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在&lt;code&gt;MacOS&lt;/code&gt;平台上，可以使用&lt;code&gt;brew&lt;/code&gt;来进行自动的编译和安装。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ brew uninstall mosh
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ brew install --HEAD mosh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pr</description>
     </item>
   </channel>
 </rss>

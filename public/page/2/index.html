@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.133.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.134.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
@@ -123,16 +123,27 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Python源码笔记——Python中的整数对象
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
+#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; ...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-07 13:45:10 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的整数对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Python源码笔记——Python对象机制的基石【PyObject】
     </h2>
   </header>
   <div class="entry-content">
-    <p>所有源码均基于Python 3.11.2
+    <p> 所有源码均基于Python 3.11.2
 1.PyObject定义 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。 typedef struct _object { _PyObject_HEAD_EXTRA // 定义指针以支持所有活动堆对象的双向链表refchain Py_ssize_t ob_refcnt; PyTypeObject *ob_type; } PyObject; Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
 _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-refs，那么Py_TRACE_REFS 会被定义。
-#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。
-2.定长对象和变长对象 在Python中除了PyObject结构体之外，还有PyVarObject结构体。
-#define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; 我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。...</p>
+#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 13:43:34 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python对象机制的基石【PyObject】" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/"></a>
@@ -156,10 +167,7 @@ $ mosh --version 1.3.2 可以看到mosh的版本是1.3.2，这个版本的发布
 可以查看官方的安装教程，包含手动编译的教程。
 记得先将之前的安装卸载掉。
 Mac 在MacOS平台上，可以使用brew来进行自动的编译和安装。
-$ brew uninstall mosh $ brew install --HEAD mosh Mac在编译安装的时候，会提示更新或者安装xcode命令行工具，就按照brew执行过程中的提示操作即可。
-Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前中，需要安装依赖，Ubuntu最新版本的依赖，比较少。如果你是比较旧的版本，可以参考官方的编译教程，里面有详细的依赖。
-$ sudo apt install libncurses5-dev protobuf-compiler $ git clone https://github.com/mobile-shell/mosh.git $ cd mosh $ ./autogen.sh $ ./configure $ make $ sudo make install 最后执行make install的时候，最好添加sudo，因为涉及到将编译生成的可执行文件复制到系统可查找到的bin目录下。
-结尾 现在再使用mosh username@server_host连接服务器，就可以显示256color了。</p>
+$ brew uninstall mosh $ brew install --HEAD mosh ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:09:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Mosh连接服务器时终端颜色显示问题" href="http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/"></a>
@@ -174,13 +182,7 @@ $ sudo apt install libncurses5-dev protobuf-compiler $ git clone https://github.
     <p>启用Go Modules go mod在Go &gt;= 1.13才默认启用，在Go &gt;= 1.11已经开始支持了go mod。
 设置环境变量
 # 启用go module export GO111MODULE=on # 设置GOPATH，开启go mod之后，这个目录主要用来存放依赖包 export GOPATH=~/go_modules # 设置go代理，在运行go test/build等时会自动下载依赖 # 使用go get下载依赖需要在GOPATH中执行才会使用代理 export GOPROXY=https://goproxy.io go mod使用 在$GOPATH/src之外的任意目录创建一个目录，
-mkdir -p /home/gopher/project cd /home/gopher/project 这个目录就是你项目的根目录，在目录中创建mod管理文件
-go mod init project 如果你这个项目是放在github上的，那么在创建文件的时候可以这样写，project为你github项目名称
-go mod init github.com/YourName/project go.mod的初始内容cat go.mod为:
-module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
-关于包的定义和自定义包的导入 一个目录下只能由一个定义的package
-比如在project项目中有了一个hello.go的文件，文中定义了package hello， 这样，当你再在project中创建了一个world.go的文件，其中定义了package world会报错，无法加载package 每个package定义，位于一个目录中。推荐目录名和package定义的包名字相同。
-project ├── go.mod ├── hello │ ├── hello.go │ └── hello1....</p>
+mkdir -p /home/gopher/project cd /home/gopher/project ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:08:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 关于Go Modules的一些内容" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/"></a>
@@ -206,7 +208,7 @@ project ├── go.mod ├── hello │ ├── hello.go │ └── 
 在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。
 配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。
 GitLab的push的hook数据：
-{ &#34;object_kind&#34;: &#34;push&#34;, &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;, &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;ref&#34;: &#34;refs/heads/master&#34;, &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;user_id&#34;: 4, &#34;user_name&#34;: &#34;John Smith&#34;, &#34;user_username&#34;: &#34;jsmith&#34;, &#34;user_email&#34;: &#34;john@example.com&#34;, &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;, &#34;project_id&#34;: 15, &#34;project&#34;:{ &#34;id&#34;: 15, &#34;name&#34;:&#34;Diaspora&#34;, &#34;description&#34;:&#34;&#34;, &#34;web_url&#34;:&#34;http://example....</p>
+{ &#34;object_kind&#34;: &#34;push&#34;, &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;, &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;ref&#34;: &#34;refs/heads/master&#34;, &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;user_id&#34;: 4, &#34;user_name&#34;: &#34;John Smith&#34;, &#34;user_username&#34;: &#34;jsmith&#34;, &#34;user_email&#34;: &#34;john@example.com&#34;, &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;, &#34;project_id&#34;: 15, &#34;project&#34;:{ &#34;id&#34;: 15, &#34;name&#34;:&#34;Diaspora&#34;, &#34;description&#34;:&#34;&#34;, &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;avatar_url&#34;:null, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;namespace&#34;:&#34;Mike&#34;, &#34;visibility_level&#34;:0, &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;, &#34;default_branch&#34;:&#34;master&#34;, &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34; }, &#34;repository&#34;:{ &#34;name&#34;: &#34;Diaspora&#34;, &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;, &#34;description&#34;: &#34;&#34;, &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;visibility_level&#34;:0 }, &#34;commits&#34;: [ { &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;, &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;Jordi Mallach&#34;, &#34;email&#34;: &#34;jordi@softcatala.org&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] }, { &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;message&#34;: &#34;fixed readme&#34;, &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;GitLab dev user&#34;, &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] } ], &#34;total_commits_count&#34;: 4 } ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:07:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Jenkins处理GitLab Hook" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/"></a>
@@ -223,7 +225,8 @@ GitLab的push的hook数据：
 配置Login Username和Login password, 是RocketChat的账号密码.
 Channel, 发送的频道.
 Build Server URL, 构建的服务器和端口, http://192.168.0.1:8080
-点击Test Connection, Success表示配置成功.</p>
+点击Test Connection, Success表示配置成功.
+</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:06:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Jenkins与RocketChat集成" href="http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/"></a>
@@ -245,7 +248,7 @@ Build Server URL, 构建的服务器和端口, http://192.168.0.1:8080
 使用定时任务 在构建触发器标签里选择Poll SCM,输入H/2 * * * *, 最后点击保存。 这是一个定时任务，每隔2分钟查询一次代码，如果有更新，就执行任务。
 使用webhook 使用webhook比定时任务更好，webhook只有在push或指定操作时，jenkins会拉取代码，不用定时访问，耗费资源。
 需要安装的插件Gitlab Hook、GitLab、Gitlab Authentication、Build Authorization Token Root 配置job，在构建触发器中勾选Build when a change is pushed to GitLab. GitLab CI Service URL: http://服务器IP:8080/project/demo ，URL后面是回调地址，再点击高级，再Secret token行，点击Generate生成token。
-在GitLab服务器上的相对应的项目的Settings里面的Integrations中，配置webhook,输入在jenkins中获取的URL,和token，可以根据需要勾选事件，开启SSL，点击Add webhook。会在Add webhook按钮下生成一个webhook，点击test,会弹出勾选的事件，选择相应的事件，会在页顶弹出Hook executed successfully: HTTP 200,到此，webhook配置完成。...</p>
+...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:05:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Jenkins&#43;Python&#43;GitLab持续集成" href="http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"></a>
@@ -264,7 +267,8 @@ ls查看，会有.gitmodules和子模块的项目名。
 克隆有子模块的仓库 添加过子模块的仓库，如果想重新克隆，和普通克隆一样，不过克隆后需要在仓库目录下执行 git submodule init和git submodule update，如果不执行，子模块中会没有文件。
 更改子模块的分支 切换到子模块目录，默认子模块是master分支，git submodule foreach git checkout dev， 然后使用git submodule foreach git pull切换分支。
 需要在jenkins任务的构建步骤中添加git submodule init和git submodule update，以及上述操作（写在这两个命令后面）， jenkins才能拉取到代码。
-submodule可以进行tag和merge git submodule foreach可以分别对子模块进行操作, 所以对所有子模块进行tag和merge操作, 就相当于对总项目进行相应的操作.</p>
+submodule可以进行tag和merge git submodule foreach可以分别对子模块进行操作, 所以对所有子模块进行tag和merge操作, 就相当于对总项目进行相应的操作.
+</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:04:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Jenkins&#43;Git子模块自动拉取代码" href="http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/"></a>
@@ -276,7 +280,7 @@ submodule可以进行tag和merge git submodule foreach可以分别对子模块�
     </h2>
   </header>
   <div class="entry-content">
-    <p>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset=&#34;UTF-8&#34;&gt; &lt;title&gt;${ENV, var=&#34;JOB_NAME&#34;}-第${BUILD_NUMBER}次构建日志&lt;/title&gt; &lt;/head&gt; &lt;body leftmargin=&#34;8&#34; marginwidth=&#34;0&#34; topmargin=&#34;8&#34; marginheight=&#34;4&#34; offset=&#34;0&#34;&gt; &lt;table width=&#34;95%&#34; cellpadding=&#34;0&#34; cellspacing=&#34;0&#34; style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt; &lt;tr&gt; &lt;td&gt;(本邮件由程序自动下发，请勿回复！)&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;h2&gt;&lt;font color=&#34;#FF0000&#34;&gt;构建结果 - ${BUILD_STATUS}&lt;/font&gt;&lt;/h2&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;br /&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建信息&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; SVN_URL &lt;td&gt; &lt;ul&gt; &lt;li&gt;项目名称：${PROJECT_NAME}&lt;/li&gt; &lt;li&gt;GIT路径：${GIT_URL}&lt;/li&gt; &lt;li&gt;构建编号：${BUILD_NUMBER}&lt;/li&gt; &lt;li&gt;GIT分支：${GIT_BRANCH}&lt;/li&gt; &lt;li&gt;触发原因：${CAUSE}&lt;/li&gt; &lt;li&gt;构建日志：&lt;a href=&#34;${BUILD_URL}console&#34;&gt;${BUILD_URL}console&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;变更信息:&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建成功后变化 : ${CHANGES_SINCE_LAST_SUCCESS}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建不稳定后变化 : ${CHANGES_SINCE_LAST_UNSTABLE}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;历史变更记录 : &lt;a href=&#34;${PROJECT_URL}changes&#34;&gt;${PROJECT_URL}changes&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;变更集:${JELLY_SCRIPT,template=&#34;html&#34;}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;!...</p>
+    <p>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;meta charset=&#34;UTF-8&#34;&gt; &lt;title&gt;${ENV, var=&#34;JOB_NAME&#34;}-第${BUILD_NUMBER}次构建日志&lt;/title&gt; &lt;/head&gt; &lt;body leftmargin=&#34;8&#34; marginwidth=&#34;0&#34; topmargin=&#34;8&#34; marginheight=&#34;4&#34; offset=&#34;0&#34;&gt; &lt;table width=&#34;95%&#34; cellpadding=&#34;0&#34; cellspacing=&#34;0&#34; style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt; &lt;tr&gt; &lt;td&gt;(本邮件由程序自动下发，请勿回复！)&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;h2&gt;&lt;font color=&#34;#FF0000&#34;&gt;构建结果 - ${BUILD_STATUS}&lt;/font&gt;&lt;/h2&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;br /&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建信息&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; SVN_URL &lt;td&gt; &lt;ul&gt; &lt;li&gt;项目名称：${PROJECT_NAME}&lt;/li&gt; &lt;li&gt;GIT路径：${GIT_URL}&lt;/li&gt; &lt;li&gt;构建编号：${BUILD_NUMBER}&lt;/li&gt; &lt;li&gt;GIT分支：${GIT_BRANCH}&lt;/li&gt; &lt;li&gt;触发原因：${CAUSE}&lt;/li&gt; &lt;li&gt;构建日志：&lt;a href=&#34;${BUILD_URL}console&#34;&gt;${BUILD_URL}console&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;变更信息:&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建成功后变化 : ${CHANGES_SINCE_LAST_SUCCESS}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;上次构建不稳定后变化 : ${CHANGES_SINCE_LAST_UNSTABLE}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;历史变更记录 : &lt;a href=&#34;${PROJECT_URL}changes&#34;&gt;${PROJECT_URL}changes&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;ul&gt; &lt;li&gt;变更集:${JELLY_SCRIPT,template=&#34;html&#34;}&lt;/a&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/td&gt; &lt;/tr&gt; &lt;!-- &lt;tr&gt; &lt;td&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;Failed Test Results&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;pre style=&#34;font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif&#34;&gt;$FAILED_TESTS&lt;/pre&gt; &lt;br /&gt; &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt; &lt;b&gt;&lt;font color=&#34;#0B610B&#34;&gt;构建日志 (最后 100行):&lt;/font&gt;&lt;/b&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/td&gt; &lt;/tr&gt;--&gt; &lt;!-- &lt;tr&gt; &lt;td&gt;Test Logs (if test has ran): &lt;a href=&#34;${PROJECT_URL}ws/TestResult/archive_logs/Log-Build-${BUILD_NUMBER}.zip&#34;&gt;${PROJECT_URL}/ws/TestResult/archive_logs/Log-Build-${BUILD_NUMBER}.zip&lt;/a&gt; &lt;br /&gt; &lt;br /&gt; &lt;/td&gt; &lt;/tr&gt; --&gt; &lt;!-- &lt;tr&gt; &lt;td&gt; &lt;textarea cols=&#34;80&#34; rows=&#34;30&#34; readonly=&#34;readonly&#34; style=&#34;font-family: Courier New&#34;&gt;${BUILD_LOG, maxLines=100,escapeHtml=true}&lt;/textarea&gt; &lt;/td&gt; &lt;/tr&gt;--&gt; &lt;hr size=&#34;2&#34; width=&#34;100%&#34; align=&#34;center&#34; /&gt; &lt;/table&gt; &lt;/body&gt; &lt;/html&gt; ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:03:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Jenkins Email Extension插件模板" href="http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/"></a>
@@ -291,34 +295,17 @@ submodule可以进行tag和merge git submodule foreach可以分别对子模块�
     <p>Git换行符 Git会自动处理换行符的问题, 但是这个在实际开发中会出现问题, 所以, 在Windows上使用提交时转换为LF，检出时不转换功能, 统一使用Unix换行符(也可以在类Unix上启用这个功能, 将拉取的没有改变的换行符更换).
 Windows打开安装好的Git Bash, 类Unix直接输入:
 git config --global core.autocrlf input git config --global core.safecrlf warn 含义：
-AutoCRLF # 提交时转换为LF，检出时转换为CRLF git config --global core.autocrlf true # 提交时转换为LF，检出时不转换 git config --global core.autocrlf input # 提交检出均不转换 git config --global core.autocrlf false SafeCRLF # 拒绝提交包含混合换行符的文件 git config --global core.safecrlf true # 允许提交包含混合换行符的文件 git config --global core.safecrlf false # 提交包含混合换行符的文件时给出警告 git config --global core.safecrlf warn Git创建分支、 删除本地和远程分支、 创建tag、 修改tag名称 创建分支: git checkout -b develop...</p>
+AutoCRLF # 提交时转换为LF，检出时转换为CRLF git config --global core.autocrlf true # 提交时转换为LF，检出时不转换 git config --global core.autocrlf input # 提交检出均不转换 git config --global core.autocrlf false SafeCRLF # 拒绝提交包含混合换行符的文件 git config --global core.safecrlf true # 允许提交包含混合换行符的文件 git config --global core.safecrlf false # 提交包含混合换行符的文件时给出警告 git config --global core.safecrlf warn ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:02:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Git使用" href="http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Docker安装GitLab Runner
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>docker pull gitlab/gitlab-runner:latest安装gitlab-runner
-打开自己搭建的GitLab网站，点击顶栏的Snippets后面的小扳手，再点击左侧列表中Overview中的Runners，在打开的网页下面，可以看到How to setup a shared Runner for a new project行，2是Runners设置时需要指定的URL,3是在设置是的Runners。
-运行镜像 docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:latest
-注册gitlab-runner docker exec -it gitlab-runner gitlab-runner register，
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):输入域名或者服务器ip地址，格式为https://gitlab.com。和token Please enter the gitlab-ci token for this runner:。
-Please enter the gitlab-ci description for this runner:输入runner描述。
-Please enter the gitlab-ci tags for this runner (comma separated):给这个Runner指定tags，稍后也可以在GitLab&#39;s UI中修改。
-Whether to run untagged builds [true/false]:选择Runner是否接受未指定tags的任务,稍后可修改。默认值为false。...</p>
-  </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:01:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to Docker安装GitLab Runner" href="http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="http://localhost:1313/">
       «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="http://localhost:1313/page/3/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>

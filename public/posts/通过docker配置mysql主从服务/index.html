@@ -7,11 +7,42 @@
 <meta name="robots" content="noindex, nofollow">
 <title>通过docker配置MySQL主从服务 | 俺的博客</title>
 <meta name="keywords" content="Docker, MySQL">
-<meta name="description" content="目录结构 . ├── master │ └── my.cnf ├── slave │ └── my.cnf └── docker-compose.yml master：主配置
+<meta name="description" content="目录结构
+.
+├── master
+│  └── my.cnf
+├── slave
+│  └── my.cnf
+└── docker-compose.yml
+master：主配置
 slave：从配置
 docker-compose：通过 docker-compose 进行容器配置和启动
 master/my.cnf
-# For advice on how to change settings please see # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html [mysqld] host-cache-size=0 skip-name-resolve datadir=/var/lib/mysql socket=/var/run/mysqld/mysqld.sock secure-file-priv=/var/lib/mysql-files user=mysql pid-file=/var/run/mysqld/mysqld.pid # 自定义部分 log-bin=master-bin binlog-format=row # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制 binlog-do-db=test # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置 server-id=1 # server-id 不能和任何 主或从 重复 # 自定义部分 [client] socket=/var/run/mysqld/mysqld.">
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html
+
+[mysqld]
+host-cache-size=0
+skip-name-resolve
+datadir=/var/lib/mysql
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+
+pid-file=/var/run/mysqld/mysqld.pid
+
+# 自定义部分
+log-bin=master-bin
+binlog-format=row  # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制
+binlog-do-db=test  # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置
+server-id=1  # server-id 不能和任何 主或从 重复
+# 自定义部分
+
+[client]
+socket=/var/run/mysqld/mysqld.sock
+
+!includedir /etc/mysql/conf.d/
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

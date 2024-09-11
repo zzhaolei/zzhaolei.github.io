@@ -138,7 +138,7 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>1.列表结构体 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list....</p>
+    <p>1.列表结构体 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.sort() temporarily sets allocated to -1 to detect mutations. * * Items must normally not be NULL, except during construction when * the list is not yet visible outside the function that builds it. */ Py_ssize_t allocated; } PyListObject; ...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;5 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
@@ -151,7 +151,7 @@
   </header>
   <div class="entry-content">
     <p>1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
-typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points....</p>
+typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points. */ } PyCompactUnicodeObject; typedef struct { PyCompactUnicodeObject _base; union { void *any; Py_UCS1 *latin1; Py_UCS2 *ucs2; Py_UCS4 *ucs4; } data; /* Canonical, smallest-form Unicode buffer */ } PyUnicodeObject; ...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的字符串对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/"></a>
@@ -164,9 +164,7 @@ typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in th
   </header>
   <div class="entry-content">
     <p>1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
-#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; 通过PyObject_VAR_HEAD我们可以确定，在新版Python中，整形是一个不定长对象。
-通过前面的文章，我们知道，对于Python中的对象，与对象相关的元信息实际上都保存在与对象对应的类型对象中，对于PyLongObject，这个类型对象是PyLong_Type。
-PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;PyType_Type, 0) &#34;int&#34;, /* tp_name */ offsetof(PyLongObject, ob_digit), /* tp_basicsize */ sizeof(digit), /* tp_itemsize */ 0, /* tp_dealloc */ 0, /* tp_vectorcall_offset */ 0, /* tp_getattr */ 0, /* tp_setattr */ 0, /* tp_as_async */ long_to_decimal_string, /* tp_repr */ &amp;long_as_number, /* tp_as_number */ 0, /* tp_as_sequence */ 0, /* tp_as_mapping */ (hashfunc)long_hash, /* tp_hash */ 0, /* tp_call */ 0, /* tp_str */ PyObject_GenericGetAttr, /* tp_getattro */ 0, /* tp_setattro */ 0, /* tp_as_buffer */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LONG_SUBCLASS | _Py_TPFLAGS_MATCH_SELF, /* tp_flags */ long_doc, /* tp_doc */ 0, /* tp_traverse */ 0, /* tp_clear */ long_richcompare, /* tp_richcompare */ 0, /* tp_weaklistoffset */ 0, /* tp_iter */ 0, /* tp_iternext */ long_methods, /* tp_methods */ 0, /* tp_members */ long_getset, /* tp_getset */ 0, /* tp_base */ 0, /* tp_dict */ 0, /* tp_descr_get */ 0, /* tp_descr_set */ 0, /* tp_dictoffset */ 0, /* tp_init */ 0, /* tp_alloc */ long_new, /* tp_new */ PyObject_Free, /* tp_free */ }; PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。...</p>
+#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; ...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 13:45:10 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的整数对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/"></a>
@@ -178,12 +176,10 @@ PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;PyType_Type, 0) &#34;int
     </h2>
   </header>
   <div class="entry-content">
-    <p>所有源码均基于Python 3.11.2
+    <p> 所有源码均基于Python 3.11.2
 1.PyObject定义 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。 typedef struct _object { _PyObject_HEAD_EXTRA // 定义指针以支持所有活动堆对象的双向链表refchain Py_ssize_t ob_refcnt; PyTypeObject *ob_type; } PyObject; Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
 _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-refs，那么Py_TRACE_REFS 会被定义。
-#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。
-2.定长对象和变长对象 在Python中除了PyObject结构体之外，还有PyVarObject结构体。
-#define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; 我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。...</p>
+#ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 13:43:34 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python对象机制的基石【PyObject】" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/"></a>

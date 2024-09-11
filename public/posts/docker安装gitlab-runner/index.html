@@ -9,12 +9,13 @@
 <meta name="keywords" content="Docker">
 <meta name="description" content="docker pull gitlab/gitlab-runner:latest安装gitlab-runner
 打开自己搭建的GitLab网站，点击顶栏的Snippets后面的小扳手，再点击左侧列表中Overview中的Runners，在打开的网页下面，可以看到How to setup a shared Runner for a new project行，2是Runners设置时需要指定的URL,3是在设置是的Runners。
-运行镜像 docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:latest
-注册gitlab-runner docker exec -it gitlab-runner gitlab-runner register，
+运行镜像
+docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:latest
+注册gitlab-runner
+docker exec -it gitlab-runner gitlab-runner register，
 Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):输入域名或者服务器ip地址，格式为https://gitlab.com。和token Please enter the gitlab-ci token for this runner:。
 Please enter the gitlab-ci description for this runner:输入runner描述。
-Please enter the gitlab-ci tags for this runner (comma separated):给这个Runner指定tags，稍后也可以在GitLab&#39;s UI中修改。
-Whether to run untagged builds [true/false]:选择Runner是否接受未指定tags的任务,稍后可修改。默认值为false。">
+Please enter the gitlab-ci tags for this runner (comma separated):给这个Runner指定tags，稍后也可以在GitLab&#39;s UI中修改。">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

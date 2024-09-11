@@ -7,7 +7,33 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Python源码笔记——Python中的列表对象 | 俺的博客</title>
 <meta name="keywords" content="Python">
-<meta name="description" content="1.列表结构体 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.">
+<meta name="description" content="1.列表结构体
+#define PyObject_VAR_HEAD      PyVarObject ob_base;
+
+typedef struct {
+    PyObject ob_base;
+    Py_ssize_t ob_size; /* Number of items in variable part */
+} PyVarObject;
+
+typedef struct {
+    PyObject_VAR_HEAD
+    /* Vector of pointers to list elements.  list[0] is ob_item[0], etc. */
+    PyObject **ob_item;
+
+    /* ob_item contains space for &#39;allocated&#39; elements.  The number
+     * currently in use is ob_size.
+     * Invariants:
+     *     0 &lt;= ob_size &lt;= allocated
+     *     len(list) == ob_size
+     *     ob_item == NULL implies ob_size == allocated == 0
+     * list.sort() temporarily sets allocated to -1 to detect mutations.
+     *
+     * Items must normally not be NULL, except during construction when
+     * the list is not yet visible outside the function that builds it.
+     */
+    Py_ssize_t allocated;
+} PyListObject;
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

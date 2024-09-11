@@ -7,9 +7,31 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Go设计模式——单例模式 | 俺的博客</title>
 <meta name="keywords" content="Go">
-<meta name="description" content="介绍 单例模式同时解决了两个问题：
-保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
-饿汉式 代码 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } 单元测试 package tests import ( &#34;testing&#34; &#34;design-pattern/singleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.">
+<meta name="description" content="介绍
+单例模式同时解决了两个问题：
+
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限
+为该实例提供一个全局访问节点
+
+在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式
+代码
+// Package singleton
+package singleton
+
+// singleton 饿汉式
+var singleton *File
+
+type File struct{}
+
+func init() {
+	singleton = &amp;File{}
+}
+
+func GetInstance() *File {
+	return singleton
+}
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

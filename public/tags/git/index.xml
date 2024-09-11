@@ -4,7 +4,7 @@
     <title>Git on 俺的博客</title>
     <link>http://localhost:1313/tags/git/</link>
     <description>Recent content in Git on 俺的博客</description>
-    <generator>Hugo -- 0.133.1</generator>
+    <generator>Hugo -- 0.134.1</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 01 Jun 2019 10:02:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/git/index.xml" rel="self" type="application/rss+xml" />
@@ -13,10 +13,32 @@
       <link>http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Sat, 01 Jun 2019 10:02:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/</guid>
-      <description>Git换行符 Git会自动处理换行符的问题, 但是这个在实际开发中会出现问题, 所以, 在Windows上使用提交时转换为LF，检出时不转换功能, 统一使用Unix换行符(也可以在类Unix上启用这个功能, 将拉取的没有改变的换行符更换).
-Windows打开安装好的Git Bash, 类Unix直接输入:
-git config --global core.autocrlf input git config --global core.safecrlf warn 含义：
-AutoCRLF # 提交时转换为LF，检出时转换为CRLF git config --global core.autocrlf true # 提交时转换为LF，检出时不转换 git config --global core.autocrlf input # 提交检出均不转换 git config --global core.autocrlf false SafeCRLF # 拒绝提交包含混合换行符的文件 git config --global core.safecrlf true # 允许提交包含混合换行符的文件 git config --global core.safecrlf false # 提交包含混合换行符的文件时给出警告 git config --global core.safecrlf warn Git创建分支、 删除本地和远程分支、 创建tag、 修改tag名称 创建分支: git checkout -b develop</description>
+      <description>&lt;h2 id=&#34;git换行符&#34;&gt;Git换行符&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Git&lt;/code&gt;会自动处理换行符的问题, 但是这个在实际开发中会出现问题, 所以, 在&lt;code&gt;Windows&lt;/code&gt;上使用&lt;code&gt;提交时转换为LF，检出时不转换&lt;/code&gt;功能, 统一使用Unix换行符(也可以在类Unix上启用这个功能, 将拉取的没有改变的换行符更换).&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Windows&lt;/code&gt;打开安装好的&lt;code&gt;Git Bash&lt;/code&gt;, &lt;code&gt;类Unix&lt;/code&gt;直接输入:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git config --global core.autocrlf input
+git config --global core.safecrlf warn
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;含义：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;AutoCRLF
+# 提交时转换为LF，检出时转换为CRLF
+git config --global core.autocrlf true
+
+# 提交时转换为LF，检出时不转换
+git config --global core.autocrlf input
+
+# 提交检出均不转换
+git config --global core.autocrlf false
+
+SafeCRLF
+# 拒绝提交包含混合换行符的文件
+git config --global core.safecrlf true
+
+# 允许提交包含混合换行符的文件
+git config --global core.safecrlf false
+
+# 提交包含混合换行符的文件时给出警告
+git config --global core.safecrlf warn
+&lt;/code&gt;&lt;/pr</description>
     </item>
   </channel>
 </rss>

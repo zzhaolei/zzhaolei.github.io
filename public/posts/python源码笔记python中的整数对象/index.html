@@ -7,10 +7,25 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Python源码笔记——Python中的整数对象 | 俺的博客</title>
 <meta name="keywords" content="Python">
-<meta name="description" content="1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
-#if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; 通过PyObject_VAR_HEAD我们可以确定，在新版Python中，整形是一个不定长对象。
-通过前面的文章，我们知道，对于Python中的对象，与对象相关的元信息实际上都保存在与对象对应的类型对象中，对于PyLongObject，这个类型对象是PyLong_Type。
-PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;PyType_Type, 0) &#34;int&#34;, /* tp_name */ offsetof(PyLongObject, ob_digit), /* tp_basicsize */ sizeof(digit), /* tp_itemsize */ 0, /* tp_dealloc */ 0, /* tp_vectorcall_offset */ 0, /* tp_getattr */ 0, /* tp_setattr */ 0, /* tp_as_async */ long_to_decimal_string, /* tp_repr */ &amp;long_as_number, /* tp_as_number */ 0, /* tp_as_sequence */ 0, /* tp_as_mapping */ (hashfunc)long_hash, /* tp_hash */ 0, /* tp_call */ 0, /* tp_str */ PyObject_GenericGetAttr, /* tp_getattro */ 0, /* tp_setattro */ 0, /* tp_as_buffer */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LONG_SUBCLASS | _Py_TPFLAGS_MATCH_SELF, /* tp_flags */ long_doc, /* tp_doc */ 0, /* tp_traverse */ 0, /* tp_clear */ long_richcompare, /* tp_richcompare */ 0, /* tp_weaklistoffset */ 0, /* tp_iter */ 0, /* tp_iternext */ long_methods, /* tp_methods */ 0, /* tp_members */ long_getset, /* tp_getset */ 0, /* tp_base */ 0, /* tp_dict */ 0, /* tp_descr_get */ 0, /* tp_descr_set */ 0, /* tp_dictoffset */ 0, /* tp_init */ 0, /* tp_alloc */ long_new, /* tp_new */ PyObject_Free, /* tp_free */ }; PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。">
+<meta name="description" content="1.整数对象
+在Python3.11.2中，整数结构体叫做PyLongObject。
+#if PYLONG_BITS_IN_DIGIT == 30
+typedef uint32_t digit;
+...
+#elif PYLONG_BITS_IN_DIGIT == 15
+typedef unsigned short digit;
+...
+#else
+#error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34;
+#endif
+
+typedef struct _longobject {
+		/* PyObject ob_base;
+    Py_ssize_t ob_size; */
+    PyObject_VAR_HEAD
+    digit ob_digit[1];
+} PyLongObject;
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

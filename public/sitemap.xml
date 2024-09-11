@@ -2,23 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>http://localhost:1313/tags/c/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/go/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-09-01T10:20:00+08:00</lastmod>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/zig/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/rust/</loc>
     <lastmod>2024-09-01T10:20:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/</loc>
     <lastmod>2024-09-01T10:20:00+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
-    <lastmod>2024-09-01T10:20:00+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2024-09-01T10:20:00+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/go/</loc>
-    <lastmod>2024-09-01T10:14:00+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</loc>
     <lastmod>2024-09-01T10:14:00+08:00</lastmod>

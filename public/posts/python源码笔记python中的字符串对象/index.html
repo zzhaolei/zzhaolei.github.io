@@ -7,8 +7,37 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Python源码笔记——Python中的字符串对象 | 俺的博客</title>
 <meta name="keywords" content="Python">
-<meta name="description" content="1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
-typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points.">
+<meta name="description" content="1.字符串对象
+在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
+typedef struct {
+    PyObject_HEAD
+    Py_ssize_t length;          /* Number of code points in the string */
+    Py_hash_t hash;             /* Hash value; -1 if not set */
+    struct {
+		...
+    } state;
+    wchar_t *wstr;              /* wchar_t representation (null-terminated) */
+} PyASCIIObject;
+
+typedef struct {
+    PyASCIIObject _base;
+    Py_ssize_t utf8_length;     /* Number of bytes in utf8, excluding the
+                                 * terminating \0. */
+    char *utf8;                 /* UTF-8 representation (null-terminated) */
+    Py_ssize_t wstr_length;     /* Number of code points in wstr, possible
+                                 * surrogates count as two code points. */
+} PyCompactUnicodeObject;
+
+typedef struct {
+    PyCompactUnicodeObject _base;
+    union {
+        void *any;
+        Py_UCS1 *latin1;
+        Py_UCS2 *ucs2;
+        Py_UCS4 *ucs4;
+    } data;                     /* Canonical, smallest-form Unicode buffer */
+} PyUnicodeObject;
+">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">

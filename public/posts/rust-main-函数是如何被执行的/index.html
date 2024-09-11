@@ -7,14 +7,18 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Rust Main 函数是如何被执行的 | 俺的博客</title>
 <meta name="keywords" content="Rust">
-<meta name="description" content="Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
-use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
+<meta name="description" content="Rust main 函数到底是如何被执行的呢？
+让我们看一个关于 main 函数的示例：
+use std::error::Error;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    println!(&#34;hello world&#34;);
+    Ok(())
+}
+从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
 接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
-Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
-你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
-让我们先从 init 开始：
-// 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.">
+Rust 运行时
+首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
@@ -378,6 +382,11 @@ Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个�
       <li><a href="http://localhost:1313/tags/rust/">Rust</a></li>
     </ul>
 <nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Go 在 Mac 或 Linux 上构建动态库</span>
+  </a>
   <a class="next" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
     <span class="title">Next »</span>
     <br>
