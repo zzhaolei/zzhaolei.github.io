@@ -3,9 +3,6 @@ languageCode = 'zh-cn'
 title = '俺的博客'
 theme = 'PaperMod'
 
-[outputs]
-home = ["HTML", "RSS", "JSON"]
-
 [params]
 ShowToc = true
 ShowShareButtons = false
@@ -40,3 +37,17 @@ distance = 1_000
 threshold = 0.4
 minMatchCharLength = 0
 keys = ["title", "permalink", "summary", "content"]
+
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[markup.highlight]
+tabWidth = 4
+noClasses = false
+codeFences = true
+guessSyntax = true
+lineNos = true
+style = "catppuccin-macchiato"

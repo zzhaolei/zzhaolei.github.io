@@ -134,18 +134,15 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Rust Main 函数是如何被执行的
+    <h2 class="entry-hint-parent">Rust main 函数是如何被执行的
     </h2>
   </header>
   <div class="entry-content">
     <p>Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
-use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
-接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
-Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-...</p>
+1 2 3 4 5 6 use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Rust Main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
+  <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to Rust main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
 </article>
     </main>
     

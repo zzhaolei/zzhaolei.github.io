@@ -135,19 +135,14 @@
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
     <h2 class="entry-hint-parent">Go 在 Mac 或 Linux 上构建动态库
-      <span class="entry-hint" title="Draft">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
-          <path
-            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-        </svg>
-      </span>
     </h2>
   </header>
   <div class="entry-content">
-    <p>Go 可以导出 C ABI，然后再其它支持 C ABI 的语言中调用。下面详细讲解一下用法：
-Go 构建动态库 定义一个 go 文件，包含以下代码： package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} ...</p>
+    <p>Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。
+下面详细讲解一下用法：
+Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-09-11 10:55:43 +0800 CST'>September 11, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <footer class="entry-footer"><span title='2024-09-11 10:55:43 +0800 CST'>September 11, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Go 在 Mac 或 Linux 上构建动态库" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/"></a>
 </article>
     </main>

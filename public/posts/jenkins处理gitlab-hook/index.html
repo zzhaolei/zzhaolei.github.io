@@ -21,74 +21,76 @@
 在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。
 配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。
 GitLab的push的hook数据：
-{
-  &#34;object_kind&#34;: &#34;push&#34;,
-  &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;,
-  &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-  &#34;ref&#34;: &#34;refs/heads/master&#34;,
-  &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-  &#34;user_id&#34;: 4,
-  &#34;user_name&#34;: &#34;John Smith&#34;,
-  &#34;user_username&#34;: &#34;jsmith&#34;,
-  &#34;user_email&#34;: &#34;john@example.com&#34;,
-  &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;,
-  &#34;project_id&#34;: 15,
-  &#34;project&#34;:{
-    &#34;id&#34;: 15,
-    &#34;name&#34;:&#34;Diaspora&#34;,
-    &#34;description&#34;:&#34;&#34;,
-    &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;,
-    &#34;avatar_url&#34;:null,
-    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
-    &#34;namespace&#34;:&#34;Mike&#34;,
-    &#34;visibility_level&#34;:0,
-    &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;,
-    &#34;default_branch&#34;:&#34;master&#34;,
-    &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;,
-    &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;
-  },
-  &#34;repository&#34;:{
-    &#34;name&#34;: &#34;Diaspora&#34;,
-    &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;description&#34;: &#34;&#34;,
-    &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;,
-    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
-    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;visibility_level&#34;:0
-  },
-  &#34;commits&#34;: [
-    {
-      &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
-      &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;,
-      &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;,
-      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
-      &#34;author&#34;: {
-        &#34;name&#34;: &#34;Jordi Mallach&#34;,
-        &#34;email&#34;: &#34;jordi@softcatala.org&#34;
-      },
-      &#34;added&#34;: [&#34;CHANGELOG&#34;],
-      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
-      &#34;removed&#34;: []
-    },
-    {
-      &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-      &#34;message&#34;: &#34;fixed readme&#34;,
-      &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;,
-      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-      &#34;author&#34;: {
-        &#34;name&#34;: &#34;GitLab dev user&#34;,
-        &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34;
-      },
-      &#34;added&#34;: [&#34;CHANGELOG&#34;],
-      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
-      &#34;removed&#34;: []
-    }
-  ],
-  &#34;total_commits_count&#34;: 4
-}
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
 ">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
@@ -206,7 +208,7 @@ GitLab的push的hook数据：
     <h1 class="post-title entry-hint-parent">
       Jenkins处理GitLab Hook
     </h1>
-    <div class="post-meta"><span title='2019-06-01 10:07:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min
+    <div class="post-meta"><span title='2019-06-01 10:07:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;2 min
 
 </div>
   </header> 
@@ -225,75 +227,149 @@ GitLab的push的hook数据：
 <p>在<code>shell</code>中使用变量名的方式也是直接使用，例如<code>echo $ref</code>， 注意没有<code>点</code>。</p>
 <p>配置完成后，保存，可以点击刚刚配置的<code>GitLab</code>的<code>webhook</code>页面的<code>Test</code>对应的事件测试。</p>
 <p><code>GitLab</code>的<code>push</code>的<code>hook</code>数据：</p>
-<pre tabindex="0"><code>{
-  &#34;object_kind&#34;: &#34;push&#34;,
-  &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;,
-  &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-  &#34;ref&#34;: &#34;refs/heads/master&#34;,
-  &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-  &#34;user_id&#34;: 4,
-  &#34;user_name&#34;: &#34;John Smith&#34;,
-  &#34;user_username&#34;: &#34;jsmith&#34;,
-  &#34;user_email&#34;: &#34;john@example.com&#34;,
-  &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;,
-  &#34;project_id&#34;: 15,
-  &#34;project&#34;:{
-    &#34;id&#34;: 15,
-    &#34;name&#34;:&#34;Diaspora&#34;,
-    &#34;description&#34;:&#34;&#34;,
-    &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;,
-    &#34;avatar_url&#34;:null,
-    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
-    &#34;namespace&#34;:&#34;Mike&#34;,
-    &#34;visibility_level&#34;:0,
-    &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;,
-    &#34;default_branch&#34;:&#34;master&#34;,
-    &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;,
-    &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;
-  },
-  &#34;repository&#34;:{
-    &#34;name&#34;: &#34;Diaspora&#34;,
-    &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;description&#34;: &#34;&#34;,
-    &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;,
-    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
-    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
-    &#34;visibility_level&#34;:0
-  },
-  &#34;commits&#34;: [
-    {
-      &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
-      &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;,
-      &#34;timestamp&#34;: &#34;2011-12-12T14:27:31+02:00&#34;,
-      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
-      &#34;author&#34;: {
-        &#34;name&#34;: &#34;Jordi Mallach&#34;,
-        &#34;email&#34;: &#34;jordi@softcatala.org&#34;
-      },
-      &#34;added&#34;: [&#34;CHANGELOG&#34;],
-      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
-      &#34;removed&#34;: []
-    },
-    {
-      &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-      &#34;message&#34;: &#34;fixed readme&#34;,
-      &#34;timestamp&#34;: &#34;2012-01-03T23:36:29+02:00&#34;,
-      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
-      &#34;author&#34;: {
-        &#34;name&#34;: &#34;GitLab dev user&#34;,
-        &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34;
-      },
-      &#34;added&#34;: [&#34;CHANGELOG&#34;],
-      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
-      &#34;removed&#34;: []
-    }
-  ],
-  &#34;total_commits_count&#34;: 4
-}
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">  &#34;object_kind&#34;: &#34;push&#34;,
+</span></span><span class="line"><span class="cl">  &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;,
+</span></span><span class="line"><span class="cl">  &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+</span></span><span class="line"><span class="cl">  &#34;ref&#34;: &#34;refs/heads/master&#34;,
+</span></span><span class="line"><span class="cl">  &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+</span></span><span class="line"><span class="cl">  &#34;user_id&#34;: 4,
+</span></span><span class="line"><span class="cl">  &#34;user_name&#34;: &#34;John Smith&#34;,
+</span></span><span class="line"><span class="cl">  &#34;user_username&#34;: &#34;jsmith&#34;,
+</span></span><span class="line"><span class="cl">  &#34;user_email&#34;: &#34;john@example.com&#34;,
+</span></span><span class="line"><span class="cl">  &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;,
+</span></span><span class="line"><span class="cl">  &#34;project_id&#34;: 15,
+</span></span><span class="line"><span class="cl">  &#34;project&#34;:{
+</span></span><span class="line"><span class="cl">    &#34;id&#34;: 15,
+</span></span><span class="line"><span class="cl">    &#34;name&#34;:&#34;Diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;description&#34;:&#34;&#34;,
+</span></span><span class="line"><span class="cl">    &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;avatar_url&#34;:null,
+</span></span><span class="line"><span class="cl">    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;namespace&#34;:&#34;Mike&#34;,
+</span></span><span class="line"><span class="cl">    &#34;visibility_level&#34;:0,
+</span></span><span class="line"><span class="cl">    &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;default_branch&#34;:&#34;master&#34;,
+</span></span><span class="line"><span class="cl">    &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;
+</span></span><span class="line"><span class="cl">  },
+</span></span><span class="line"><span class="cl">  &#34;repository&#34;:{
+</span></span><span class="line"><span class="cl">    &#34;name&#34;: &#34;Diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;description&#34;: &#34;&#34;,
+</span></span><span class="line"><span class="cl">    &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;,
+</span></span><span class="line"><span class="cl">    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+</span></span><span class="line"><span class="cl">    &#34;visibility_level&#34;:0
+</span></span><span class="line"><span class="cl">  },
+</span></span><span class="line"><span class="cl">  &#34;commits&#34;: [
+</span></span><span class="line"><span class="cl">    {
+</span></span><span class="line"><span class="cl">      &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+</span></span><span class="line"><span class="cl">      &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;,
+</span></span><span class="line"><span class="cl">      &#34;timestamp&#34;: &#34;2011-12-12T14:27:31+02:00&#34;,
+</span></span><span class="line"><span class="cl">      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+</span></span><span class="line"><span class="cl">      &#34;author&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;name&#34;: &#34;Jordi Mallach&#34;,
+</span></span><span class="line"><span class="cl">        &#34;email&#34;: &#34;jordi@softcatala.org&#34;
+</span></span><span class="line"><span class="cl">      },
+</span></span><span class="line"><span class="cl">      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+</span></span><span class="line"><span class="cl">      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+</span></span><span class="line"><span class="cl">      &#34;removed&#34;: []
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">    {
+</span></span><span class="line"><span class="cl">      &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+</span></span><span class="line"><span class="cl">      &#34;message&#34;: &#34;fixed readme&#34;,
+</span></span><span class="line"><span class="cl">      &#34;timestamp&#34;: &#34;2012-01-03T23:36:29+02:00&#34;,
+</span></span><span class="line"><span class="cl">      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+</span></span><span class="line"><span class="cl">      &#34;author&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;name&#34;: &#34;GitLab dev user&#34;,
+</span></span><span class="line"><span class="cl">        &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34;
+</span></span><span class="line"><span class="cl">      },
+</span></span><span class="line"><span class="cl">      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+</span></span><span class="line"><span class="cl">      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+</span></span><span class="line"><span class="cl">      &#34;removed&#34;: []
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">  ],
+</span></span><span class="line"><span class="cl">  &#34;total_commits_count&#34;: 4
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
 
   </div>
 

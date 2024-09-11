@@ -9,27 +9,26 @@
 <meta name="keywords" content="Shell, Mosh">
 <meta name="description" content="在使用mosh连接到服务器Ubuntu 20.04时，发现终端(终端是Kitty，支持256color)的颜色不能正常显示。
 使用命令查看了一下$TERM的设置
+
+
+1
+2
+
+
 $ echo $TERM
 xterm-256color
+
+
 显示的是xterm-256color，说明配置的是没问题的。
 查看mosh的版本：
+
+
+1
+2
+
+
 $ mosh --version
 1.3.2
-可以看到mosh的版本是1.3.2，这个版本的发布日期是2017-07-22，但是github上master分支一直在开发中。
-想着时间已经过去这么久了，官方应该已经解决了这个问题，毕竟现在的很多终端都是支持256color的，所以就在issue中搜索了一下，真的找到了一个解决方案。
-定位问题
-在2017年11月23号就有人提过关于mosh的256color显示支持问题，而官方也已经解决了这个问题，但是不知道为什么都已经过去这么久了还没有发布新的版本。
-具体的issue。不过评论中说的PPA也已经很久没有更新了。所以我们需要新的方案解决Linux系统的问题。
-解决方案
-想要让mosh能正确的显示256color，就只能手动编译mosh的master分支。
-可以查看官方的安装教程，包含手动编译的教程。
-记得先将之前的安装卸载掉。
-
-Mac
-
-在MacOS平台上，可以使用brew来进行自动的编译和安装。
-$ brew uninstall mosh
-$ brew install --HEAD mosh
 ">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/">
@@ -171,13 +170,29 @@ $ brew install --HEAD mosh
 
   <div class="post-content"><p>在使用<code>mosh</code>连接到服务器<code>Ubuntu 20.04</code>时，发现终端(<code>终端是Kitty，支持256color</code>)的颜色不能正常显示。</p>
 <p>使用命令查看了一下<code>$TERM</code>的设置</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ echo $TERM
-</span></span><span style="display:flex;"><span>xterm-256color
-</span></span></code></pre></div><p>显示的是<code>xterm-256color</code>，说明配置的是没问题的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="nv">$TERM</span>
+</span></span><span class="line"><span class="cl">xterm-256color
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>显示的是<code>xterm-256color</code>，说明配置的是没问题的。</p>
 <p>查看<code>mosh</code>的版本：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mosh --version
-</span></span><span style="display:flex;"><span>1.3.2
-</span></span></code></pre></div><p>可以看到<code>mosh</code>的版本是<code>1.3.2</code>，这个版本的<code>发布日期是2017-07-22</code>，但是<code>github</code>上<code>master</code>分支一直在开发中。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ mosh --version
+</span></span><span class="line"><span class="cl">1.3.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>mosh</code>的版本是<code>1.3.2</code>，这个版本的<code>发布日期是2017-07-22</code>，但是<code>github</code>上<code>master</code>分支一直在开发中。</p>
 <p>想着时间已经过去这么久了，官方应该已经解决了这个问题，毕竟现在的很多终端都是支持<code>256color</code>的，所以就在<code>issue</code>中搜索了一下，真的找到了一个解决方案。</p>
 <h3 id="定位问题">定位问题<a hidden class="anchor" aria-hidden="true" href="#定位问题">#</a></h3>
 <p>在<code>2017年11月23号</code>就有人提过关于<code>mosh的256color</code>显示支持问题，而官方也已经解决了这个问题，但是不知道为什么都已经过去这么久了还没有发布新的版本。</p>
@@ -190,22 +205,49 @@ $ brew install --HEAD mosh
 <li>Mac</li>
 </ul>
 <p>在<code>MacOS</code>平台上，可以使用<code>brew</code>来进行自动的编译和安装。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ brew uninstall mosh
-</span></span><span style="display:flex;"><span>$ brew install --HEAD mosh
-</span></span></code></pre></div><p><code>Mac</code>在编译安装的时候，会提示更新或者安装<code>xcode命令行工具</code>，就按照<code>brew</code>执行过程中的提示操作即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ brew uninstall mosh
+</span></span><span class="line"><span class="cl">$ brew install --HEAD mosh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>Mac</code>在编译安装的时候，会提示更新或者安装<code>xcode命令行工具</code>，就按照<code>brew</code>执行过程中的提示操作即可。</p>
 <ul>
 <li>Linux</li>
 </ul>
 <p>在<code>Ubuntu 20.04</code>上安装，需要手动克隆<code>mosh</code>的仓库
 在安装之前中，需要安装依赖，<code>Ubuntu</code>最新版本的依赖，比较少。如果你是比较旧的版本，可以参考官方的编译<a href="https://mosh.org/#getting">教程</a>，里面有详细的依赖。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo apt install libncurses5-dev protobuf-compiler
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ git clone https://github.com/mobile-shell/mosh.git
-</span></span><span style="display:flex;"><span>$ cd mosh
-</span></span><span style="display:flex;"><span>$ ./autogen.sh
-</span></span><span style="display:flex;"><span>$ ./configure
-</span></span><span style="display:flex;"><span>$ make
-</span></span><span style="display:flex;"><span>$ sudo make install
-</span></span></code></pre></div><p>最后执行<code>make install</code>的时候，最好添加<code>sudo</code>，因为涉及到将编译生成的可执行文件复制到系统可查找到的<code>bin</code>目录下。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ sudo apt install libncurses5-dev protobuf-compiler
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git clone https://github.com/mobile-shell/mosh.git
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> mosh
+</span></span><span class="line"><span class="cl">$ ./autogen.sh
+</span></span><span class="line"><span class="cl">$ ./configure
+</span></span><span class="line"><span class="cl">$ make
+</span></span><span class="line"><span class="cl">$ sudo make install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后执行<code>make install</code>的时候，最好添加<code>sudo</code>，因为涉及到将编译生成的可执行文件复制到系统可查找到的<code>bin</code>目录下。</p>
 <h3 id="结尾">结尾<a hidden class="anchor" aria-hidden="true" href="#结尾">#</a></h3>
 <p>现在再使用<code>mosh username@server_host</code>连接服务器，就可以显示<code>256color</code>了。</p>
 

@@ -132,7 +132,7 @@ Please enter the gitlab-ci tags for this runner (comma separated):给这个Runne
     <h1 class="post-title entry-hint-parent">
       Docker安装GitLab Runner
     </h1>
-    <div class="post-meta"><span title='2019-06-01 10:01:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min
+    <div class="post-meta"><span title='2019-06-01 10:01:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;2 min
 
 </div>
   </header> <div class="toc">
@@ -189,22 +189,48 @@ Please enter the gitlab-ci tags for this runner (comma separated):给这个Runne
 <h3 id="添加flake8配置文件">添加<code>.flake8</code>配置文件<a hidden class="anchor" aria-hidden="true" href="#添加flake8配置文件">#</a></h3>
 <p><code>[flake8] ignore = W292 exclude = *migrations*, # python related *.pyc, .git, __pycache__, max-line-length=120 max-complexity=12 format=pylint show_source = True statistics = True count = True</code></p>
 <p>说明</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>注意, 在.flake8里面不要带中文
-</span></span><span style="display:flex;"><span>ignore = 忽略错误类型
-</span></span><span style="display:flex;"><span>exclude = 不检查的文件正则列表
-</span></span><span style="display:flex;"><span>max-line-length = 单行最大字符数120
-</span></span><span style="display:flex;"><span>max-complexity = 代码复杂度等级
-</span></span><span style="display:flex;"><span>format = 展示格式
-</span></span><span style="display:flex;"><span>show_source = 显示源代码
-</span></span><span style="display:flex;"><span>statistics = 展示统计
-</span></span><span style="display:flex;"><span>count = 展示总错误数
-</span></span></code></pre></div><h3 id="添加gitlab-ciyml配置文件">添加<code>.gitlab-ci.yml</code>配置文件<a hidden class="anchor" aria-hidden="true" href="#添加gitlab-ciyml配置文件">#</a></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">before_script</span>:
-</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">echo &#34;Python静态代码检查...&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">pep8</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">flake8 .</span>
-</span></span></code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">注意, 在.flake8里面不要带中文
+</span></span><span class="line"><span class="cl">ignore = 忽略错误类型
+</span></span><span class="line"><span class="cl">exclude = 不检查的文件正则列表
+</span></span><span class="line"><span class="cl">max-line-length = 单行最大字符数120
+</span></span><span class="line"><span class="cl">max-complexity = 代码复杂度等级
+</span></span><span class="line"><span class="cl">format = 展示格式
+</span></span><span class="line"><span class="cl">show_source = 显示源代码
+</span></span><span class="line"><span class="cl">statistics = 展示统计
+</span></span><span class="line"><span class="cl">count = 展示总错误数
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="添加gitlab-ciyml配置文件">添加<code>.gitlab-ci.yml</code>配置文件<a hidden class="anchor" aria-hidden="true" href="#添加gitlab-ciyml配置文件">#</a></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">before_script</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">echo &#34;Python静态代码检查...&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">pep8</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">script</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">flake8 .</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
 
   </div>
 

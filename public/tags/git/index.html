@@ -140,8 +140,8 @@
   <div class="entry-content">
     <p>Git换行符 Git会自动处理换行符的问题, 但是这个在实际开发中会出现问题, 所以, 在Windows上使用提交时转换为LF，检出时不转换功能, 统一使用Unix换行符(也可以在类Unix上启用这个功能, 将拉取的没有改变的换行符更换).
 Windows打开安装好的Git Bash, 类Unix直接输入:
-git config --global core.autocrlf input git config --global core.safecrlf warn 含义：
-AutoCRLF # 提交时转换为LF，检出时转换为CRLF git config --global core.autocrlf true # 提交时转换为LF，检出时不转换 git config --global core.autocrlf input # 提交检出均不转换 git config --global core.autocrlf false SafeCRLF # 拒绝提交包含混合换行符的文件 git config --global core.safecrlf true # 允许提交包含混合换行符的文件 git config --global core.safecrlf false # 提交包含混合换行符的文件时给出警告 git config --global core.safecrlf warn ...</p>
+1 2 git config --global core.autocrlf input git config --global core.safecrlf warn 含义：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ...</p>
   </div>
   <footer class="entry-footer"><span title='2019-06-01 10:02:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Git使用" href="http://localhost:1313/posts/git%E4%BD%BF%E7%94%A8/"></a>

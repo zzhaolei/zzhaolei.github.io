@@ -11,6 +11,18 @@
 所有源码均基于Python 3.11.2
 
 1.PyObject定义
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。
 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。
 typedef struct _object {
@@ -19,20 +31,6 @@ typedef struct _object {
 		Py_ssize_t ob_refcnt;
     PyTypeObject *ob_type;
 } PyObject;
-Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
-_PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-refs，那么Py_TRACE_REFS 会被定义。
-#ifdef Py_TRACE_REFS
-/* Define pointers to support a doubly-linked list of all live heap objects. */
-#define _PyObject_HEAD_EXTRA            \
-    PyObject *_ob_next;           \
-    PyObject *_ob_prev;
-
-#define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL,
-
-#else
-#  define _PyObject_HEAD_EXTRA
-#  define _PyObject_EXTRA_INIT
-#endif
 ">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/">
@@ -180,38 +178,82 @@ _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-re
 <p>所有源码均基于<code>Python 3.11.2</code></p>
 </blockquote>
 <h2 id="1pyobject定义">1.PyObject定义<a hidden class="anchor" aria-hidden="true" href="#1pyobject定义">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> _object {
-</span></span><span style="display:flex;"><span>		_PyObject_HEAD_EXTRA  <span style="color:#75715e">// 定义指针以支持所有活动堆对象的双向链表refchain
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>		Py_ssize_t ob_refcnt;
-</span></span><span style="display:flex;"><span>    PyTypeObject <span style="color:#f92672">*</span>ob_type;
-</span></span><span style="display:flex;"><span>} PyObject;
-</span></span></code></pre></div><p><code>Python</code>通过<code>ob_refcnt</code>字段实现基于引用计数的垃圾回收机制。对于某一个<code>对象A</code>，当有一个新的<code>PyObject*</code>引用<code>A对象</code>时，<code>A</code>的引用计数会增加<code>1</code>，当这个<code>PyObject*</code>引用被删除时，<code>A</code>的引用计数应当减<code>1</code>，当此字段为<code>0</code>时，进行垃圾回收（不一定会释放内存空间，<code>Python</code>中还有缓存机制）。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_object</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">_PyObject_HEAD_EXTRA</span>  <span class="c1">// 定义指针以支持所有活动堆对象的双向链表refchain
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">		<span class="n">Py_ssize_t</span> <span class="n">ob_refcnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PyTypeObject</span> <span class="o">*</span><span class="n">ob_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">PyObject</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>Python</code>通过<code>ob_refcnt</code>字段实现基于引用计数的垃圾回收机制。对于某一个<code>对象A</code>，当有一个新的<code>PyObject*</code>引用<code>A对象</code>时，<code>A</code>的引用计数会增加<code>1</code>，当这个<code>PyObject*</code>引用被删除时，<code>A</code>的引用计数应当减<code>1</code>，当此字段为<code>0</code>时，进行垃圾回收（不一定会释放内存空间，<code>Python</code>中还有缓存机制）。</p>
 <p><code>_PyObject_HEAD_EXTRA</code>是一个宏，当编译<code>Python</code>时指定参数<code>--with-trace-refs</code>，那么<code>Py_TRACE_REFS</code> 会被定义。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#ifdef Py_TRACE_REFS
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/* Define pointers to support a doubly-linked list of all live heap objects. */</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#define _PyObject_HEAD_EXTRA            \
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    PyObject *_ob_next;           \
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    PyObject *_ob_prev;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL,
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#else
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#  define _PyObject_HEAD_EXTRA
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#  define _PyObject_EXTRA_INIT
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
-</span></span></span></code></pre></div><p><code>ob_type</code>是一个结构体，对应着<code>Python</code>内部的一种特殊的对象，用来指定一个对象类型的类型对象。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#ifdef Py_TRACE_REFS
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="cm">/* Define pointers to support a doubly-linked list of all live heap objects. */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define _PyObject_HEAD_EXTRA            \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    PyObject *_ob_next;           \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    PyObject *_ob_prev;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL,
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp">#  define _PyObject_HEAD_EXTRA
+</span></span></span><span class="line"><span class="cl"><span class="cp">#  define _PyObject_EXTRA_INIT
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>ob_type</code>是一个结构体，对应着<code>Python</code>内部的一种特殊的对象，用来指定一个对象类型的类型对象。</p>
 <h2 id="2定长对象和变长对象">2.定长对象和变长对象<a hidden class="anchor" aria-hidden="true" href="#2定长对象和变长对象">#</a></h2>
 <p>在Python中除了<code>PyObject</code>结构体之外，还有<code>PyVarObject</code>结构体。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define PyObject_VAR_HEAD      PyVarObject ob_base;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> {
-</span></span><span style="display:flex;"><span>    PyObject ob_base;
-</span></span><span style="display:flex;"><span>    Py_ssize_t ob_size; <span style="color:#75715e">/* Number of items in variable part */</span>
-</span></span><span style="display:flex;"><span>} PyVarObject;
-</span></span></code></pre></div><p>我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define PyObject_VAR_HEAD      PyVarObject ob_base;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PyObject</span> <span class="n">ob_base</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Py_ssize_t</span> <span class="n">ob_size</span><span class="p">;</span> <span class="cm">/* Number of items in variable part */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">PyVarObject</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们把不包含可变长度数据的对象称为定长对象，而字符串对象、整数对象这样包含可变长度数据的对象称为变长对象。它们的区别在于定长对象的不同对象占用的内存大小是一样的，而变长对象的不同对象占用的内存可能是不一样的。</p>
 <p>变长对象通常是容器类型，<code>ob_size</code>这个字段实际上就是指明了变长对象中一共容纳了多少个元素，而不是字节的数量。</p>
 <ul>
 <li>为什么整数对象是可变长度对象呢？因为在Python中，整数对象是没有位数限制的，这是一个大整数对象的实现，在整数对象的结构体<code>PyLongObject</code>定义中，使用到了<code>PyVarObject</code>，用于指定size。</li>
@@ -219,93 +261,196 @@ _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-re
 <h2 id="3为什么pyobject要定义在每一个python对象的最开始字节中">3.为什么PyObject要定义在每一个Python对象的最开始字节中<a hidden class="anchor" aria-hidden="true" href="#3为什么pyobject要定义在每一个python对象的最开始字节中">#</a></h2>
 <p>从<code>PyVarObject</code>的定义可以看出，<code>PyVarObject</code>只是<code>PyObject</code>的一个扩展而已。因此，对于任何一个<code>PyVarObject</code>，其所占用的内存，开始部分的字节的意义和<code>PyObject</code>是一样的。换句话说，在<code>Python</code>内部，每一个对象都拥有相同的对象头部。这就使得在<code>Python</code>中，对对象的引用变得非常统一，我们只需要用一个<code>PyObject*</code>指针就可以引用任意一个对象，而不论该对象实际是一个什么对象。</p>
 <p>这是一个简单的转换示例程序：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> PyObject {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> _ob;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> _type;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> PyVarObject {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyObject ob_base;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> ob_size;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// List结构体
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> PyListObject {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyVarObject ob_var;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> ob_item;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Python中的双向链表
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> refchain {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyObject <span style="color:#f92672">*</span>prev;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyObject <span style="color:#f92672">*</span>next;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyListObject list <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            .ob_var.ob_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>,
-</span></span><span style="display:flex;"><span>            .ob_var.ob_base._ob <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
-</span></span><span style="display:flex;"><span>            .ob_var.ob_base._type <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
-</span></span><span style="display:flex;"><span>            .ob_item <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>,
-</span></span><span style="display:flex;"><span>        };
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyListObject <span style="color:#f92672">*</span>p_list <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>list;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Object和List可以通过指针进行强转
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">struct</span> PyObject <span style="color:#f92672">*</span>p_ob <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> PyObject <span style="color:#f92672">*</span>)(p_list);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Object: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, p_ob<span style="color:#f92672">-&gt;</span>_ob); <span style="color:#75715e">// Object: 0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> PyListObject <span style="color:#f92672">*</span>p_list1 <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> PyListObject <span style="color:#f92672">*</span>)(p_ob);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;List: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, p_list1<span style="color:#f92672">-&gt;</span>ob_item); <span style="color:#75715e">// List: 3
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="4类型对象">4.类型对象<a hidden class="anchor" aria-hidden="true" href="#4类型对象">#</a></h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">PyObject</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">_ob</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">PyVarObject</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyObject</span> <span class="n">ob_base</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ob_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// List结构体
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">PyListObject</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyVarObject</span> <span class="n">ob_var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ob_item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Python中的双向链表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">refchain</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">prev</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyListObject</span> <span class="n">list</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">ob_var</span><span class="p">.</span><span class="n">ob_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">ob_var</span><span class="p">.</span><span class="n">ob_base</span><span class="p">.</span><span class="n">_ob</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">ob_var</span><span class="p">.</span><span class="n">ob_base</span><span class="p">.</span><span class="n">_type</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">ob_item</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyListObject</span> <span class="o">*</span><span class="n">p_list</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">list</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Object和List可以通过指针进行强转
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">p_ob</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">PyObject</span> <span class="o">*</span><span class="p">)(</span><span class="n">p_list</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Object: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_ob</span><span class="o">-&gt;</span><span class="n">_ob</span><span class="p">);</span> <span class="c1">// Object: 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">PyListObject</span> <span class="o">*</span><span class="n">p_list1</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">PyListObject</span> <span class="o">*</span><span class="p">)(</span><span class="n">p_ob</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;List: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_list1</span><span class="o">-&gt;</span><span class="n">ob_item</span><span class="p">);</span> <span class="c1">// List: 3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="4类型对象">4.类型对象<a hidden class="anchor" aria-hidden="true" href="#4类型对象">#</a></h2>
 <p>当在内存中分配空间，创建对象的时候，我们需要知道申请多大的空间。显然，这不是一个定值，因为不同的对象，需要不同的空间，一个整数对象和一个字符串对象所需的空间肯定不同。</p>
 <p>在<code>PyObject</code>中，<code>PyTypeObject *ob_type</code>字段就表示类型对象。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> _typeobject {
-</span></span><span style="display:flex;"><span>		PyObject_VAR_HEAD
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>tp_name;  <span style="color:#75715e">/* 用于打印，格式为&#34;&lt;moudle&gt;.&lt;name&gt;&#34; */</span>
-</span></span><span style="display:flex;"><span>		Py_ssize_t tp_basicsize, tp_itemsize;  <span style="color:#75715e">/* For allocation */</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* Methods to implement standard operations */</span>
-</span></span><span style="display:flex;"><span>    destructor tp_dealloc;
-</span></span><span style="display:flex;"><span>		...
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* Method suites for standard classes */</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    PyNumberMethods <span style="color:#f92672">*</span>tp_as_number;
-</span></span><span style="display:flex;"><span>    PySequenceMethods <span style="color:#f92672">*</span>tp_as_sequence;
-</span></span><span style="display:flex;"><span>    PyMappingMethods <span style="color:#f92672">*</span>tp_as_mapping;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		...
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		hashfunc tp_hash;
-</span></span><span style="display:flex;"><span>		ternaryfunc tp_call;
-</span></span><span style="display:flex;"><span>} PyTypeObject;
-</span></span></code></pre></div><p>一个<code>PyTypeObject</code>对象就是<code>Python</code>中面向对象理论中的”类“的实现。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_typeobject</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">PyObject_VAR_HEAD</span>
+</span></span><span class="line"><span class="cl">		<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">tp_name</span><span class="p">;</span>  <span class="cm">/* 用于打印，格式为&#34;&lt;moudle&gt;.&lt;name&gt;&#34; */</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Py_ssize_t</span> <span class="n">tp_basicsize</span><span class="p">,</span> <span class="n">tp_itemsize</span><span class="p">;</span>  <span class="cm">/* For allocation */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="cm">/* Methods to implement standard operations */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">destructor</span> <span class="n">tp_dealloc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="cm">/* Method suites for standard classes */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">PyNumberMethods</span> <span class="o">*</span><span class="n">tp_as_number</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PySequenceMethods</span> <span class="o">*</span><span class="n">tp_as_sequence</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PyMappingMethods</span> <span class="o">*</span><span class="n">tp_as_mapping</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">hashfunc</span> <span class="n">tp_hash</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">ternaryfunc</span> <span class="n">tp_call</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">PyTypeObject</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>一个<code>PyTypeObject</code>对象就是<code>Python</code>中面向对象理论中的”类“的实现。</p>
 <p>在<code>PyTypeObject</code>的定义中，有三组非常重要的操作族，<code>tp_as_number、tp_as_sequence、tp_as_mapping</code>。它们分别指向<code>PyNumberMethods、PySequenceMethods、PyMappingMethods</code>函数族。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> PyObject <span style="color:#f92672">*</span> (<span style="color:#f92672">*</span>binaryfunc)(PyObject <span style="color:#f92672">*</span>, PyObject <span style="color:#f92672">*</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> {
-</span></span><span style="display:flex;"><span>    binaryfunc nb_add;
-</span></span><span style="display:flex;"><span>    binaryfunc nb_subtract;
-</span></span><span style="display:flex;"><span>    ...
-</span></span><span style="display:flex;"><span>} PyNumberMethods;
-</span></span></code></pre></div><p>在<code>PyNumberMethods</code>中，定义了一个数值对象应该支持的操作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">PyObject</span> <span class="o">*</span> <span class="p">(</span><span class="o">*</span><span class="n">binaryfunc</span><span class="p">)(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">binaryfunc</span> <span class="n">nb_add</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">binaryfunc</span> <span class="n">nb_subtract</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">PyNumberMethods</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在<code>PyNumberMethods</code>中，定义了一个数值对象应该支持的操作。</p>
 <p>对于一种类型来说，它完全可以同时定义三个函数中的所有操作。即一个对象既可以表现出数值对象的特性，也可以表现出map对象的特性。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Int</span>(int):
-</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> __getitem__(self, key: str) <span style="color:#f92672">-&gt;</span> str:
-</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         <span style="color:#66d9ef">return</span> key <span style="color:#f92672">+</span> str(self)
-</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a <span style="color:#f92672">=</span> Int(<span style="color:#ae81ff">1</span>)
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b <span style="color:#f92672">=</span> Int(<span style="color:#ae81ff">2</span>)
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(a <span style="color:#f92672">+</span> b)
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a[<span style="color:#e6db74">&#34;key&#34;</span>]
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;key1&#39;</span>
-</span></span></code></pre></div><p><code>a</code>是一个数值类型的对象实例，我们通过重写<code>__getitem__</code>方法，可以视为指定了<code>Int</code>在<code>Python</code>内部对应的<code>PyTypeObject</code>对象的<code>tp_as_mapping.mp_subcript</code>操作，最终<code>Int</code>的实例对象可以表现得像<code>map</code>对象一样。原因就是<code>PyTypeObject</code>允许一种类型同时指定三种不同对象的行为特性。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Int</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span>     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span>         <span class="k">return</span> <span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="s2">&#34;key&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="s1">&#39;key1&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>a</code>是一个数值类型的对象实例，我们通过重写<code>__getitem__</code>方法，可以视为指定了<code>Int</code>在<code>Python</code>内部对应的<code>PyTypeObject</code>对象的<code>tp_as_mapping.mp_subcript</code>操作，最终<code>Int</code>的实例对象可以表现得像<code>map</code>对象一样。原因就是<code>PyTypeObject</code>允许一种类型同时指定三种不同对象的行为特性。</p>
 <h2 id="5引用计数">5.引用计数<a hidden class="anchor" aria-hidden="true" href="#5引用计数">#</a></h2>
 <p>类型对象是不会被析构的，因为没有人回去增加和减少类型对象的引用计数，<code>Python</code>程序启动后，类型对象就已经定义好了。</p>
 <p>在每个对象创建的时候，<code>Python</code>会使用<code>_Py_NewReference(op)</code>宏来将对象的引用计数初始化为<code>1</code>。</p>
