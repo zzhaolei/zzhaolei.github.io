@@ -91,10 +91,82 @@ GitLab的push的hook数据：
 66
 67
 68
+
+
+{
+  &#34;object_kind&#34;: &#34;push&#34;,
+  &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;,
+  &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+  &#34;ref&#34;: &#34;refs/heads/master&#34;,
+  &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+  &#34;user_id&#34;: 4,
+  &#34;user_name&#34;: &#34;John Smith&#34;,
+  &#34;user_username&#34;: &#34;jsmith&#34;,
+  &#34;user_email&#34;: &#34;john@example.com&#34;,
+  &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;,
+  &#34;project_id&#34;: 15,
+  &#34;project&#34;:{
+    &#34;id&#34;: 15,
+    &#34;name&#34;:&#34;Diaspora&#34;,
+    &#34;description&#34;:&#34;&#34;,
+    &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;,
+    &#34;avatar_url&#34;:null,
+    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+    &#34;namespace&#34;:&#34;Mike&#34;,
+    &#34;visibility_level&#34;:0,
+    &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;,
+    &#34;default_branch&#34;:&#34;master&#34;,
+    &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;,
+    &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;
+  },
+  &#34;repository&#34;:{
+    &#34;name&#34;: &#34;Diaspora&#34;,
+    &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;description&#34;: &#34;&#34;,
+    &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;,
+    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;visibility_level&#34;:0
+  },
+  &#34;commits&#34;: [
+    {
+      &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+      &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;,
+      &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;,
+      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+      &#34;author&#34;: {
+        &#34;name&#34;: &#34;Jordi Mallach&#34;,
+        &#34;email&#34;: &#34;jordi@softcatala.org&#34;
+      },
+      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+      &#34;removed&#34;: []
+    },
+    {
+      &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+      &#34;message&#34;: &#34;fixed readme&#34;,
+      &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;,
+      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+      &#34;author&#34;: {
+        &#34;name&#34;: &#34;GitLab dev user&#34;,
+        &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34;
+      },
+      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+      &#34;removed&#34;: []
+    }
+  ],
+  &#34;total_commits_count&#34;: 4
+}
+
+
 ">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">

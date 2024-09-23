@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.134.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.134.3"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
@@ -11,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -159,7 +159,10 @@
   <div class="entry-content">
     <p>Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。
 下面详细讲解一下用法：
-Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} ...</p>
+Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} go 的文件名称在当前示例中无关紧要，这里定义为 main.go。
+main 函数是必须的，但是可以为空。
+注意：代码中的 //export Add 表示导出 Add 函数，export 和 // 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 //go:build 等。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-11 10:55:43 +0800 CST'>September 11, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Go 在 Mac 或 Linux 上构建动态库" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/"></a>
@@ -172,7 +175,14 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
   </header>
   <div class="entry-content">
     <p>Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
-1 2 3 4 5 6 use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } ...</p>
+1 2 3 4 5 6 use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
+接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
+Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
+而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
+你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
+让我们先从 init 开始：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在 ffi 中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:20:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to Rust main 函数是如何被执行的" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/"></a>
@@ -184,7 +194,8 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
     </h2>
   </header>
   <div class="entry-content">
-    <p> 目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 ...</p>
+    <p> 目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 package main import ( &#34;context&#34; &#34;log&#34; &#34;os&#34; &#34;github.com/aws/aws-sdk-go-v2/aws&#34; &#34;github.com/aws/aws-sdk-go-v2/config&#34; &#34;github.com/aws/aws-sdk-go-v2/credentials&#34; &#34;github.com/aws/aws-sdk-go-v2/service/s3&#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;) accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &#34;aws-cn&#34;, URL: &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;, SigningRegion: &#34;cn-northwest-1&#34;, }, nil }), ), ) if err != nil { log.Fatal(err) } return s3.NewFromConfig(cfg, func(o *s3.Options) { // 此选项可用于调试 // o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody o.UsePathStyle = true }) } func main() { bucket := os.Getenv(&#34;S3_BUCKET&#34;) uploadKey := os.Getenv(&#34;S3_KEY&#34;) file, _ := os.Open(&#34;test.txt&#34;) client := NewS3Client() _, err := client.PutObject(context.Background(), &amp;s3.PutObjectInput{ Bucket: aws.String(bucket), Key: aws.String(uploadKey), Body: file, }) if err != nil { log.Fatal(err) } } 这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:14:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to 使用AWS S3 SDK访问阿里云oss" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/"></a>
@@ -196,7 +207,12 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
     </h2>
   </header>
   <div class="entry-content">
-    <p>目录结构 1 2 3 4 5 6 . ├── master │ └── my.cnf ├── slave │ └── my.cnf └── docker-compose.yml ...</p>
+    <p>目录结构 1 2 3 4 5 6 . ├── master │ └── my.cnf ├── slave │ └── my.cnf └── docker-compose.yml master：主配置
+slave：从配置
+docker-compose：通过 docker-compose 进行容器配置和启动
+master/my.cnf
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 # For advice on how to change settings please see # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html [mysqld] host-cache-size=0 skip-name-resolve datadir=/var/lib/mysql socket=/var/run/mysqld/mysqld.sock secure-file-priv=/var/lib/mysql-files user=mysql pid-file=/var/run/mysqld/mysqld.pid # 自定义部分 log-bin=master-bin binlog-format=row # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制 binlog-do-db=test # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置 server-id=1 # server-id 不能和任何 主或从 重复 # 自定义部分 [client] socket=/var/run/mysqld/mysqld.sock !includedir /etc/mysql/conf.d/ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重复
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:13:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 通过docker配置MySQL主从服务" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/"></a>
@@ -210,7 +226,8 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
   <div class="entry-content">
     <p>介绍 单例模式同时解决了两个问题：
 保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
-饿汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } ...</p>
+饿汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( &#34;testing&#34; &#34;design-pattern/singleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.GetInstance()) } }) } 懒汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 // Package lazysingleton 懒汉式单例 package lazysingleton import &#34;sync&#34; var ( lazySingleton *File once sync.Once ) type File struct{} func GetLazyInstance() *File { if lazySingleton == nil { // 使用sync.Once来确保单例在并发时只被初始化一次 once.Do(func() { lazySingleton = &amp;File{} }) } return lazySingleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( &#34;testing&#34; &#34;design-pattern/lazysingleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestLazySingleton 测试懒汉式单例 func TestLazyInstance(t *testing.T) { assert.Equal(t, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } // BenchmarkGetLazyInstance 测试懒汉式单例 func BenchmarkGetLazyInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } }) } 测试结果 1 2 3 4 5 6 7 8 ❯ go test -bench . goos: darwin goarch: arm64 pkg: design-pattern/tests BenchmarkGetLazyInstance-8 3113553	380.8 ns/op BenchmarkInstance-8 3156261	378.5 ns/op PASS ok design-pattern/tests	3.798s 根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:12:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Go设计模式——单例模式" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"></a>
@@ -225,7 +242,8 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
     <p>介绍 简单的说就是：对扩展开放，对修改关闭。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。
 开闭原则也包含了单一职责原则。
 我们以消息队列来进行举例。
-坏的 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ...</p>
+坏的 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 // Package main 开闭原则 Open-Closed Principle // 开闭原则包含了：单一职责原则 package main import &#34;fmt&#34; type KafkaQueue struct{} func (k *KafkaQueue) SendMSG(msg string) error { fmt.Println(&#34;Kafka send msg success&#34;) return nil } type RabbitQueue struct{} func (r *RabbitQueue) SendMSG(msg string) error { fmt.Println(&#34;Rabbitmq send msg success&#34;) return nil } type Demo struct{} func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error { return queue.SendMSG(msg) } func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error { return queue.SendMSG(msg) } func main() { } 通过这个例子，我们可以看出来，这段代码违背了我们的对扩展开放，对修改关闭的原则。当我们需要添加一个新的RocketMQ的时候，需要改动Demo的逻辑以及其他设计的业务逻辑，可扩展性可以说是一点也没有。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:11:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Go设计模式——开闭原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/"></a>
@@ -239,7 +257,14 @@ Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 
   <div class="entry-content">
     <p>介绍 类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。
 我们现在以银行工作人员举例：
-坏的 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 // Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&#34;成功存入: %d\n&#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&#34;成功向: %s转入: %d\n&#34;, to, money) return nil } ...</p>
+坏的 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 // Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Banker struct{} // Save 存钱 func (b *Banker) Save(money uint64) error { fmt.Printf(&#34;成功存入: %d\n&#34;, money) return nil } // Transfer 转账 func (b *Banker) Transfer(money uint64, to string) error { fmt.Printf(&#34;成功向: %s转入: %d\n&#34;, to, money) return nil } 单一职责原则要求一个类/接口只有一个职责，而引起类变化的原因只能有一个。
+从原则上讲，我们为Banker定义存钱和转账的操作是有道理的，因为我们接口中定义的都是银行工作人员可以执行的操作，引起变化的原因只能是Banker的属性和行为发生变化。
+从这方便考虑，这种设计是有合理性的，如果能保证需求不会变化或者需求变化的可能行很小，那么这种设计就是合理的。
+但是实际上我们知道，需求是不断变化的，今日增加一个股票业务，那么我们就需要增加一个股票的相关属性和行为，我们的接口和实现就需要全部变动。
+最好的方式就是当我们开始定义的时候，根据属性和行为进行细分，抽象不同的接口出来，在Go里面也是主张小接口，这样我们可以通过组合的手段来随意构造我们想要的大接口。
+好的 我们将Banker进行抽象，这样可以更好的进行扩展：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 // Package main 单一职责原则 Single-Responsibility Principle package main import &#34;fmt&#34; type Config struct { Money uint64 To string } type Banker interface { DoSomething(Config) error } type SaveBanker struct{} func (sb *SaveBanker) DoSomething(cfg Config) error { fmt.Printf(&#34;成功存入: %d\n&#34;, cfg.Money) return nil } type TransferBanker struct{} func (tb *TransferBanker) DoSomething(cfg Config) error { fmt.Printf(&#34;成功向: %s转入: %d\n&#34;, cfg.To, cfg.Money) return nil } 我们抽象出来了Banker接口，每一个不太的业务员都可以实现这个接口，对行为进行自定义。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:10:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Go设计模式——单一职责原则" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/"></a>
@@ -259,6 +284,7 @@ Syscall 总共接收 4 个参数，第一个是 trap 定义，描述具体的系
 Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 6 个是系统调用所需的参数。
 如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
 例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
+1 sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value); 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:09:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;3 min</footer>
@@ -271,7 +297,8 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
     </h2>
   </header>
   <div class="entry-content">
-    <p>1.列表结构体 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 ...</p>
+    <p>1.列表结构体 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.sort() temporarily sets allocated to -1 to detect mutations. * * Items must normally not be NULL, except during construction when * the list is not yet visible outside the function that builds it. */ Py_ssize_t allocated; } PyListObject; ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素时，实际上是获取的ob_item[0]的元素。ob_item的类型是PyObject*，由此我们可以知道，为什么Python中的list能存储任意对象的数据，这是因为任何Python对象都可以强转为PyObject*的指针类型。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;6 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
@@ -284,7 +311,8 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
   </header>
   <div class="entry-content">
     <p>1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 ...</p>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points. */ } PyCompactUnicodeObject; typedef struct { PyCompactUnicodeObject _base; union { void *any; Py_UCS1 *latin1; Py_UCS2 *ucs2; Py_UCS4 *ucs4; } data; /* Canonical, smallest-form Unicode buffer */ } PyUnicodeObject; 类型对象
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>April 7, 2023</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的字符串对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/"></a>

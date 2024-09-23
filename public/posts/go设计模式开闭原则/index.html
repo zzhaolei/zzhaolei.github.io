@@ -46,10 +46,46 @@
 30
 31
 32
-">
+
+
+// Package main 开闭原则 Open-Closed Principle
+// 开闭原则包含了：单一职责原则
+package main
+
+import &#34;fmt&#34;
+
+type KafkaQueue struct{}
+
+func (k *KafkaQueue) SendMSG(msg string) error {
+	fmt.Println(&#34;Kafka send msg success&#34;)
+	return nil
+}
+
+type RabbitQueue struct{}
+
+func (r *RabbitQueue) SendMSG(msg string) error {
+	fmt.Println(&#34;Rabbitmq send msg success&#34;)
+	return nil
+}
+
+type Demo struct{}
+
+func (d *Demo) SendByKafka(queue KafkaQueue, msg string) error {
+	return queue.SendMSG(msg)
+}
+
+func (d *Demo) SendByRabbit(queue RabbitQueue, msg string) error {
+	return queue.SendMSG(msg)
+}
+
+func main() {
+}
+
+
+通过这个例子，我们可以看出来，这段代码违背了我们的对扩展开放，对修改关闭的原则。当我们需要添加一个新的RocketMQ的时候，需要改动Demo的逻辑以及其他设计的业务逻辑，可扩展性可以说是一点也没有。">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">

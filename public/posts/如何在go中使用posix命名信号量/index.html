@@ -17,10 +17,19 @@ syscall 包有 Syscall、Syscall6 两个函数，对应于不同的操作系统�
 Syscall 总共接收 4 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 3 个是系统调用所需的参数。
 Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的系统调用，剩下的 6 个是系统调用所需的参数。
 如果使用 Syscall 或 Syscall6 时，系统调用所需的参数不满足函数形参所需的数量，则剩下的参数传0。
-例如，在 POSIX 系统上打开一个命名信号量的系统调用是:">
+例如，在 POSIX 系统上打开一个命名信号量的系统调用是:
+
+
+1
+
+
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
+
+
+因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">

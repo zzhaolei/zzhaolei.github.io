@@ -68,10 +68,69 @@
 53
 54
 55
-">
+
+
+package main
+
+import (
+	&#34;context&#34;
+	&#34;log&#34;
+	&#34;os&#34;
+
+	&#34;github.com/aws/aws-sdk-go-v2/aws&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/config&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/credentials&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/service/s3&#34;
+)
+
+func NewS3Client() *s3.Client {
+	accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;)
+	accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;)
+
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)),
+		config.WithEndpointResolverWithOptions(
+			aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) {
+				return aws.Endpoint{
+					PartitionID:   &#34;aws-cn&#34;,
+					URL:           &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;,
+					SigningRegion: &#34;cn-northwest-1&#34;,
+				}, nil
+			}),
+		),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return s3.NewFromConfig(cfg, func(o *s3.Options) {
+		// 此选项可用于调试
+		// o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody
+		o.UsePathStyle = true
+	})
+}
+
+func main() {
+	bucket := os.Getenv(&#34;S3_BUCKET&#34;)
+	uploadKey := os.Getenv(&#34;S3_KEY&#34;)
+	file, _ := os.Open(&#34;test.txt&#34;)
+
+	client := NewS3Client()
+	_, err := client.PutObject(context.Background(), &amp;s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(uploadKey),
+		Body:   file,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+
+这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">

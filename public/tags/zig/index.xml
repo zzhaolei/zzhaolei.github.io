@@ -4,7 +4,7 @@
     <title>Zig on 俺的博客</title>
     <link>http://localhost:1313/tags/zig/</link>
     <description>Recent content in Zig on 俺的博客</description>
-    <generator>Hugo -- 0.134.1</generator>
+    <generator>Hugo -- 0.134.3</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 11 Sep 2024 10:55:43 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/zig/index.xml" rel="self" type="application/rss+xml" />
@@ -53,7 +53,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pr</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;go 的文件名称在当前示例中无关紧要，这里定义为 main.go。&lt;/p&gt;
+&lt;p&gt;main 函数是必须的，但是可以为空。&lt;/p&gt;
+&lt;p&gt;注意：代码中的 &lt;code&gt;//export Add&lt;/code&gt; 表示导出 Add 函数，&lt;code&gt;export&lt;/code&gt; 和 &lt;code&gt;//&lt;/code&gt; 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 &lt;code&gt;//go:build&lt;/code&gt; 等。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
