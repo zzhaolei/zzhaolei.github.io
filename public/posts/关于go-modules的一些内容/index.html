@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>关于Go Modules的一些内容 | 俺的博客</title>
+<title>关于Go Modules的一些内容 | lei的博客</title>
 <meta name="keywords" content="Go">
 <meta name="description" content="启用Go Modules
 go mod在Go &gt;= 1.13才默认启用，在Go &gt;= 1.11已经开始支持了go mod。
@@ -80,7 +80,7 @@ go 1.12
 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -88,7 +88,7 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
 <noscript>
     <style>
         #theme-toggle,
@@ -143,7 +143,7 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -169,18 +169,18 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archives/" title="Archive">
-                    <span>Archive</span>
+                <a href="http://localhost:1313/archive/" title="归档">
+                    <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tag">
-                    <span>Tag</span>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
                 </a>
             </li>
         </ul>
@@ -190,17 +190,17 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    
     <h1 class="post-title entry-hint-parent">
       关于Go Modules的一些内容
     </h1>
-    <div class="post-meta"><span title='2019-06-01 10:08:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min
+    <div class="post-meta"><span title='2019-06-01 10:08:00 +0800 CST'>六月 1, 2019</span>&nbsp;·&nbsp;1 分钟
 
 </div>
   </header> <div class="toc">
     <details >
         <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
+            <span class="details">目录</span>
         </summary>
 
         <div class="inner"><ul>
@@ -422,12 +422,12 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
     </ul>
 <nav class="paginav">
   <a class="prev" href="http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/">
-    <span class="title">« Prev</span>
+    <span class="title">« 上一页</span>
     <br>
     <span>Mosh连接服务器时终端颜色显示问题</span>
   </a>
   <a class="next" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
-    <span class="title">Next »</span>
+    <span class="title">下一页 »</span>
     <br>
     <span>Jenkins处理GitLab Hook</span>
   </a>
@@ -454,7 +454,7 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
 
     <span>
         Powered by
@@ -528,12 +528,12 @@ go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
+        copybutton.innerHTML = '复制';
 
         function copyingDone() {
-            copybutton.innerHTML = 'copied!';
+            copybutton.innerHTML = '已复制！';
             setTimeout(() => {
-                copybutton.innerHTML = 'copy';
+                copybutton.innerHTML = '复制';
             }, 2000);
         }
 

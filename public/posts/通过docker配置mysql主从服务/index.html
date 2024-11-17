@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>通过docker配置MySQL主从服务 | 俺的博客</title>
+<title>通过docker配置MySQL主从服务 | lei的博客</title>
 <meta name="keywords" content="Docker, MySQL">
 <meta name="description" content="目录结构
 
@@ -87,7 +87,7 @@ socket=/var/run/mysqld/mysqld.sock
 slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重复">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -95,7 +95,7 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
 <noscript>
     <style>
         #theme-toggle,
@@ -150,7 +150,7 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -176,18 +176,18 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archives/" title="Archive">
-                    <span>Archive</span>
+                <a href="http://localhost:1313/archive/" title="归档">
+                    <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tag">
-                    <span>Tag</span>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
                 </a>
             </li>
         </ul>
@@ -197,17 +197,17 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    
     <h1 class="post-title entry-hint-parent">
       通过docker配置MySQL主从服务
     </h1>
-    <div class="post-meta"><span title='2024-09-01 10:13:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;4 min
+    <div class="post-meta"><span title='2024-09-01 10:13:00 +0800 CST'>九月 1, 2024</span>&nbsp;·&nbsp;4 分钟
 
 </div>
   </header> <div class="toc">
     <details >
         <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
+            <span class="details">目录</span>
         </summary>
 
         <div class="inner"><ul>
@@ -754,12 +754,12 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
     </ul>
 <nav class="paginav">
   <a class="prev" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
-    <span class="title">« Prev</span>
+    <span class="title">« 上一页</span>
     <br>
     <span>使用AWS S3 SDK访问阿里云oss</span>
   </a>
   <a class="next" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
-    <span class="title">Next »</span>
+    <span class="title">下一页 »</span>
     <br>
     <span>Go设计模式——单例模式</span>
   </a>
@@ -786,7 +786,7 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
 
     <span>
         Powered by
@@ -860,12 +860,12 @@ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重�
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
+        copybutton.innerHTML = '复制';
 
         function copyingDone() {
-            copybutton.innerHTML = 'copied!';
+            copybutton.innerHTML = '已复制！';
             setTimeout(() => {
-                copybutton.innerHTML = 'copy';
+                copybutton.innerHTML = '复制';
             }, 2000);
         }
 

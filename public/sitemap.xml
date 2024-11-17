@@ -11,6 +11,9 @@
     <loc>http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</loc>
     <lastmod>2024-09-11T10:55:43+08:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/posts/</loc>
     <lastmod>2024-09-11T10:55:43+08:00</lastmod>
   </url><url>
@@ -18,9 +21,6 @@
     <lastmod>2024-09-11T10:55:43+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/zig/</loc>
-    <lastmod>2024-09-11T10:55:43+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
     <lastmod>2024-09-11T10:55:43+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/rust/</loc>
@@ -107,12 +107,12 @@
     <loc>http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</loc>
     <lastmod>2019-06-01T10:01:00+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/archives/</loc>
-  </url><url>
     <loc>http://localhost:1313/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/search/</loc>
-  </url><url>
     <loc>http://localhost:1313/tags/</loc>
+  </url><url>
+    <loc>http://localhost:1313/archive/</loc>
+  </url><url>
+    <loc>http://localhost:1313/search/</loc>
   </url>
 </urlset>

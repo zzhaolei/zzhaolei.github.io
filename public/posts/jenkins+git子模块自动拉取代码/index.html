@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Jenkins&#43;Git子模块自动拉取代码 | 俺的博客</title>
+<title>Jenkins&#43;Git子模块自动拉取代码 | lei的博客</title>
 <meta name="keywords" content="Jenkins">
 <meta name="description" content="jenkins&#43;Git子模块自动拉取代码
 添加Git子模块
@@ -25,7 +25,7 @@ submodule可以进行tag和merge
 git submodule foreach可以分别对子模块进行操作, 所以对所有子模块进行tag和merge操作, 就相当于对总项目进行相应的操作.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -33,7 +33,7 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/">
 <noscript>
     <style>
         #theme-toggle,
@@ -88,7 +88,7 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -114,18 +114,18 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archives/" title="Archive">
-                    <span>Archive</span>
+                <a href="http://localhost:1313/archive/" title="归档">
+                    <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tag">
-                    <span>Tag</span>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
                 </a>
             </li>
         </ul>
@@ -135,17 +135,17 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    
     <h1 class="post-title entry-hint-parent">
       Jenkins&#43;Git子模块自动拉取代码
     </h1>
-    <div class="post-meta"><span title='2019-06-01 10:04:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;1 min
+    <div class="post-meta"><span title='2019-06-01 10:04:00 +0800 CST'>六月 1, 2019</span>&nbsp;·&nbsp;1 分钟
 
 </div>
   </header> <div class="toc">
     <details >
         <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
+            <span class="details">目录</span>
         </summary>
 
         <div class="inner"><ul>
@@ -189,12 +189,12 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
     </ul>
 <nav class="paginav">
   <a class="prev" href="http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/">
-    <span class="title">« Prev</span>
+    <span class="title">« 上一页</span>
     <br>
     <span>Jenkins&#43;Python&#43;GitLab持续集成</span>
   </a>
   <a class="next" href="http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/">
-    <span class="title">Next »</span>
+    <span class="title">下一页 »</span>
     <br>
     <span>Jenkins Email Extension插件模板</span>
   </a>
@@ -221,7 +221,7 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
 
     <span>
         Powered by
@@ -295,12 +295,12 @@ git submodule foreach可以分别对子模块进行操作, 所以对所有子模
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
+        copybutton.innerHTML = '复制';
 
         function copyingDone() {
-            copybutton.innerHTML = 'copied!';
+            copybutton.innerHTML = '已复制！';
             setTimeout(() => {
-                copybutton.innerHTML = 'copy';
+                copybutton.innerHTML = '复制';
             }, 2000);
         }
 

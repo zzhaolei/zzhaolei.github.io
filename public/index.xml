@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>俺的博客</title>
+    <title>lei的博客</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content on 俺的博客</description>
-    <generator>Hugo -- 0.134.3</generator>
-    <language>zh-cn</language>
+    <description>Recent content on lei的博客</description>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>zh</language>
     <lastBuildDate>Wed, 11 Sep 2024 10:55:43 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -1875,11 +1875,11 @@
 &lt;p&gt;&lt;code&gt;Whether to run untagged builds [true/false]:&lt;/code&gt;选择&lt;code&gt;Runner&lt;/code&gt;是否接受未指定&lt;code&gt;tags&lt;/code&gt;的任务,稍后可修改。默认值为&lt;code&gt;false&lt;/code&gt;。&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Tag</title>
+      <title>标签</title>
       <link>http://localhost:1313/tags/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/</guid>
-      <description>tags</description>
+      <description></description>
     </item>
   </channel>
 </rss>

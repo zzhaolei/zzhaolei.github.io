@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="zh" dir="auto">
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Docker | 俺的博客</title>
+<title>Docker | lei的博客</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/tags/docker/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.727be9c01221c1435224b541fd79c2b86b0b71b860a6f3b8a5674a8800107925.css" integrity="sha256-cnvpwBIhwUNSJLVB/XnCuGsLcbhgpvO4pWdKiAAQeSU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -19,7 +19,7 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/docker/index.xml">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/docker/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/tags/docker/">
 <noscript>
     <style>
         #theme-toggle,
@@ -74,7 +74,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="俺的博客 (Alt + H)">俺的博客</a>
+            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -100,25 +100,25 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archives/" title="Archive">
-                    <span>Archive</span>
+                <a href="http://localhost:1313/archive/" title="归档">
+                    <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tag">
-                    <span>Tag</span>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
                 </a>
             </li>
         </ul>
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/tags/">Tags</a></div>
+<header class="page-header">
   <h1>
     Docker
     <a href="/tags/docker/index.xml" title="RSS" aria-label="RSS">
@@ -145,7 +145,7 @@ master/my.cnf
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 # For advice on how to change settings please see # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html [mysqld] host-cache-size=0 skip-name-resolve datadir=/var/lib/mysql socket=/var/run/mysqld/mysqld.sock secure-file-priv=/var/lib/mysql-files user=mysql pid-file=/var/run/mysqld/mysqld.pid # 自定义部分 log-bin=master-bin binlog-format=row # row 按行重放，statement 重放 sql 语句，mixed 默认基于 statement，一旦发现基于 sql 无法精准重放时，会使用 row，MySQL 默认是基于 statement 的复制 binlog-do-db=test # 开启 binlog 的数据库名，如果有多个数据库，那么可以重复设置 server-id=1 # server-id 不能和任何 主或从 重复 # 自定义部分 [client] socket=/var/run/mysqld/mysqld.sock !includedir /etc/mysql/conf.d/ slave/my.cnf 和 master/my.cnf 内容基本一致，但是 server-id 不能重复
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-09-01 10:13:00 +0800 CST'>September 1, 2024</span>&nbsp;·&nbsp;4 min</footer>
+  <footer class="entry-footer"><span title='2024-09-01 10:13:00 +0800 CST'>九月 1, 2024</span>&nbsp;·&nbsp;4 分钟</footer>
   <a class="entry-link" aria-label="post link to 通过docker配置MySQL主从服务" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/"></a>
 </article>
 
@@ -165,13 +165,13 @@ Please enter the gitlab-ci tags for this runner (comma separated):给这个Runne
 Whether to run untagged builds [true/false]:选择Runner是否接受未指定tags的任务,稍后可修改。默认值为false。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:01:00 +0800 CST'>June 1, 2019</span>&nbsp;·&nbsp;2 min</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:01:00 +0800 CST'>六月 1, 2019</span>&nbsp;·&nbsp;2 分钟</footer>
   <a class="entry-link" aria-label="post link to Docker安装GitLab Runner" href="http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">俺的博客</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
 
     <span>
         Powered by

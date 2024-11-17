@@ -1,13 +1,14 @@
 baseURL = 'https://zzhaolei.github.io/'
-languageCode = 'zh-cn'
-title = '俺的博客'
+languageCode = 'zh'
+defaultContentLanguage = 'zh'
+title = 'lei的博客'
 theme = 'PaperMod'
 
 [params]
 ShowToc = true
 ShowShareButtons = false
 ShowReadingTime = true
-ShowBreadCrumbs = true
+ShowBreadCrumbs = false
 ShowPostNavLinks = true
 ShowCodeCopyButtons = true
 ShowRssButtonInSectionTermList = true
@@ -18,24 +19,19 @@ comments = true
 favicon = false
 
 [params.homeInfoParams]
-Title = "正大光明"
-Content = "至若范公之心，则其正大光明，固无宿怨，而惓惓之义，实在国家。"
+Title = "lei的博客"
+Content = "(ง•_•)ง"
 
 [[params.socialIcons]]
 name = "Github"
 url = "https://github.com/zzhaolei"
 
-[[params.socialIcons]]
-name = "OldBlog"
-url = "https://www.cnblogs.com/zzhaolei"
+# [[params.socialIcons]]
+# name = "OldBlog"
+# url = "https://www.cnblogs.com/zzhaolei"
 
 [params.fuseOpts]
-isCaseSensitive = false
-shouldSort = true
-location = 0
-distance = 1_000
-threshold = 0.4
-minMatchCharLength = 0
+includeMatches = true
 keys = ["title", "permalink", "summary", "content"]
 
 [outputs]
