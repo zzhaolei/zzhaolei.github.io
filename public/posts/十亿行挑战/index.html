@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>十亿行挑战 | lei的博客</title>
+<meta name="keywords" content="Go">
+<meta name="description" content="
+十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）
+原始仓库
+
+目标
+文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为&lt;string: station name&gt;;&lt;double: measurement&gt;，其中测量值精确到一位小数。以下是一些示例行：
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+
+
+Hamburg;12.0
+Bulawayo;8.9
+Palembang;38.8
+St. John&#39;s;15.2
+Cracow;12.6
+Bridgetown;26.9
+Istanbul;6.2
+Roseau;34.4
+Conakry;31.2
+Istanbul;23.0
+
+
+任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout，
+格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;，保留一位小数点）：
+
+
+1
+
+
+{Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...}
+
+
+限制
+只能使用标准库实现。
+生成十亿行挑战所需的数据
+克隆原始仓库：
+
+
+1
+2
+3
+4
+
+
+git clone https://github.com/gunnarmorling/1brc
+
+cd 1brc/src/main/python
+python3 create_measurements.py 1000000000
+
+
+生成的数据会在1brc/measurements.txt，约为15Gi的大小。">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archive/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      十亿行挑战
+    </h1>
+    <div class="post-meta"><span title='2024-11-23 15:49:21 +0800 CST'>十一月 23, 2024</span>&nbsp;·&nbsp;4 分钟
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e7%9b%ae%e6%a0%87" aria-label="目标">目标</a></li>
+                <li>
+                    <a href="#%e9%99%90%e5%88%b6" aria-label="限制">限制</a><ul>
+                        
+                <li>
+                    <a href="#%e7%94%9f%e6%88%90%e5%8d%81%e4%ba%bf%e8%a1%8c%e6%8c%91%e6%88%98%e6%89%80%e9%9c%80%e7%9a%84%e6%95%b0%e6%8d%ae" aria-label="生成十亿行挑战所需的数据">生成十亿行挑战所需的数据</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%ae%9e%e7%8e%b0" aria-label="实现">实现</a><ul>
+                        
+                <li>
+                    <a href="#1-%e5%9f%ba%e7%a1%80%e7%bb%93%e6%9e%9c" aria-label="1. 基础结果">1. 基础结果</a></li>
+                <li>
+                    <a href="#2-%e5%8d%8f%e7%a8%8b" aria-label="2. 协程">2. 协程</a></li>
+                <li>
+                    <a href="#3-%e6%9b%b4%e5%a4%9a%e4%bc%98%e5%8c%96" aria-label="3 更多优化">3 更多优化</a><ul>
+                        
+                <li>
+                    <a href="#31" aria-label="3.1">3.1</a></li>
+                <li>
+                    <a href="#32" aria-label="3.2">3.2</a></li>
+                <li>
+                    <a href="#33" aria-label="3.3">3.3</a></li>
+                <li>
+                    <a href="#34" aria-label="3.4">3.4</a></li>
+                <li>
+                    <a href="#35" aria-label="3.5">3.5</a></li>
+                <li>
+                    <a href="#36" aria-label="3.6">3.6</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%9c%80%e7%bb%88%e6%88%90%e6%9e%9c" aria-label="最终成果">最终成果</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p>十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）</p>
+<p>原始<a href="https://github.com/gunnarmorling/1brc">仓库</a></p>
+</blockquote>
+<h2 id="目标">目标<a hidden class="anchor" aria-hidden="true" href="#目标">#</a></h2>
+<p>文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为<code>&lt;string: station name&gt;;&lt;double: measurement&gt;</code>，其中测量值精确到一位小数。以下是一些示例行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">Hamburg;12.0
+</span></span><span class="line"><span class="cl">Bulawayo;8.9
+</span></span><span class="line"><span class="cl">Palembang;38.8
+</span></span><span class="line"><span class="cl">St. John&#39;s;15.2
+</span></span><span class="line"><span class="cl">Cracow;12.6
+</span></span><span class="line"><span class="cl">Bridgetown;26.9
+</span></span><span class="line"><span class="cl">Istanbul;6.2
+</span></span><span class="line"><span class="cl">Roseau;34.4
+</span></span><span class="line"><span class="cl">Conakry;31.2
+</span></span><span class="line"><span class="cl">Istanbul;23.0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到<code>stdout</code>，
+格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为<code>&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;</code>，保留一位小数点）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="限制">限制<a hidden class="anchor" aria-hidden="true" href="#限制">#</a></h2>
+<p>只能使用标准库实现。</p>
+<h3 id="生成十亿行挑战所需的数据">生成十亿行挑战所需的数据<a hidden class="anchor" aria-hidden="true" href="#生成十亿行挑战所需的数据">#</a></h3>
+<p>克隆原始<a href="https://github.com/gunnarmorling/1brc">仓库</a>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone https://github.com/gunnarmorling/1brc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> 1brc/src/main/python
+</span></span><span class="line"><span class="cl">python3 create_measurements.py <span class="m">1000000000</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>生成的数据会在<code>1brc/measurements.txt</code>，约为<code>15Gi</code>的大小。</p>
+<h2 id="实现">实现<a hidden class="anchor" aria-hidden="true" href="#实现">#</a></h2>
+<p>机器配置：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">goos: darwin
+</span></span><span class="line"><span class="cl">goarch: arm64
+</span></span><span class="line"><span class="cl">pkg: demo
+</span></span><span class="line"><span class="cl">cpu: Apple M2
+</span></span><span class="line"><span class="cl">core: 8
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>下面是一步步进行优化的顺序：</p>
+<h3 id="1-基础结果">1. 基础结果<a hidden class="anchor" aria-hidden="true" href="#1-基础结果">#</a></h3>
+<p>将生成的<code>measurements.txt</code>文件软链到当前目录：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ln -s &lt;path&gt;/1brc/data/measurements.txt measurements.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>先编译，然后再执行，这样可以忽略掉编译所造成的耗时：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">go build -o base.out baseline/main.go
+</span></span><span class="line"><span class="cl">./base.out measurements.txt &gt; base.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>base.txt</code>是基线结果，后续的优化可以和这个结果进行对比。</p>
+<p>这将会打印毫秒的耗时信息，执行三次，取其平均数为<code>135656</code>毫秒，耗时约为<code>135.66秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="2-协程">2. 协程<a hidden class="anchor" aria-hidden="true" href="#2-协程">#</a></h3>
+<p>将文件分块，并使用协程进行处理。协程数量需要调试出一个合适的值，这里使用的是<code>25</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">go build -o go.out goroutine/main.go
+</span></span><span class="line"><span class="cl">./go.out measurements.txt &gt; go.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>和<code>base.txt</code>进行对比，看是否有差异：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">diff --side-by-side --suppress-common-lines base.txt go.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>命令的输出结果应该显示没有差异，并且命令的退出状态码为<code>0</code>。</p>
+<p>取三次结果的平均数约为<code>36818</code>毫秒，耗时为<code>36.812秒</code>。减少了约<code>98.84秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="3-更多优化">3 更多优化<a hidden class="anchor" aria-hidden="true" href="#3-更多优化">#</a></h3>
+<h4 id="31">3.1<a hidden class="anchor" aria-hidden="true" href="#31">#</a></h4>
+<p>不使用<code>scanner</code>，改为直接读取固定缓冲区的方案。</p>
+<p>这样做可以减少对<code>line</code>和<code>args</code>的内存分配，直接引用<code>buffer</code>的内存，延后到对map操作时再解析。
+手动解析<code>换行符</code>和<code>城市</code>、<code>温度</code>，引用<code>buffer</code>的内存，也可以减少直接分配。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">scan</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span> <span class="nx">meas</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">Meas</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">buffer</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">BufferSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">remain</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">BufferSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">n</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">buffer</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">buffer</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="nx">remain</span><span class="p">)])</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">remain</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">remain</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">[:</span><span class="nx">n</span><span class="p">]</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">cityByte</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">tempByte</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">next</span>     <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">newBuf</span>   <span class="p">=</span> <span class="nx">remain</span>
+</span></span><span class="line"><span class="cl">		<span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">cityByte</span><span class="p">,</span> <span class="nx">tempByte</span><span class="p">,</span> <span class="nx">newBuf</span><span class="p">,</span> <span class="nx">next</span> <span class="p">=</span> <span class="nf">parseLine</span><span class="p">(</span><span class="nx">newBuf</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">!</span><span class="nx">next</span> <span class="p">{</span> <span class="c1">// 没有下一行，退出循环重新读取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nb">copy</span><span class="p">(</span><span class="nx">remain</span><span class="p">,</span> <span class="nx">newBuf</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">remain</span> <span class="p">=</span> <span class="nx">remain</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">newBuf</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">city</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">cityByte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">temp</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">ParseFloat</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">tempByte</span><span class="p">),</span> <span class="mi">64</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">meas</span><span class="p">[</span><span class="nx">city</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">v</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Meas</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">meas</span><span class="p">[</span><span class="nx">city</span><span class="p">]</span> <span class="p">=</span> <span class="nx">v</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">v</span><span class="p">.</span><span class="nx">min</span> <span class="p">=</span> <span class="nb">min</span><span class="p">(</span><span class="nx">temp</span><span class="p">,</span> <span class="nx">v</span><span class="p">.</span><span class="nx">min</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">v</span><span class="p">.</span><span class="nx">max</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">temp</span><span class="p">,</span> <span class="nx">v</span><span class="p">.</span><span class="nx">max</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">v</span><span class="p">.</span><span class="nx">sum</span> <span class="o">+=</span> <span class="nx">temp</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">v</span><span class="p">.</span><span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">parseLine</span><span class="p">(</span><span class="nx">buffer</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">city</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">temp</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">next</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">end</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">buffer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">b</span> <span class="o">!=</span> <span class="sc">&#39;\n&#39;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">next</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">end</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl">		<span class="k">break</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">!</span><span class="nx">next</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">buf</span> <span class="p">=</span> <span class="nx">buffer</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">idx</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">buffer</span><span class="p">[:</span><span class="nx">end</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">b</span> <span class="o">==</span> <span class="sc">&#39;;&#39;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">idx</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl">			<span class="k">break</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">city</span> <span class="p">=</span> <span class="nx">buffer</span><span class="p">[:</span><span class="nx">idx</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">temp</span> <span class="p">=</span> <span class="nx">buffer</span><span class="p">[</span><span class="nx">idx</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nx">end</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">buf</span> <span class="p">=</span> <span class="nx">buffer</span><span class="p">[</span><span class="nx">end</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>17497</code>毫秒，<code>17.50秒</code>。减少了约<code>19.32秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="32">3.2<a hidden class="anchor" aria-hidden="true" href="#32">#</a></h4>
+<p>现在，每次<code>city</code>都需要转为<code>string</code>（<code>city := string(cityByte)</code>），然后再去map中查询，这样会平白增加一次不必要的内存分配，可以考虑使用新的<code>hash</code>函数生成<code>key</code>。</p>
+<p>在<code>go</code>标准库中，有<code>hash/fnv</code>和<code>hash/maphash</code>，经过测试，<code>fnv</code>的速度快一些。</p>
+<p>使用<code>fnv</code>重构（map的key类型也要进行相应的修改），这样city只需要分配一次即可：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">    <span class="nx">hash</span><span class="p">.</span><span class="nf">Reset</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">hash</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">cityByte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">key</span> <span class="o">:=</span> <span class="nx">hash</span><span class="p">.</span><span class="nf">Sum64</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">temp</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">ParseFloat</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">tempByte</span><span class="p">),</span> <span class="mi">64</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">meas</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">v</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Meas</span><span class="p">{</span><span class="nx">city</span><span class="p">:</span> <span class="nb">string</span><span class="p">(</span><span class="nx">cityByte</span><span class="p">)}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">meas</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="nx">v</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">v</span><span class="p">.</span><span class="nx">min</span> <span class="p">=</span> <span class="nb">min</span><span class="p">(</span><span class="nx">temp</span><span class="p">,</span> <span class="nx">v</span><span class="p">.</span><span class="nx">min</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">v</span><span class="p">.</span><span class="nx">max</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">temp</span><span class="p">,</span> <span class="nx">v</span><span class="p">.</span><span class="nx">max</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">v</span><span class="p">.</span><span class="nx">sum</span> <span class="o">+=</span> <span class="nx">temp</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">v</span><span class="p">.</span><span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>13060.66</code>毫秒，<code>13.06秒</code>。减少了约<code>4.437秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="33">3.3<a hidden class="anchor" aria-hidden="true" href="#33">#</a></h4>
+<p>通过<code>go</code>的<code>pprof</code>来查看火焰图，进行针对性的优化。在<code>main</code>函数中增加以下代码，以启用<code>cpu pprof</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="o">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="s">&#34;cpu.prof&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span> <span class="p">=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}()</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">pprof</span><span class="p">.</span><span class="nf">StartCPUProfile</span><span class="p">(</span><span class="nx">f</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">defer</span> <span class="nx">pprof</span><span class="p">.</span><span class="nf">StopCPUProfile</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">multiProcess</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">chunks</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以通过以下命令，在浏览器中查看：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">go tool pprof -http<span class="o">=</span>:8080 cpu.prof
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>火焰图：
+<img alt="img.png" loading="lazy" src="/img/flame-graph.png">
+通过查看火焰图可以发现，<code>strconv.ParseFloat</code>比较耗时，官方的实现会涉及很多的处理，但是其实我们都不需要，只是假设全是标准的浮点数就行，类似<code>-1.2</code>，只有一位小数。</p>
+<p>既然假设数据是标准的了，那么可以先将<code>[]byte</code>的浮点数，转为整数，最后计算的时候再转为保留一位小数的浮点数处理：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">parseNumber</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">int64</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">result</span>     <span class="kt">int64</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">isNegative</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">b</span> <span class="o">==</span> <span class="sc">&#39;-&#39;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">isNegative</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">b</span> <span class="o">&gt;=</span> <span class="sc">&#39;0&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">b</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">result</span> <span class="p">=</span> <span class="nx">result</span><span class="o">*</span><span class="mi">10</span> <span class="o">+</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">b</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">isNegative</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">result</span> <span class="p">=</span> <span class="o">-</span><span class="nx">result</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>10576.33</code>毫秒，<code>10.58秒</code>。减少了约<code>2.48秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+      <tr>
+          <td>goroutine-3</td>
+          <td>10576</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="34">3.4<a hidden class="anchor" aria-hidden="true" href="#34">#</a></h4>
+<p>调整<code>rectifyChunk</code>中的校正结束行的逻辑，减少一次读取的<code>buffer</code>为<code>128</code>，一行数据不会很长。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">bufio</span><span class="p">.</span><span class="nf">NewReaderSize</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="mi">128</span><span class="p">).</span><span class="nf">ReadBytes</span><span class="p">(</span><span class="sc">&#39;\n&#39;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>10400.66</code>毫秒，<code>10.40秒</code>。减少了约<code>175.67毫秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+      <tr>
+          <td>goroutine-3</td>
+          <td>10576</td>
+      </tr>
+      <tr>
+          <td>goroutine-4</td>
+          <td>10400</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="35">3.5<a hidden class="anchor" aria-hidden="true" href="#35">#</a></h4>
+<p>通过一番搜索和查阅资料，发现可以再次优化<code>hash</code>速度（参考这个<a href="https://theartincode.stanis.me/008-djb2/">文章</a>）。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">hash</span><span class="p">(</span><span class="nx">name</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">uint64</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">h</span> <span class="kt">uint64</span> <span class="p">=</span> <span class="mi">5381</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">name</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">h</span> <span class="p">=</span> <span class="p">(</span><span class="nx">h</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="nx">h</span> <span class="o">+</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">h</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>10092.33</code>毫秒，<code>10.09秒</code>。减少了约<code>308毫秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+      <tr>
+          <td>goroutine-3</td>
+          <td>10576</td>
+      </tr>
+      <tr>
+          <td>goroutine-4</td>
+          <td>10400</td>
+      </tr>
+      <tr>
+          <td>goroutine-5</td>
+          <td>10092</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="36">3.6<a hidden class="anchor" aria-hidden="true" href="#36">#</a></h4>
+<p>在<code>go1.24</code>中，默认的<code>map</code>实现改为使用<code>swiss map</code>，速度又能带来提升。由于<code>go1.24</code>还未发布（2024.11.23），可以先使用<code>gotip</code>构建：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">gotip build -o opt.out optimize/main.go
+</span></span><span class="line"><span class="cl">./opt.out measurements.txt &gt; opt.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>平均耗时约为<code>8271.33</code>毫秒，<code>8.27秒</code>。减少了约<code>1.82秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+      <tr>
+          <td>goroutine-3</td>
+          <td>10576</td>
+      </tr>
+      <tr>
+          <td>goroutine-4</td>
+          <td>10400</td>
+      </tr>
+      <tr>
+          <td>goroutine-5</td>
+          <td>10092</td>
+      </tr>
+      <tr>
+          <td>goroutine-6（swissmap）</td>
+          <td>8271</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="最终成果">最终成果<a hidden class="anchor" aria-hidden="true" href="#最终成果">#</a></h2>
+<p>平均耗时约为<code>8271.33</code>毫秒，<code>8.27秒</code>。</p>
+<table>
+  <thead>
+      <tr>
+          <th>程序</th>
+          <th>耗时（ms）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>baseline</td>
+          <td>135656</td>
+      </tr>
+      <tr>
+          <td>goroutine</td>
+          <td>36818</td>
+      </tr>
+      <tr>
+          <td>goroutine-1</td>
+          <td>17497</td>
+      </tr>
+      <tr>
+          <td>goroutine-2</td>
+          <td>13060</td>
+      </tr>
+      <tr>
+          <td>goroutine-3</td>
+          <td>10576</td>
+      </tr>
+      <tr>
+          <td>goroutine-4</td>
+          <td>10400</td>
+      </tr>
+      <tr>
+          <td>goroutine-5</td>
+          <td>10092</td>
+      </tr>
+      <tr>
+          <td>goroutine-6（swissmap）</td>
+          <td>8271</td>
+      </tr>
+  </tbody>
+</table>
+<p>对比最初的<code>baseline</code>实现，性能提升了约<code>16.40</code>倍。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>Go 在 Mac 或 Linux 上构建动态库</span>
+  </a>
+</nav>
+
+  </footer><script
+    src="https://giscus.app/client.js"
+    data-repo="zzhaolei/zzhaolei.github.io"
+    data-repo-id="R_kgDOMn_okw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOMn_ok84CiEHA"
+    data-mapping="title"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async
+></script>
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

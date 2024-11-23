@@ -2,7 +2,7 @@
 <html lang="zh" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.138.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.139.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
@@ -141,6 +141,25 @@
 </div>
 
     </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">十亿行挑战
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> 十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）
+原始仓库
+目标 文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为&lt;string: station name&gt;;&lt;double: measurement&gt;，其中测量值精确到一位小数。以下是一些示例行：
+1 2 3 4 5 6 7 8 9 10 Hamburg;12.0 Bulawayo;8.9 Palembang;38.8 St. John&#39;s;15.2 Cracow;12.6 Bridgetown;26.9 Istanbul;6.2 Roseau;34.4 Conakry;31.2 Istanbul;23.0 任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout， 格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;，保留一位小数点）：
+1 {Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...} 限制 只能使用标准库实现。
+生成十亿行挑战所需的数据 克隆原始仓库：
+1 2 3 4 git clone https://github.com/gunnarmorling/1brc cd 1brc/src/main/python python3 create_measurements.py 1000000000 生成的数据会在1brc/measurements.txt，约为15Gi的大小。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-11-23 15:49:21 +0800 CST'>十一月 23, 2024</span>&nbsp;·&nbsp;4 分钟</footer>
+  <a class="entry-link" aria-label="post link to 十亿行挑战" href="http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -294,20 +313,6 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
   </div>
   <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;6 分钟</footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Python源码笔记——Python中的字符串对象
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points. */ } PyCompactUnicodeObject; typedef struct { PyCompactUnicodeObject _base; union { void *any; Py_UCS1 *latin1; Py_UCS2 *ucs2; Py_UCS4 *ucs4; } data; /* Canonical, smallest-form Unicode buffer */ } PyUnicodeObject; 类型对象
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;4 分钟</footer>
-  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的字符串对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
