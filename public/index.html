@@ -145,6 +145,18 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">记录好用的工具
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>用于Go项目 名称 描述 gopkgview 交互式的基于Web的Go包依赖图可视化 gup 更新由go install安装的二进制文件 gsa 分析编译后的Go二进制文件大小的工具，可以清晰的了解每个包或依赖在二进制中占用的大小 mockgen gomock是Go编程语言的模拟框架 nilaway 静态分析工具，用于检测Go代码中的潜在nil恐慌 命令行 名称 描述 bat cat的现代替代品 btop top的现代替代品 delta 用于git、diff、grep和Blame输出的语法高亮分页器 eza ls的现代替代品 fd find的现代替代品 iina 适用于macOS的现代视频播放器 lsd ls的现代替代品 ouch 支持多种格式的压缩和解压缩，tar、zip、7z、gz、rar等 usql 通用SQL数据库命令行界面 rg 一个面向行的搜索工具，它递归地搜索当前目录中的正则表达式模式 rga ripgrep，但还可以搜索PDF、epub、Office文档、zip、tar.gz等 scc 一个类似于cloc、sloccount和tokei的工具。用于统计多种编程语言的代码行数、空白行、注释行和源代码的物理行数 sd sed的现代替代品 zoxide 更智能的cd命令，支持jump </p>
+  </div>
+  <footer class="entry-footer"><span title='2024-11-25 10:20:20 +0800 CST'>十一月 25, 2024</span>&nbsp;·&nbsp;1 分钟</footer>
+  <a class="entry-link" aria-label="post link to 记录好用的工具" href="http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%A5%BD%E7%94%A8%E7%9A%84go%E5%B7%A5%E5%85%B7/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">十亿行挑战
     </h2>
   </header>
@@ -300,19 +312,6 @@ Syscall6 总共接收 7 个参数，第一个是 trap 定义，描述具体的�
   </div>
   <footer class="entry-footer"><span title='2024-09-01 10:09:00 +0800 CST'>九月 1, 2024</span>&nbsp;·&nbsp;3 分钟</footer>
   <a class="entry-link" aria-label="post link to 如何在Go中使用POSIX命名信号量" href="http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Python源码笔记——Python中的列表对象
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>1.列表结构体 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.sort() temporarily sets allocated to -1 to detect mutations. * * Items must normally not be NULL, except during construction when * the list is not yet visible outside the function that builds it. */ Py_ssize_t allocated; } PyListObject; ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素时，实际上是获取的ob_item[0]的元素。ob_item的类型是PyObject*，由此我们可以知道，为什么Python中的list能存储任意对象的数据，这是因为任何Python对象都可以强转为PyObject*的指针类型。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;6 分钟</footer>
-  <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="http://localhost:1313/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

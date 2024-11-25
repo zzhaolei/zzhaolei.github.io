@@ -1,7 +1,7 @@
 +++
 title = 'Go 在 Mac 或 Linux 上构建动态库'
 date = 2024-09-11T10:55:43+08:00
-tags = [ "Go", "C", "zig" ]
+tags = [ "Go", "C", "Zig" ]
 draft = false
 +++
 
