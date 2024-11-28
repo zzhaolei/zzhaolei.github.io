@@ -4,15 +4,15 @@
     <title>lei的博客</title>
     <link>http://localhost:1313/</link>
     <description>Recent content on lei的博客</description>
-    <generator>Hugo -- 0.139.0</generator>
+    <generator>Hugo -- 0.139.2</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 25 Nov 2024 10:20:20 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>记录好用的工具</title>
-      <link>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%A5%BD%E7%94%A8%E7%9A%84go%E5%B7%A5%E5%85%B7/</link>
+      <title>记录常用的各种工具</title>
+      <link>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</link>
       <pubDate>Mon, 25 Nov 2024 10:20:20 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%A5%BD%E7%94%A8%E7%9A%84go%E5%B7%A5%E5%85%B7/</guid>
+      <guid>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</guid>
       <description>&lt;h2 id=&#34;用于go项目&#34;&gt;用于Go项目&lt;/h2&gt;
 &lt;table&gt;
   &lt;thead&gt;
@@ -66,16 +66,20 @@
           &lt;td&gt;用于&lt;code&gt;git&lt;/code&gt;、&lt;code&gt;diff&lt;/code&gt;、&lt;code&gt;grep&lt;/code&gt;和&lt;code&gt;Blame&lt;/code&gt;输出的语法高亮分页器&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
-          &lt;td&gt;&lt;a href=&#34;https://github.com/eza-community/eza&#34;&gt;eza&lt;/a&gt;&lt;/td&gt;
-          &lt;td&gt;&lt;code&gt;ls&lt;/code&gt;的现代替代品&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/sharkdp/fd&#34;&gt;fd&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;&lt;code&gt;find&lt;/code&gt;的现代替代品&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
-          &lt;td&gt;&lt;a href=&#34;https://github.com/iina/iina&#34;&gt;iina&lt;/a&gt;&lt;/td&gt;
-          &lt;td&gt;适用于&lt;code&gt;macOS&lt;/code&gt;的现代视频播放器&lt;/td&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/fullstorydev/grpcurl&#34;&gt;grpcurl&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;与&lt;code&gt;cURL&lt;/code&gt;类似，但针对&lt;code&gt;gRPC&lt;/code&gt;：与&lt;code&gt;gRPC&lt;/code&gt;服务器交互的命令行工具&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/sharkdp/hyperfine&#34;&gt;hyperfine&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;命令行基准测试工具&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/jqlang/jq&#34;&gt;jq&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;命令行&lt;code&gt;JSON&lt;/code&gt;处理器&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/lsd-rs/lsd&#34;&gt;lsd&lt;/a&gt;&lt;/td&gt;
@@ -94,10 +98,6 @@
           &lt;td&gt;一个面向行的搜索工具，它递归地搜索当前目录中的正则表达式模式&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
-          &lt;td&gt;&lt;a href=&#34;https://github.com/phiresky/ripgrep-all&#34;&gt;rga&lt;/a&gt;&lt;/td&gt;
-          &lt;td&gt;&lt;code&gt;ripgrep&lt;/code&gt;，但还可以搜索&lt;code&gt;PDF&lt;/code&gt;、&lt;code&gt;epub&lt;/code&gt;、&lt;code&gt;Office文档&lt;/code&gt;、&lt;code&gt;zip&lt;/code&gt;、&lt;code&gt;tar.gz&lt;/code&gt;等&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/boyter/scc&#34;&gt;scc&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;一个类似于&lt;code&gt;cloc&lt;/code&gt;、&lt;code&gt;sloccount&lt;/code&gt;和&lt;code&gt;tokei&lt;/code&gt;的工具。用于统计多种编程语言的代码行数、空白行、注释行和源代码的物理行数&lt;/td&gt;
       &lt;/tr&gt;
@@ -106,8 +106,27 @@
           &lt;td&gt;&lt;code&gt;sed&lt;/code&gt;的现代替代品&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/sharkdp/vivid&#34;&gt;vivid&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;具有丰富文件类型数据库的主题化&lt;code&gt;LS_COLORS&lt;/code&gt;生成器&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/ajeetdsouza/zoxide&#34;&gt;zoxide&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;更智能的&lt;code&gt;cd&lt;/code&gt;命令，支持&lt;code&gt;jump&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;app&#34;&gt;App&lt;/h2&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;描述&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/iina/iina&#34;&gt;iina&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;适用于&lt;code&gt;macOS&lt;/code&gt;的现代视频播放器&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;</description>
