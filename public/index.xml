@@ -62,6 +62,10 @@
           &lt;td&gt;&lt;code&gt;top&lt;/code&gt;的现代替代品&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/schollz/croc&#34;&gt;croc&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;轻松安全地将内容从一台计算机发送到另一台计算机&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/Wilfred/difftastic&#34;&gt;difft&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;结构化差异，理解语法。也可用于&lt;code&gt;git diff&lt;/code&gt;&lt;/td&gt;
       &lt;/tr&gt;
