@@ -4,7 +4,7 @@
     <title>lei的博客</title>
     <link>http://localhost:1313/</link>
     <description>Recent content on lei的博客</description>
-    <generator>Hugo -- 0.139.3</generator>
+    <generator>Hugo -- 0.139.4</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 25 Nov 2024 10:20:20 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
@@ -62,12 +62,20 @@
           &lt;td&gt;&lt;code&gt;top&lt;/code&gt;的现代替代品&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/rs/curlie&#34;&gt;curlie&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;curl&lt;/code&gt;的力量，&lt;code&gt;httpie&lt;/code&gt;的使用便捷性&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/schollz/croc&#34;&gt;croc&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;轻松安全地将内容从一台计算机发送到另一台计算机&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/Wilfred/difftastic&#34;&gt;difft&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;结构化差异，理解语法。也可用于&lt;code&gt;git diff&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/direnv/direnv&#34;&gt;direnv&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;加载或卸载当前目录（以及目录）的&lt;code&gt;.envrc&lt;/code&gt;或&lt;code&gt;.env&lt;/code&gt;&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/sharkdp/fd&#34;&gt;fd&lt;/a&gt;&lt;/td&gt;
