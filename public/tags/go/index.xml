@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Go on lei的博客</title>
-    <link>http://localhost:1313/tags/go/</link>
+    <link>https://zzhaolei.github.io/tags/go/</link>
     <description>Recent content in Go on lei的博客</description>
-    <generator>Hugo -- 0.139.4</generator>
+    <generator>Hugo -- 0.140.0</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 25 Nov 2024 10:20:20 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://zzhaolei.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>记录常用的各种工具</title>
-      <link>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</link>
+      <link>https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</link>
       <pubDate>Mon, 25 Nov 2024 10:20:20 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/</guid>
       <description>&lt;h2 id=&#34;用于go项目&#34;&gt;用于Go项目&lt;/h2&gt;
 &lt;table&gt;
   &lt;thead&gt;
@@ -98,12 +98,16 @@
           &lt;td&gt;&lt;code&gt;ls&lt;/code&gt;的现代替代品&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/dbcli/mycli&#34;&gt;mycli&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;MySQL&lt;/code&gt;自动补全和语法高亮的终端客户端&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/ouch-org/ouch&#34;&gt;ouch&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;支持多种格式的压缩和解压缩，&lt;code&gt;tar&lt;/code&gt;、&lt;code&gt;zip&lt;/code&gt;、&lt;code&gt;7z&lt;/code&gt;、&lt;code&gt;gz&lt;/code&gt;、&lt;code&gt;rar&lt;/code&gt;等&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
-          &lt;td&gt;&lt;a href=&#34;https://github.com/xo/usql&#34;&gt;usql&lt;/a&gt;&lt;/td&gt;
-          &lt;td&gt;通用&lt;code&gt;SQL&lt;/code&gt;数据库命令行界面&lt;/td&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/dbcli/pgcli&#34;&gt;pgcli&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;Postgres&lt;/code&gt;自动补全和语法高亮的终端客户端&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/BurntSushi/ripgrep&#34;&gt;rg&lt;/a&gt;&lt;/td&gt;
@@ -145,9 +149,9 @@
     </item>
     <item>
       <title>十亿行挑战</title>
-      <link>http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/</link>
+      <link>https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/</link>
       <pubDate>Sat, 23 Nov 2024 15:49:21 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）&lt;/p&gt;
 &lt;p&gt;原始&lt;a href=&#34;https://github.com/gunnarmorling/1brc&#34;&gt;仓库&lt;/a&gt;&lt;/p&gt;
@@ -212,9 +216,9 @@
     </item>
     <item>
       <title>Go 在 Mac 或 Linux 上构建动态库</title>
-      <link>http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</link>
+      <link>https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</link>
       <pubDate>Wed, 11 Sep 2024 10:55:43 +0800</pubDate>
-      <guid>http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</guid>
+      <guid>https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/</guid>
       <description>&lt;p&gt;Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。&lt;/p&gt;
 &lt;p&gt;下面详细讲解一下用法：&lt;/p&gt;
 &lt;h3 id=&#34;go-构建动态库&#34;&gt;Go 构建动态库&lt;/h3&gt;
@@ -263,9 +267,9 @@
     </item>
     <item>
       <title>使用AWS S3 SDK访问阿里云oss</title>
-      <link>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</link>
+      <link>https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</link>
       <pubDate>Sun, 01 Sep 2024 10:14:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/</guid>
       <description>&lt;ul&gt;
 &lt;li&gt;目前业务上使用的是 &lt;code&gt;aws&lt;/code&gt; 的 &lt;code&gt;s3&lt;/code&gt; 服务，但是想兼容阿里云的 &lt;code&gt;oss&lt;/code&gt;。根据&lt;code&gt;oss&lt;/code&gt;的文档描述，&lt;code&gt;oss&lt;/code&gt;支持使用 &lt;code&gt;aws&lt;/code&gt; 的 &lt;code&gt;sdk&lt;/code&gt; 进行访问，所以记录一下处理流程&lt;/li&gt;
 &lt;/ul&gt;
@@ -390,9 +394,9 @@
     </item>
     <item>
       <title>Go设计模式——单例模式</title>
-      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <link>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
       <pubDate>Sun, 01 Sep 2024 10:12:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <guid>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 &lt;p&gt;单例模式同时解决了两个问题：&lt;/p&gt;
 &lt;ul&gt;
@@ -617,9 +621,9 @@
     </item>
     <item>
       <title>Go设计模式——开闭原则</title>
-      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</link>
+      <link>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</link>
       <pubDate>Sun, 01 Sep 2024 10:11:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</guid>
+      <guid>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 &lt;p&gt;简单的说就是：&lt;code&gt;对扩展开放，对修改关闭&lt;/code&gt;。对扩展开放是为了应对需求的变化，对修改关闭就是为了保证已有代码的稳定性，最终是为了让系统更具有弹性，能更好的处理需求。&lt;/p&gt;
 &lt;p&gt;开闭原则也包含了&lt;code&gt;单一职责原则&lt;/code&gt;。&lt;/p&gt;
@@ -699,9 +703,9 @@
     </item>
     <item>
       <title>Go设计模式——单一职责原则</title>
-      <link>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</link>
+      <link>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</link>
       <pubDate>Sun, 01 Sep 2024 10:10:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</guid>
+      <guid>https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 &lt;p&gt;类的职责应该是单一的，对外只提供一种功能，而引起类变化的原因应该只有一个。简单的说就是每一个类只负责自己的事情，只有单一的功能。&lt;/p&gt;
 &lt;p&gt;我们现在以银行工作人员举例：&lt;/p&gt;
@@ -819,9 +823,9 @@
     </item>
     <item>
       <title>如何在Go中使用POSIX命名信号量</title>
-      <link>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
+      <link>https://zzhaolei.github.io/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
       <pubDate>Sun, 01 Sep 2024 10:09:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
       <description>&lt;p&gt;&lt;code&gt;go&lt;/code&gt; 本身提供的 &lt;code&gt;semaphore&lt;/code&gt; 只能在同一个进程多个协程或线程间使用，无法在不同的 &lt;code&gt;go&lt;/code&gt; 进程之间使用，所以本文介绍，如何使用 &lt;code&gt;go&lt;/code&gt; 中的 &lt;code&gt;syscall&lt;/code&gt; 来使用 &lt;code&gt;POSIX&lt;/code&gt; 系统提供的&lt;code&gt;命名信号量&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;go-中的系统调用&#34;&gt;Go 中的系统调用&lt;/h2&gt;
 &lt;p&gt;在 &lt;code&gt;go&lt;/code&gt; 中，系统调用是通过 &lt;code&gt;syscall&lt;/code&gt; 包提供的 &lt;code&gt;Syscall&lt;/code&gt; 函数来进行系统调用的，不同的系统调用有不同的 &lt;code&gt;trap&lt;/code&gt;，以及&lt;code&gt;不同长度的参数&lt;/code&gt;。&lt;/p&gt;
@@ -845,9 +849,9 @@
     </item>
     <item>
       <title>关于Go Modules的一些内容</title>
-      <link>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</link>
+      <link>https://zzhaolei.github.io/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</link>
       <pubDate>Sat, 01 Jun 2019 10:08:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/</guid>
       <description>&lt;h2 id=&#34;启用go-modules&#34;&gt;启用Go Modules&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;go mod&lt;/code&gt;在&lt;code&gt;Go &amp;gt;= 1.13&lt;/code&gt;才默认启用，在&lt;code&gt;Go &amp;gt;= 1.11&lt;/code&gt;已经开始支持了&lt;code&gt;go mod&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;设置环境变量&lt;/p&gt;

@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Jenkins on lei的博客</title>
-    <link>http://localhost:1313/tags/jenkins/</link>
+    <link>https://zzhaolei.github.io/tags/jenkins/</link>
     <description>Recent content in Jenkins on lei的博客</description>
-    <generator>Hugo -- 0.139.4</generator>
+    <generator>Hugo -- 0.140.0</generator>
     <language>zh</language>
     <lastBuildDate>Sat, 01 Jun 2019 10:07:00 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://zzhaolei.github.io/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Jenkins处理GitLab Hook</title>
-      <link>http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</link>
+      <link>https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</link>
       <pubDate>Sat, 01 Jun 2019 10:07:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</guid>
+      <guid>https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/</guid>
       <description>&lt;p&gt;&lt;code&gt;jenkins&lt;/code&gt;安装&lt;code&gt;Generic Webhook Trigger Plugin&lt;/code&gt;插件&lt;/p&gt;
 &lt;p&gt;{% asset_img Generic_Webhook_Trgger.png Generic\ Webhook\ Trgger具体配置 %}&lt;/p&gt;
 &lt;p&gt;创建任务，在&lt;code&gt;构建触发器中&lt;/code&gt;勾选&lt;code&gt;Generic Webhook Trigger&lt;/code&gt;, 在展开的页面中会有一个&lt;code&gt;URL&lt;/code&gt;, 这个&lt;code&gt;URL&lt;/code&gt;是配置&lt;code&gt;Webhook&lt;/code&gt;使用的，一般形式是&lt;code&gt;http://JENKINS_URL/generic-webhook-trigger/invoke&lt;/code&gt;, &lt;code&gt;JENKINS_URL&lt;/code&gt;是初始配置&lt;code&gt;jenkins&lt;/code&gt;时会有的，一般是&lt;code&gt;http://IP:8080&lt;/code&gt;的形式。&lt;/p&gt;
@@ -173,9 +173,9 @@
     </item>
     <item>
       <title>Jenkins与RocketChat集成</title>
-      <link>http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</link>
+      <link>https://zzhaolei.github.io/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</link>
       <pubDate>Sat, 01 Jun 2019 10:06:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</guid>
+      <guid>https://zzhaolei.github.io/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/</guid>
       <description>&lt;h2 id=&#34;jenkins与rocketchat集成&#34;&gt;Jenkins与RocketChat集成&lt;/h2&gt;
 &lt;h3 id=&#34;在jenkins中安装插件rocketchat-notifier&#34;&gt;在Jenkins中安装插件RocketChat Notifier&lt;/h3&gt;
 &lt;h3 id=&#34;配置信息&#34;&gt;配置信息&lt;/h3&gt;
@@ -188,9 +188,9 @@
     </item>
     <item>
       <title>Jenkins&#43;Python&#43;GitLab持续集成</title>
-      <link>http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</link>
+      <link>https://zzhaolei.github.io/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</link>
       <pubDate>Sat, 01 Jun 2019 10:05:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</guid>
+      <guid>https://zzhaolei.github.io/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/</guid>
       <description>&lt;h2 id=&#34;创建任务&#34;&gt;创建任务&lt;/h2&gt;
 &lt;p&gt;登录&lt;code&gt;Jenkins&lt;/code&gt;，点击左侧列表的&lt;code&gt;新建&lt;/code&gt;选项。输入任务名称，选择&lt;code&gt;构建一个自由风格的软件项目&lt;/code&gt;，点击&lt;code&gt;确定&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;配置&#34;&gt;配置&lt;/h2&gt;
@@ -212,9 +212,9 @@
     </item>
     <item>
       <title>Jenkins&#43;Git子模块自动拉取代码</title>
-      <link>http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</link>
+      <link>https://zzhaolei.github.io/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</link>
       <pubDate>Sat, 01 Jun 2019 10:04:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</guid>
+      <guid>https://zzhaolei.github.io/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/</guid>
       <description>&lt;h2 id=&#34;jenkinsgit子模块自动拉取代码&#34;&gt;jenkins+Git子模块自动拉取代码&lt;/h2&gt;
 &lt;p&gt;添加Git子模块
 先克隆想要添加子模块的仓库&lt;code&gt;git clone ssh://git@ip:port/user/project.git&lt;/code&gt;，这个是主目录。&lt;/p&gt;
@@ -234,9 +234,9 @@
     </item>
     <item>
       <title>Jenkins Email Extension插件模板</title>
-      <link>http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</link>
+      <link>https://zzhaolei.github.io/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</link>
       <pubDate>Sat, 01 Jun 2019 10:03:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</guid>
+      <guid>https://zzhaolei.github.io/posts/jenkins-email-extension%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF/</guid>
       <description>&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;  1

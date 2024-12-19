@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Docker on lei的博客</title>
-    <link>http://localhost:1313/tags/docker/</link>
+    <link>https://zzhaolei.github.io/tags/docker/</link>
     <description>Recent content in Docker on lei的博客</description>
-    <generator>Hugo -- 0.139.4</generator>
+    <generator>Hugo -- 0.140.0</generator>
     <language>zh</language>
     <lastBuildDate>Sun, 01 Sep 2024 10:13:00 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://zzhaolei.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>通过docker配置MySQL主从服务</title>
-      <link>http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</link>
+      <link>https://zzhaolei.github.io/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</link>
       <pubDate>Sun, 01 Sep 2024 10:13:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</guid>
+      <guid>https://zzhaolei.github.io/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/</guid>
       <description>&lt;h2 id=&#34;目录结构&#34;&gt;目录结构&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -94,9 +94,9 @@
     </item>
     <item>
       <title>Docker安装GitLab Runner</title>
-      <link>http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</link>
+      <link>https://zzhaolei.github.io/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</link>
       <pubDate>Sat, 01 Jun 2019 10:01:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</guid>
+      <guid>https://zzhaolei.github.io/posts/docker%E5%AE%89%E8%A3%85gitlab-runner/</guid>
       <description>&lt;p&gt;&lt;code&gt;docker pull gitlab/gitlab-runner:latest&lt;/code&gt;安装&lt;code&gt;gitlab-runner&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;打开自己搭建的&lt;code&gt;GitLab&lt;/code&gt;网站，点击顶栏的&lt;code&gt;Snippets&lt;/code&gt;后面的小扳手，再点击左侧列表中&lt;code&gt;Overview&lt;/code&gt;中的&lt;code&gt;Runners&lt;/code&gt;，在打开的网页下面，可以看到&lt;code&gt;How to setup a shared Runner for a new project&lt;/code&gt;行，&lt;code&gt;2是Runners设置时需要指定的URL,3是在设置是的Runners&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;运行镜像&#34;&gt;运行镜像&lt;/h2&gt;

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>使用AWS S3 SDK访问阿里云oss | lei的博客</title>
 <meta name="keywords" content="Go">
 <meta name="description" content="
@@ -129,16 +129,16 @@ func main() {
 
 这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
+<link rel="canonical" href="https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zzhaolei.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zzhaolei.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
+<link rel="alternate" hreflang="zh" href="https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
 <noscript>
     <style>
         #theme-toggle,
@@ -175,7 +175,190 @@ func main() {
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/">
+  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:title" content="使用AWS S3 SDK访问阿里云oss">
+  <meta property="og:description" content=" 目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 package main import ( &#34;context&#34; &#34;log&#34; &#34;os&#34; &#34;github.com/aws/aws-sdk-go-v2/aws&#34; &#34;github.com/aws/aws-sdk-go-v2/config&#34; &#34;github.com/aws/aws-sdk-go-v2/credentials&#34; &#34;github.com/aws/aws-sdk-go-v2/service/s3&#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;) accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: &#34;aws-cn&#34;, URL: &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;, SigningRegion: &#34;cn-northwest-1&#34;, }, nil }), ), ) if err != nil { log.Fatal(err) } return s3.NewFromConfig(cfg, func(o *s3.Options) { // 此选项可用于调试 // o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody o.UsePathStyle = true }) } func main() { bucket := os.Getenv(&#34;S3_BUCKET&#34;) uploadKey := os.Getenv(&#34;S3_KEY&#34;) file, _ := os.Open(&#34;test.txt&#34;) client := NewS3Client() _, err := client.PutObject(context.Background(), &amp;s3.PutObjectInput{ Bucket: aws.String(bucket), Key: aws.String(uploadKey), Body: file, }) if err != nil { log.Fatal(err) } } 这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-09-01T10:14:00+08:00">
+    <meta property="article:modified_time" content="2024-09-01T10:14:00+08:00">
+    <meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用AWS S3 SDK访问阿里云oss">
+<meta name="twitter:description" content="
+目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程
+
+访问AWS S3
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+
+
+package main
+
+import (
+	&#34;context&#34;
+	&#34;log&#34;
+	&#34;os&#34;
+
+	&#34;github.com/aws/aws-sdk-go-v2/aws&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/config&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/credentials&#34;
+	&#34;github.com/aws/aws-sdk-go-v2/service/s3&#34;
+)
+
+func NewS3Client() *s3.Client {
+	accessKeyID := os.Getenv(&#34;ACCESS_KEY_ID&#34;)
+	accessKeySecret := os.Getenv(&#34;ACCESS_KEY_SECRET&#34;)
+
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, &#34;&#34;)),
+		config.WithEndpointResolverWithOptions(
+			aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) {
+				return aws.Endpoint{
+					PartitionID:   &#34;aws-cn&#34;,
+					URL:           &#34;https://s3.cn-northwest-1.amazonaws.com.cn&#34;,
+					SigningRegion: &#34;cn-northwest-1&#34;,
+				}, nil
+			}),
+		),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return s3.NewFromConfig(cfg, func(o *s3.Options) {
+		// 此选项可用于调试
+		// o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody
+		o.UsePathStyle = true
+	})
+}
+
+func main() {
+	bucket := os.Getenv(&#34;S3_BUCKET&#34;)
+	uploadKey := os.Getenv(&#34;S3_KEY&#34;)
+	file, _ := os.Open(&#34;test.txt&#34;)
+
+	client := NewS3Client()
+	_, err := client.PutObject(context.Background(), &amp;s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(uploadKey),
+		Body:   file,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+
+这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zzhaolei.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "使用AWS S3 SDK访问阿里云oss",
+      "item": "https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "使用AWS S3 SDK访问阿里云oss",
+  "name": "使用AWS S3 SDK访问阿里云oss",
+  "description": " 目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 package main import ( \u0026#34;context\u0026#34; \u0026#34;log\u0026#34; \u0026#34;os\u0026#34; \u0026#34;github.com/aws/aws-sdk-go-v2/aws\u0026#34; \u0026#34;github.com/aws/aws-sdk-go-v2/config\u0026#34; \u0026#34;github.com/aws/aws-sdk-go-v2/credentials\u0026#34; \u0026#34;github.com/aws/aws-sdk-go-v2/service/s3\u0026#34; ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(\u0026#34;ACCESS_KEY_ID\u0026#34;) accessKeySecret := os.Getenv(\u0026#34;ACCESS_KEY_SECRET\u0026#34;) cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, \u0026#34;\u0026#34;)), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: \u0026#34;aws-cn\u0026#34;, URL: \u0026#34;https://s3.cn-northwest-1.amazonaws.com.cn\u0026#34;, SigningRegion: \u0026#34;cn-northwest-1\u0026#34;, }, nil }), ), ) if err != nil { log.Fatal(err) } return s3.NewFromConfig(cfg, func(o *s3.Options) { // 此选项可用于调试 // o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody o.UsePathStyle = true }) } func main() { bucket := os.Getenv(\u0026#34;S3_BUCKET\u0026#34;) uploadKey := os.Getenv(\u0026#34;S3_KEY\u0026#34;) file, _ := os.Open(\u0026#34;test.txt\u0026#34;) client := NewS3Client() _, err := client.PutObject(context.Background(), \u0026amp;s3.PutObjectInput{ Bucket: aws.String(bucket), Key: aws.String(uploadKey), Body: file, }) if err != nil { log.Fatal(err) } } 这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。\n",
+  "keywords": [
+    "Go"
+  ],
+  "articleBody": " 目前业务上使用的是 aws 的 s3 服务，但是想兼容阿里云的 oss。根据oss的文档描述，oss支持使用 aws 的 sdk 进行访问，所以记录一下处理流程 访问AWS S3 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 package main import ( \"context\" \"log\" \"os\" \"github.com/aws/aws-sdk-go-v2/aws\" \"github.com/aws/aws-sdk-go-v2/config\" \"github.com/aws/aws-sdk-go-v2/credentials\" \"github.com/aws/aws-sdk-go-v2/service/s3\" ) func NewS3Client() *s3.Client { accessKeyID := os.Getenv(\"ACCESS_KEY_ID\") accessKeySecret := os.Getenv(\"ACCESS_KEY_SECRET\") cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, \"\")), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: \"aws-cn\", URL: \"https://s3.cn-northwest-1.amazonaws.com.cn\", SigningRegion: \"cn-northwest-1\", }, nil }), ), ) if err != nil { log.Fatal(err) } return s3.NewFromConfig(cfg, func(o *s3.Options) { // 此选项可用于调试 // o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody o.UsePathStyle = true }) } func main() { bucket := os.Getenv(\"S3_BUCKET\") uploadKey := os.Getenv(\"S3_KEY\") file, _ := os.Open(\"test.txt\") client := NewS3Client() _, err := client.PutObject(context.Background(), \u0026s3.PutObjectInput{ Bucket: aws.String(bucket), Key: aws.String(uploadKey), Body: file, }) if err != nil { log.Fatal(err) } } 这是一个简单的 s3 文件上传，通过在 PutObjectInput 中指定Bucket 参数的形式。\n使用 AWS SDK 访问阿里云 OSS 基于安全考虑，OSS仅支持virtual hosted访问方式。所以在S3迁移至OSS后，客户端应用需要进行相应设置。部分S3工具默认使用Path style，也需要进行相应配置，否则可能导致OSS报错，并禁止访问。\nVirtual hosted style是指将Bucket置于Host Header的访问方式。示例：\n1 https://bucket-name.oss-cn-beijing.aliyuncs.com 基于阿里云的访问方式，我们需要对上面的代码进行一点点的修改：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 func NewS3Client(bucket string) *s3.Client { cfg, err := config.LoadDefaultConfig( // ... // 修改返回的 endpoint 为阿里云的服务 return aws.Endpoint{ PartitionID: \"oss\", URL: fmt.Sprintf(\"https://%s.oss-cn-beijing.aliyuncs.com\", bucket), SigningRegion: \"cn-beijing\", }, nil }), ), ) // ... return s3.NewFromConfig(cfg, func(o *s3.Options) { o.UsePathStyle = true }) } func main() { // ... client := NewS3Client(bucket) // ... } 需要注意的是 aws.Endpoint 的 URL 字段的修改，一定要符合 oss 的访问约束。\n而且在最后也需要设置o.UsePathStyle = true的选项。\n其他的用法不变。\n用于访问阿里云 OSS 的完整的代码如下：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 package main import ( \"context\" \"fmt\" \"log\" \"os\" \"github.com/aws/aws-sdk-go-v2/aws\" \"github.com/aws/aws-sdk-go-v2/config\" \"github.com/aws/aws-sdk-go-v2/credentials\" \"github.com/aws/aws-sdk-go-v2/service/s3\" ) func NewS3Client(bucket string) *s3.Client { accessKeyID := os.Getenv(\"ACCESS_KEY_ID\") accessKeySecret := os.Getenv(\"ACCESS_KEY_SECRET\") cfg, err := config.LoadDefaultConfig( context.TODO(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, accessKeySecret, \"\")), config.WithEndpointResolverWithOptions( aws.EndpointResolverWithOptionsFunc(func(_, _ string, _ ...interface{}) (aws.Endpoint, error) { return aws.Endpoint{ PartitionID: \"oss\", URL: fmt.Sprintf(\"https://%s.oss-cn-beijing.aliyuncs.com\", bucket), SigningRegion: \"cn-beijing\", }, nil }), ), ) if err != nil { log.Fatal(err) } return s3.NewFromConfig(cfg, func(o *s3.Options) { o.UsePathStyle = true }) } func main() { bucket := os.Getenv(\"S3_BUCKET\") uploadKey := os.Getenv(\"S3_KEY\") file, _ := os.Open(\"test.txt\") client := NewS3Client(bucket) _, err := client.PutObject(context.Background(), \u0026s3.PutObjectInput{ Bucket: aws.String(bucket), Key: aws.String(uploadKey), Body: file, }) if err != nil { log.Fatal(err) } } 阿里云 OSS 迁移文档\n",
+  "wordCount" : "457",
+  "inLanguage": "zh",
+  "datePublished": "2024-09-01T10:14:00+08:00",
+  "dateModified": "2024-09-01T10:14:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zzhaolei.github.io/posts/%E4%BD%BF%E7%94%A8aws-s3-sdk%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91oss/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lei的博客",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zzhaolei.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -193,7 +376,7 @@ func main() {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -219,17 +402,17 @@ func main() {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archive/" title="归档">
+                <a href="https://zzhaolei.github.io/archive/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://zzhaolei.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="标签">
+                <a href="https://zzhaolei.github.io/tags/" title="标签">
                     <span>标签</span>
                 </a>
             </li>
@@ -574,15 +757,15 @@ func main() {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+      <li><a href="https://zzhaolei.github.io/tags/go/">Go</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
+  <a class="prev" href="https://zzhaolei.github.io/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
     <span class="title">« 上一页</span>
     <br>
     <span>Rust main 函数是如何被执行的</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
+  <a class="next" href="https://zzhaolei.github.io/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
     <span class="title">下一页 »</span>
     <br>
     <span>通过docker配置MySQL主从服务</span>
@@ -610,7 +793,7 @@ func main() {
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
+        <span>&copy; 2024 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
 
     <span>
         Powered by

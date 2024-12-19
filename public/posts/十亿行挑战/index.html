@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>十亿行挑战 | lei的博客</title>
 <meta name="keywords" content="Go">
 <meta name="description" content="
@@ -69,16 +69,16 @@ python3 create_measurements.py 1000000000
 
 生成的数据会在1brc/measurements.txt，约为15Gi的大小。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
+<link rel="canonical" href="https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zzhaolei.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zzhaolei.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
+<link rel="alternate" hreflang="zh" href="https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
 <noscript>
     <style>
         #theme-toggle,
@@ -115,7 +115,136 @@ python3 create_measurements.py 1000000000
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/">
+  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:title" content="十亿行挑战">
+  <meta property="og:description" content=" 十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）
+原始仓库
+目标 文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为&lt;string: station name&gt;;&lt;double: measurement&gt;，其中测量值精确到一位小数。以下是一些示例行：
+1 2 3 4 5 6 7 8 9 10 Hamburg;12.0 Bulawayo;8.9 Palembang;38.8 St. John&#39;s;15.2 Cracow;12.6 Bridgetown;26.9 Istanbul;6.2 Roseau;34.4 Conakry;31.2 Istanbul;23.0 任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout， 格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;，保留一位小数点）：
+1 {Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...} 限制 只能使用标准库实现。
+生成十亿行挑战所需的数据 克隆原始仓库：
+1 2 3 4 git clone https://github.com/gunnarmorling/1brc cd 1brc/src/main/python python3 create_measurements.py 1000000000 生成的数据会在1brc/measurements.txt，约为15Gi的大小。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-23T15:49:21+08:00">
+    <meta property="article:modified_time" content="2024-11-23T15:49:21+08:00">
+    <meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="十亿行挑战">
+<meta name="twitter:description" content="
+十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）
+原始仓库
+
+目标
+文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为&lt;string: station name&gt;;&lt;double: measurement&gt;，其中测量值精确到一位小数。以下是一些示例行：
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+
+
+Hamburg;12.0
+Bulawayo;8.9
+Palembang;38.8
+St. John&#39;s;15.2
+Cracow;12.6
+Bridgetown;26.9
+Istanbul;6.2
+Roseau;34.4
+Conakry;31.2
+Istanbul;23.0
+
+
+任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout，
+格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;，保留一位小数点）：
+
+
+1
+
+
+{Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...}
+
+
+限制
+只能使用标准库实现。
+生成十亿行挑战所需的数据
+克隆原始仓库：
+
+
+1
+2
+3
+4
+
+
+git clone https://github.com/gunnarmorling/1brc
+
+cd 1brc/src/main/python
+python3 create_measurements.py 1000000000
+
+
+生成的数据会在1brc/measurements.txt，约为15Gi的大小。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zzhaolei.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "十亿行挑战",
+      "item": "https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "十亿行挑战",
+  "name": "十亿行挑战",
+  "description": " 十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）\n原始仓库\n目标 文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为\u0026lt;string: station name\u0026gt;;\u0026lt;double: measurement\u0026gt;，其中测量值精确到一位小数。以下是一些示例行：\n1 2 3 4 5 6 7 8 9 10 Hamburg;12.0 Bulawayo;8.9 Palembang;38.8 St. John\u0026#39;s;15.2 Cracow;12.6 Bridgetown;26.9 Istanbul;6.2 Roseau;34.4 Conakry;31.2 Istanbul;23.0 任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout， 格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为\u0026lt;min\u0026gt;/\u0026lt;mean\u0026gt;/\u0026lt;max\u0026gt;，保留一位小数点）：\n1 {Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...} 限制 只能使用标准库实现。\n生成十亿行挑战所需的数据 克隆原始仓库：\n1 2 3 4 git clone https://github.com/gunnarmorling/1brc cd 1brc/src/main/python python3 create_measurements.py 1000000000 生成的数据会在1brc/measurements.txt，约为15Gi的大小。\n",
+  "keywords": [
+    "Go"
+  ],
+  "articleBody": " 十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）\n原始仓库\n目标 文本文件包含了一系列气象站的温度值。 每行是一个测量值，格式为;，其中测量值精确到一位小数。以下是一些示例行：\n1 2 3 4 5 6 7 8 9 10 Hamburg;12.0 Bulawayo;8.9 Palembang;38.8 St. John's;15.2 Cracow;12.6 Bridgetown;26.9 Istanbul;6.2 Roseau;34.4 Conakry;31.2 Istanbul;23.0 任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout， 格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为//，保留一位小数点）：\n1 {Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...} 限制 只能使用标准库实现。\n生成十亿行挑战所需的数据 克隆原始仓库：\n1 2 3 4 git clone https://github.com/gunnarmorling/1brc cd 1brc/src/main/python python3 create_measurements.py 1000000000 生成的数据会在1brc/measurements.txt，约为15Gi的大小。\n实现 机器配置：\n1 2 3 4 5 goos: darwin goarch: arm64 pkg: demo cpu: Apple M2 core: 8 下面是一步步进行优化的顺序：\n1. 基础结果 将生成的measurements.txt文件软链到当前目录：\n1 ln -s /1brc/data/measurements.txt measurements.txt 先编译，然后再执行，这样可以忽略掉编译所造成的耗时：\n1 2 go build -o base.out baseline/main.go ./base.out measurements.txt \u003e base.txt base.txt是基线结果，后续的优化可以和这个结果进行对比。\n这将会打印毫秒的耗时信息，执行三次，取其平均数为135656毫秒，耗时约为135.66秒。\n程序 耗时（ms） baseline 135656 2. 协程 将文件分块，并使用协程进行处理。协程数量需要调试出一个合适的值，这里使用的是25。\n1 2 go build -o go.out goroutine/main.go ./go.out measurements.txt \u003e go.txt 和base.txt进行对比，看是否有差异：\n1 diff --side-by-side --suppress-common-lines base.txt go.txt 命令的输出结果应该显示没有差异，并且命令的退出状态码为0。\n取三次结果的平均数约为36818毫秒，耗时为36.812秒。减少了约98.84秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 3 更多优化 3.1 不使用scanner，改为直接读取固定缓冲区的方案。\n这样做可以减少对line和args的内存分配，直接引用buffer的内存，延后到对map操作时再解析。 手动解析换行符和城市、温度，引用buffer的内存，也可以减少直接分配。\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 func scan(r io.Reader, meas map[string]*Meas) { buffer := make([]byte, BufferSize) remain := make([]byte, 0, BufferSize) for { n, _ := r.Read(buffer[:len(buffer)-len(remain)]) if n == 0 { break } remain = append(remain, buffer[:n]...) var ( cityByte []byte tempByte []byte next bool newBuf = remain ) for { cityByte, tempByte, newBuf, next = parseLine(newBuf) if !next { // 没有下一行，退出循环重新读取 copy(remain, newBuf) remain = remain[:len(newBuf)] break } city := string(cityByte) temp, _ := strconv.ParseFloat(string(tempByte), 64) v, ok := meas[city] if !ok { v = \u0026Meas{} meas[city] = v } v.min = min(temp, v.min) v.max = max(temp, v.max) v.sum += temp v.count += 1 } } } func parseLine(buffer []byte) (city []byte, temp []byte, buf []byte, next bool) { end := 0 for i, b := range buffer { if b != '\\n' { continue } next = true end = i break } if !next { buf = buffer return } idx := 0 for i, b := range buffer[:end] { if b == ';' { idx = i break } } city = buffer[:idx] temp = buffer[idx+1 : end] buf = buffer[end+1:] return } 平均耗时约为17497毫秒，17.50秒。减少了约19.32秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 3.2 现在，每次city都需要转为string（city := string(cityByte)），然后再去map中查询，这样会平白增加一次不必要的内存分配，可以考虑使用新的hash函数生成key。\n在go标准库中，有hash/fnv和hash/maphash，经过测试，fnv的速度快一些。\n使用fnv重构（map的key类型也要进行相应的修改），这样city只需要分配一次即可：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 hash.Reset() _, _ = hash.Write(cityByte) key := hash.Sum64() temp, _ := strconv.ParseFloat(string(tempByte), 64) v, ok := meas[key] if !ok { v = \u0026Meas{city: string(cityByte)} meas[key] = v } v.min = min(temp, v.min) v.max = max(temp, v.max) v.sum += temp v.count += 1 平均耗时约为13060.66毫秒，13.06秒。减少了约4.437秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 3.3 通过go的pprof来查看火焰图，进行针对性的优化。在main函数中增加以下代码，以启用cpu pprof：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ... f, err := os.Create(\"cpu.prof\") if err != nil { log.Fatal(err) } defer func() { _ = f.Close() }() if err := pprof.StartCPUProfile(f); err != nil { log.Fatal(err) } defer pprof.StopCPUProfile() multiProcess(data, chunks) 可以通过以下命令，在浏览器中查看：\n1 go tool pprof -http=:8080 cpu.prof 火焰图： 通过查看火焰图可以发现，strconv.ParseFloat比较耗时，官方的实现会涉及很多的处理，但是其实我们都不需要，只是假设全是标准的浮点数就行，类似-1.2，只有一位小数。\n既然假设数据是标准的了，那么可以先将[]byte的浮点数，转为整数，最后计算的时候再转为保留一位小数的浮点数处理：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 func parseNumber(data []byte) int64 { var ( result int64 isNegative bool ) for _, b := range data { if b == '-' { isNegative = true continue } if b \u003e= '0' \u0026\u0026 b \u003c= '9' { result = result*10 + int64(b-'0') } } if isNegative { result = -result } return result } 平均耗时约为10576.33毫秒，10.58秒。减少了约2.48秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 goroutine-3 10576 3.4 调整rectifyChunk中的校正结束行的逻辑，减少一次读取的buffer为128，一行数据不会很长。\n1 bufio.NewReaderSize(file, 128).ReadBytes('\\n') 平均耗时约为10400.66毫秒，10.40秒。减少了约175.67毫秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 goroutine-3 10576 goroutine-4 10400 3.5 通过一番搜索和查阅资料，发现可以再次优化hash速度（参考这个文章）。\n1 2 3 4 5 6 7 func hash(name []byte) uint64 { var h uint64 = 5381 for _, b := range name { h = (h \u003c\u003c 5) + h + uint64(b) } return h } 平均耗时约为10092.33毫秒，10.09秒。减少了约308毫秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 goroutine-3 10576 goroutine-4 10400 goroutine-5 10092 3.6 在go1.24中，默认的map实现改为使用swiss map，速度又能带来提升。由于go1.24还未发布（2024.11.23），可以先使用gotip构建：\n1 2 gotip build -o opt.out optimize/main.go ./opt.out measurements.txt \u003e opt.txt 平均耗时约为8271.33毫秒，8.27秒。减少了约1.82秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 goroutine-3 10576 goroutine-4 10400 goroutine-5 10092 goroutine-6（swissmap） 8271 最终成果 平均耗时约为8271.33毫秒，8.27秒。\n程序 耗时（ms） baseline 135656 goroutine 36818 goroutine-1 17497 goroutine-2 13060 goroutine-3 10576 goroutine-4 10400 goroutine-5 10092 goroutine-6（swissmap） 8271 对比最初的baseline实现，性能提升了约16.40倍。\n",
+  "wordCount" : "754",
+  "inLanguage": "zh",
+  "datePublished": "2024-11-23T15:49:21+08:00",
+  "dateModified": "2024-11-23T15:49:21+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zzhaolei.github.io/posts/%E5%8D%81%E4%BA%BF%E8%A1%8C%E6%8C%91%E6%88%98/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lei的博客",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zzhaolei.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -133,7 +262,7 @@ python3 create_measurements.py 1000000000
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -159,17 +288,17 @@ python3 create_measurements.py 1000000000
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archive/" title="归档">
+                <a href="https://zzhaolei.github.io/archive/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://zzhaolei.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="标签">
+                <a href="https://zzhaolei.github.io/tags/" title="标签">
                     <span>标签</span>
                 </a>
             </li>
@@ -969,15 +1098,15 @@ python3 create_measurements.py 1000000000
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+      <li><a href="https://zzhaolei.github.io/tags/go/">Go</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/">
+  <a class="prev" href="https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/">
     <span class="title">« 上一页</span>
     <br>
     <span>记录常用的各种工具</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
+  <a class="next" href="https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
     <span class="title">下一页 »</span>
     <br>
     <span>Go 在 Mac 或 Linux 上构建动态库</span>
@@ -1005,7 +1134,7 @@ python3 create_measurements.py 1000000000
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
+        <span>&copy; 2024 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
 
     <span>
         Powered by

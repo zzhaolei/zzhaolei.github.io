@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Go设计模式——单例模式 | lei的博客</title>
 <meta name="keywords" content="Go">
 <meta name="description" content="介绍
@@ -229,16 +229,16 @@ ok  	design-pattern/tests	3.798s
 
 根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+<link rel="canonical" href="https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zzhaolei.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zzhaolei.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+<link rel="alternate" hreflang="zh" href="https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 <noscript>
     <style>
         #theme-toggle,
@@ -275,7 +275,292 @@ ok  	design-pattern/tests	3.798s
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:title" content="Go设计模式——单例模式">
+  <meta property="og:description" content="介绍 单例模式同时解决了两个问题：
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = &amp;File{} } func GetInstance() *File { return singleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( &#34;testing&#34; &#34;design-pattern/singleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.GetInstance()) } }) } 懒汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 // Package lazysingleton 懒汉式单例 package lazysingleton import &#34;sync&#34; var ( lazySingleton *File once sync.Once ) type File struct{} func GetLazyInstance() *File { if lazySingleton == nil { // 使用sync.Once来确保单例在并发时只被初始化一次 once.Do(func() { lazySingleton = &amp;File{} }) } return lazySingleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( &#34;testing&#34; &#34;design-pattern/lazysingleton&#34; &#34;github.com/stretchr/testify/assert&#34; ) // TestLazySingleton 测试懒汉式单例 func TestLazyInstance(t *testing.T) { assert.Equal(t, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } // BenchmarkGetLazyInstance 测试懒汉式单例 func BenchmarkGetLazyInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } }) } 测试结果 1 2 3 4 5 6 7 8 ❯ go test -bench . goos: darwin goarch: arm64 pkg: design-pattern/tests BenchmarkGetLazyInstance-8 3113553	380.8 ns/op BenchmarkInstance-8 3156261	378.5 ns/op PASS ok design-pattern/tests	3.798s 根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-09-01T10:12:00+08:00">
+    <meta property="article:modified_time" content="2024-09-01T10:12:00+08:00">
+    <meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go设计模式——单例模式">
+<meta name="twitter:description" content="介绍
+单例模式同时解决了两个问题：
+
+保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限
+为该实例提供一个全局访问节点
+
+在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。
+饿汉式
+代码
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+
+
+// Package singleton
+package singleton
+
+// singleton 饿汉式
+var singleton *File
+
+type File struct{}
+
+func init() {
+	singleton = &amp;File{}
+}
+
+func GetInstance() *File {
+	return singleton
+}
+
+
+单元测试
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+
+
+package tests
+
+import (
+	&#34;testing&#34;
+
+	&#34;design-pattern/singleton&#34;
+	&#34;github.com/stretchr/testify/assert&#34;
+)
+
+// TestSingleton 测试单例
+func TestInstance(t *testing.T) {
+	assert.Equal(t, singleton.GetInstance(), singleton.GetInstance())
+}
+
+// BenchmarkSingleton 测试并发访问单例
+func BenchmarkInstance(b *testing.B) {
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			assert.Equal(b, singleton.GetInstance(), singleton.GetInstance())
+		}
+	})
+}
+
+
+懒汉式
+代码
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+
+
+// Package lazysingleton 懒汉式单例
+package lazysingleton
+
+import &#34;sync&#34;
+
+var (
+	lazySingleton *File
+	once          sync.Once
+)
+
+type File struct{}
+
+func GetLazyInstance() *File {
+	if lazySingleton == nil {
+		// 使用sync.Once来确保单例在并发时只被初始化一次
+		once.Do(func() {
+			lazySingleton = &amp;File{}
+		})
+	}
+	return lazySingleton
+}
+
+
+单元测试
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+
+
+package tests
+
+import (
+	&#34;testing&#34;
+
+	&#34;design-pattern/lazysingleton&#34;
+	&#34;github.com/stretchr/testify/assert&#34;
+)
+
+// TestLazySingleton 测试懒汉式单例
+func TestLazyInstance(t *testing.T) {
+	assert.Equal(t, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance())
+}
+
+// BenchmarkGetLazyInstance 测试懒汉式单例
+func BenchmarkGetLazyInstance(b *testing.B) {
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			assert.Equal(b, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance())
+		}
+	})
+}
+
+
+测试结果
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+❯ go test -bench .
+goos: darwin
+goarch: arm64
+pkg: design-pattern/tests
+BenchmarkGetLazyInstance-8   	 3113553	       380.8 ns/op
+BenchmarkInstance-8          	 3156261	       378.5 ns/op
+PASS
+ok  	design-pattern/tests	3.798s
+
+
+根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zzhaolei.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Go设计模式——单例模式",
+      "item": "https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Go设计模式——单例模式",
+  "name": "Go设计模式——单例模式",
+  "description": "介绍 单例模式同时解决了两个问题：\n保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。\n饿汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = \u0026amp;File{} } func GetInstance() *File { return singleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( \u0026#34;testing\u0026#34; \u0026#34;design-pattern/singleton\u0026#34; \u0026#34;github.com/stretchr/testify/assert\u0026#34; ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.GetInstance()) } }) } 懒汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 // Package lazysingleton 懒汉式单例 package lazysingleton import \u0026#34;sync\u0026#34; var ( lazySingleton *File once sync.Once ) type File struct{} func GetLazyInstance() *File { if lazySingleton == nil { // 使用sync.Once来确保单例在并发时只被初始化一次 once.Do(func() { lazySingleton = \u0026amp;File{} }) } return lazySingleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( \u0026#34;testing\u0026#34; \u0026#34;design-pattern/lazysingleton\u0026#34; \u0026#34;github.com/stretchr/testify/assert\u0026#34; ) // TestLazySingleton 测试懒汉式单例 func TestLazyInstance(t *testing.T) { assert.Equal(t, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } // BenchmarkGetLazyInstance 测试懒汉式单例 func BenchmarkGetLazyInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } }) } 测试结果 1 2 3 4 5 6 7 8 ❯ go test -bench . goos: darwin goarch: arm64 pkg: design-pattern/tests BenchmarkGetLazyInstance-8 3113553\t380.8 ns/op BenchmarkInstance-8 3156261\t378.5 ns/op PASS ok design-pattern/tests\t3.798s 根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。\n",
+  "keywords": [
+    "Go"
+  ],
+  "articleBody": "介绍 单例模式同时解决了两个问题：\n保证一个类只有一个实例，例如控制某些共享资源（如数据库或文件）的访问权限 为该实例提供一个全局访问节点 在Go中单例模式有两种实现，一种是饿汉式，一种是懒汉式。饿汉式简单，可以将问题及早暴露出来，懒汉式虽然支持延迟加载，但是也将可能的问题延迟到了第一次调用的时候，同时为了实现并发安全，也不得不加锁。\n饿汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 // Package singleton package singleton // singleton 饿汉式 var singleton *File type File struct{} func init() { singleton = \u0026File{} } func GetInstance() *File { return singleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( \"testing\" \"design-pattern/singleton\" \"github.com/stretchr/testify/assert\" ) // TestSingleton 测试单例 func TestInstance(t *testing.T) { assert.Equal(t, singleton.GetInstance(), singleton.GetInstance()) } // BenchmarkSingleton 测试并发访问单例 func BenchmarkInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, singleton.GetInstance(), singleton.GetInstance()) } }) } 懒汉式 代码 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 // Package lazysingleton 懒汉式单例 package lazysingleton import \"sync\" var ( lazySingleton *File once sync.Once ) type File struct{} func GetLazyInstance() *File { if lazySingleton == nil { // 使用sync.Once来确保单例在并发时只被初始化一次 once.Do(func() { lazySingleton = \u0026File{} }) } return lazySingleton } 单元测试 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 package tests import ( \"testing\" \"design-pattern/lazysingleton\" \"github.com/stretchr/testify/assert\" ) // TestLazySingleton 测试懒汉式单例 func TestLazyInstance(t *testing.T) { assert.Equal(t, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } // BenchmarkGetLazyInstance 测试懒汉式单例 func BenchmarkGetLazyInstance(b *testing.B) { b.RunParallel(func(p *testing.PB) { for p.Next() { assert.Equal(b, lazysingleton.GetLazyInstance(), lazysingleton.GetLazyInstance()) } }) } 测试结果 1 2 3 4 5 6 7 8 ❯ go test -bench . goos: darwin goarch: arm64 pkg: design-pattern/tests BenchmarkGetLazyInstance-8 3113553\t380.8 ns/op BenchmarkInstance-8 3156261\t378.5 ns/op PASS ok design-pattern/tests\t3.798s 根据bench结果可以发现加锁（sync.Once内部使用的atomic来进行处理）还是会对性能造成影响的，不过也在可接受范围内。\n",
+  "wordCount" : "267",
+  "inLanguage": "zh",
+  "datePublished": "2024-09-01T10:12:00+08:00",
+  "dateModified": "2024-09-01T10:12:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lei的博客",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zzhaolei.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -293,7 +578,7 @@ ok  	design-pattern/tests	3.798s
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -319,17 +604,17 @@ ok  	design-pattern/tests	3.798s
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archive/" title="归档">
+                <a href="https://zzhaolei.github.io/archive/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://zzhaolei.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="标签">
+                <a href="https://zzhaolei.github.io/tags/" title="标签">
                     <span>标签</span>
                 </a>
             </li>
@@ -607,15 +892,15 @@ ok  	design-pattern/tests	3.798s
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/go/">Go</a></li>
+      <li><a href="https://zzhaolei.github.io/tags/go/">Go</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
+  <a class="prev" href="https://zzhaolei.github.io/posts/%E9%80%9A%E8%BF%87docker%E9%85%8D%E7%BD%AEmysql%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1/">
     <span class="title">« 上一页</span>
     <br>
     <span>通过docker配置MySQL主从服务</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">
+  <a class="next" href="https://zzhaolei.github.io/posts/go%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">
     <span class="title">下一页 »</span>
     <br>
     <span>Go设计模式——开闭原则</span>
@@ -643,7 +928,7 @@ ok  	design-pattern/tests	3.798s
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
+        <span>&copy; 2024 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
 
     <span>
         Powered by

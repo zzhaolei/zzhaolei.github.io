@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Shell on lei的博客</title>
-    <link>http://localhost:1313/tags/shell/</link>
+    <link>https://zzhaolei.github.io/tags/shell/</link>
     <description>Recent content in Shell on lei的博客</description>
-    <generator>Hugo -- 0.139.4</generator>
+    <generator>Hugo -- 0.140.0</generator>
     <language>zh</language>
     <lastBuildDate>Sat, 01 Jun 2019 10:09:00 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://zzhaolei.github.io/tags/shell/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mosh连接服务器时终端颜色显示问题</title>
-      <link>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</link>
+      <link>https://zzhaolei.github.io/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</link>
       <pubDate>Sat, 01 Jun 2019 10:09:00 +0800</pubDate>
-      <guid>http://localhost:1313/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://zzhaolei.github.io/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</guid>
       <description>&lt;p&gt;在使用&lt;code&gt;mosh&lt;/code&gt;连接到服务器&lt;code&gt;Ubuntu 20.04&lt;/code&gt;时，发现终端(&lt;code&gt;终端是Kitty，支持256color&lt;/code&gt;)的颜色不能正常显示。&lt;/p&gt;
 &lt;p&gt;使用命令查看了一下&lt;code&gt;$TERM&lt;/code&gt;的设置&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Jenkins处理GitLab Hook | lei的博客</title>
 <meta name="keywords" content="Jenkins">
 <meta name="description" content="jenkins安装Generic Webhook Trigger Plugin插件
@@ -165,16 +165,16 @@ GitLab的push的hook数据：
 
 ">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
+<link rel="canonical" href="https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zzhaolei.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zzhaolei.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
+<link rel="alternate" hreflang="zh" href="https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
 <noscript>
     <style>
         #theme-toggle,
@@ -211,7 +211,240 @@ GitLab的push的hook数据：
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/">
+  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:title" content="Jenkins处理GitLab Hook">
+  <meta property="og:description" content="jenkins安装Generic Webhook Trigger Plugin插件
+{% asset_img Generic_Webhook_Trgger.png Generic\ Webhook\ Trgger具体配置 %}
+创建任务，在构建触发器中勾选Generic Webhook Trigger, 在展开的页面中会有一个URL, 这个URL是配置Webhook使用的，一般形式是http://JENKINS_URL/generic-webhook-trigger/invoke, JENKINS_URL是初始配置jenkins时会有的，一般是http://IP:8080的形式。
+如果之前有配置过GitLab webhook, 请去除这个，不然Generic Webhook Trigger不会生效。
+如果Git仓库的验证使用的是用户名和密码，那么就不需要配置Token.
+复制这个URL，将JENKINS_URL替换为自己的真实数据，在GitLab的对应的项目的设置--&gt;集成中输入，没有安全令牌，勾选自己需要的触发器事件，SSL证书验证可以开启，也可以不开启，推荐开启。
+任务设置界面还有Post content parameters, Header parameters, Request parameters, 分别是请求的post数据，header头，请求头。
+一般我们只需要post的数据里的内容就够了。
+图片的3，4分别是变量名（3），值（4）。值是直接从post的json格式的数据中取出来的，注意，值的获取方式是JSONPath，并且里面有点，如果json数据有多层，那么就多点几次，比如$.project.name等，可以配置多个变量组。
+我们还可以Generic Webhook Trigger配置Optional filter，设置一个触发事件，比如只有当你推送的分支是develop的时候，才去构建。
+在Optional filter的Expression框中输入^(refs/heads/develop)$, 在下面的Text框中输入步骤3的变量名，这里写$ref。
+在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。
+配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。
+GitLab的push的hook数据：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 { &#34;object_kind&#34;: &#34;push&#34;, &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;, &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;ref&#34;: &#34;refs/heads/master&#34;, &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;user_id&#34;: 4, &#34;user_name&#34;: &#34;John Smith&#34;, &#34;user_username&#34;: &#34;jsmith&#34;, &#34;user_email&#34;: &#34;john@example.com&#34;, &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;, &#34;project_id&#34;: 15, &#34;project&#34;:{ &#34;id&#34;: 15, &#34;name&#34;:&#34;Diaspora&#34;, &#34;description&#34;:&#34;&#34;, &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;avatar_url&#34;:null, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;namespace&#34;:&#34;Mike&#34;, &#34;visibility_level&#34;:0, &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;, &#34;default_branch&#34;:&#34;master&#34;, &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34; }, &#34;repository&#34;:{ &#34;name&#34;: &#34;Diaspora&#34;, &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;, &#34;description&#34;: &#34;&#34;, &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;visibility_level&#34;:0 }, &#34;commits&#34;: [ { &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;, &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;Jordi Mallach&#34;, &#34;email&#34;: &#34;jordi@softcatala.org&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] }, { &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;message&#34;: &#34;fixed readme&#34;, &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;GitLab dev user&#34;, &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] } ], &#34;total_commits_count&#34;: 4 } ">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-06-01T10:07:00+08:00">
+    <meta property="article:modified_time" content="2019-06-01T10:07:00+08:00">
+    <meta property="article:tag" content="Jenkins">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jenkins处理GitLab Hook">
+<meta name="twitter:description" content="jenkins安装Generic Webhook Trigger Plugin插件
+{% asset_img Generic_Webhook_Trgger.png Generic\ Webhook\ Trgger具体配置 %}
+创建任务，在构建触发器中勾选Generic Webhook Trigger, 在展开的页面中会有一个URL, 这个URL是配置Webhook使用的，一般形式是http://JENKINS_URL/generic-webhook-trigger/invoke, JENKINS_URL是初始配置jenkins时会有的，一般是http://IP:8080的形式。
+如果之前有配置过GitLab webhook, 请去除这个，不然Generic Webhook Trigger不会生效。
+如果Git仓库的验证使用的是用户名和密码，那么就不需要配置Token.
+复制这个URL，将JENKINS_URL替换为自己的真实数据，在GitLab的对应的项目的设置--&gt;集成中输入，没有安全令牌，勾选自己需要的触发器事件，SSL证书验证可以开启，也可以不开启，推荐开启。
+任务设置界面还有Post content parameters, Header parameters, Request parameters, 分别是请求的post数据，header头，请求头。
+一般我们只需要post的数据里的内容就够了。
+图片的3，4分别是变量名（3），值（4）。值是直接从post的json格式的数据中取出来的，注意，值的获取方式是JSONPath，并且里面有点，如果json数据有多层，那么就多点几次，比如$.project.name等，可以配置多个变量组。
+我们还可以Generic Webhook Trigger配置Optional filter，设置一个触发事件，比如只有当你推送的分支是develop的时候，才去构建。
+在Optional filter的Expression框中输入^(refs/heads/develop)$, 在下面的Text框中输入步骤3的变量名，这里写$ref。
+在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。
+配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。
+GitLab的push的hook数据：
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+
+
+{
+  &#34;object_kind&#34;: &#34;push&#34;,
+  &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;,
+  &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+  &#34;ref&#34;: &#34;refs/heads/master&#34;,
+  &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+  &#34;user_id&#34;: 4,
+  &#34;user_name&#34;: &#34;John Smith&#34;,
+  &#34;user_username&#34;: &#34;jsmith&#34;,
+  &#34;user_email&#34;: &#34;john@example.com&#34;,
+  &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;,
+  &#34;project_id&#34;: 15,
+  &#34;project&#34;:{
+    &#34;id&#34;: 15,
+    &#34;name&#34;:&#34;Diaspora&#34;,
+    &#34;description&#34;:&#34;&#34;,
+    &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;,
+    &#34;avatar_url&#34;:null,
+    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+    &#34;namespace&#34;:&#34;Mike&#34;,
+    &#34;visibility_level&#34;:0,
+    &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;,
+    &#34;default_branch&#34;:&#34;master&#34;,
+    &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;,
+    &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;
+  },
+  &#34;repository&#34;:{
+    &#34;name&#34;: &#34;Diaspora&#34;,
+    &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;description&#34;: &#34;&#34;,
+    &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;,
+    &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;,
+    &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;,
+    &#34;visibility_level&#34;:0
+  },
+  &#34;commits&#34;: [
+    {
+      &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+      &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;,
+      &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;,
+      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;,
+      &#34;author&#34;: {
+        &#34;name&#34;: &#34;Jordi Mallach&#34;,
+        &#34;email&#34;: &#34;jordi@softcatala.org&#34;
+      },
+      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+      &#34;removed&#34;: []
+    },
+    {
+      &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+      &#34;message&#34;: &#34;fixed readme&#34;,
+      &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;,
+      &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;,
+      &#34;author&#34;: {
+        &#34;name&#34;: &#34;GitLab dev user&#34;,
+        &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34;
+      },
+      &#34;added&#34;: [&#34;CHANGELOG&#34;],
+      &#34;modified&#34;: [&#34;app/controller/application.rb&#34;],
+      &#34;removed&#34;: []
+    }
+  ],
+  &#34;total_commits_count&#34;: 4
+}
+
+
+">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zzhaolei.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Jenkins处理GitLab Hook",
+      "item": "https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Jenkins处理GitLab Hook",
+  "name": "Jenkins处理GitLab Hook",
+  "description": "jenkins安装Generic Webhook Trigger Plugin插件\n{% asset_img Generic_Webhook_Trgger.png Generic\\ Webhook\\ Trgger具体配置 %}\n创建任务，在构建触发器中勾选Generic Webhook Trigger, 在展开的页面中会有一个URL, 这个URL是配置Webhook使用的，一般形式是http://JENKINS_URL/generic-webhook-trigger/invoke, JENKINS_URL是初始配置jenkins时会有的，一般是http://IP:8080的形式。\n如果之前有配置过GitLab webhook, 请去除这个，不然Generic Webhook Trigger不会生效。\n如果Git仓库的验证使用的是用户名和密码，那么就不需要配置Token.\n复制这个URL，将JENKINS_URL替换为自己的真实数据，在GitLab的对应的项目的设置--\u0026gt;集成中输入，没有安全令牌，勾选自己需要的触发器事件，SSL证书验证可以开启，也可以不开启，推荐开启。\n任务设置界面还有Post content parameters, Header parameters, Request parameters, 分别是请求的post数据，header头，请求头。\n一般我们只需要post的数据里的内容就够了。\n图片的3，4分别是变量名（3），值（4）。值是直接从post的json格式的数据中取出来的，注意，值的获取方式是JSONPath，并且里面有点，如果json数据有多层，那么就多点几次，比如$.project.name等，可以配置多个变量组。\n我们还可以Generic Webhook Trigger配置Optional filter，设置一个触发事件，比如只有当你推送的分支是develop的时候，才去构建。\n在Optional filter的Expression框中输入^(refs/heads/develop)$, 在下面的Text框中输入步骤3的变量名，这里写$ref。\n在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。\n配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。\nGitLab的push的hook数据：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 { \u0026#34;object_kind\u0026#34;: \u0026#34;push\u0026#34;, \u0026#34;before\u0026#34;: \u0026#34;95790bf891e76fee5e1747ab589903a6a1f80f22\u0026#34;, \u0026#34;after\u0026#34;: \u0026#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7\u0026#34;, \u0026#34;ref\u0026#34;: \u0026#34;refs/heads/master\u0026#34;, \u0026#34;checkout_sha\u0026#34;: \u0026#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7\u0026#34;, \u0026#34;user_id\u0026#34;: 4, \u0026#34;user_name\u0026#34;: \u0026#34;John Smith\u0026#34;, \u0026#34;user_username\u0026#34;: \u0026#34;jsmith\u0026#34;, \u0026#34;user_email\u0026#34;: \u0026#34;john@example.com\u0026#34;, \u0026#34;user_avatar\u0026#34;: \u0026#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80\u0026#34;, \u0026#34;project_id\u0026#34;: 15, \u0026#34;project\u0026#34;:{ \u0026#34;id\u0026#34;: 15, \u0026#34;name\u0026#34;:\u0026#34;Diaspora\u0026#34;, \u0026#34;description\u0026#34;:\u0026#34;\u0026#34;, \u0026#34;web_url\u0026#34;:\u0026#34;http://example.com/mike/diaspora\u0026#34;, \u0026#34;avatar_url\u0026#34;:null, \u0026#34;git_ssh_url\u0026#34;:\u0026#34;git@example.com:mike/diaspora.git\u0026#34;, \u0026#34;git_http_url\u0026#34;:\u0026#34;http://example.com/mike/diaspora.git\u0026#34;, \u0026#34;namespace\u0026#34;:\u0026#34;Mike\u0026#34;, \u0026#34;visibility_level\u0026#34;:0, \u0026#34;path_with_namespace\u0026#34;:\u0026#34;mike/diaspora\u0026#34;, \u0026#34;default_branch\u0026#34;:\u0026#34;master\u0026#34;, \u0026#34;homepage\u0026#34;:\u0026#34;http://example.com/mike/diaspora\u0026#34;, \u0026#34;url\u0026#34;:\u0026#34;git@example.com:mike/diaspora.git\u0026#34;, \u0026#34;ssh_url\u0026#34;:\u0026#34;git@example.com:mike/diaspora.git\u0026#34;, \u0026#34;http_url\u0026#34;:\u0026#34;http://example.com/mike/diaspora.git\u0026#34; }, \u0026#34;repository\u0026#34;:{ \u0026#34;name\u0026#34;: \u0026#34;Diaspora\u0026#34;, \u0026#34;url\u0026#34;: \u0026#34;git@example.com:mike/diaspora.git\u0026#34;, \u0026#34;description\u0026#34;: \u0026#34;\u0026#34;, \u0026#34;homepage\u0026#34;: \u0026#34;http://example.com/mike/diaspora\u0026#34;, \u0026#34;git_http_url\u0026#34;:\u0026#34;http://example.com/mike/diaspora.git\u0026#34;, \u0026#34;git_ssh_url\u0026#34;:\u0026#34;git@example.com:mike/diaspora.git\u0026#34;, \u0026#34;visibility_level\u0026#34;:0 }, \u0026#34;commits\u0026#34;: [ { \u0026#34;id\u0026#34;: \u0026#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327\u0026#34;, \u0026#34;message\u0026#34;: \u0026#34;Update Catalan translation to e38cb41.\u0026#34;, \u0026#34;timestamp\u0026#34;: \u0026#34;2011-12-12T14:27:31+02:00\u0026#34;, \u0026#34;url\u0026#34;: \u0026#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327\u0026#34;, \u0026#34;author\u0026#34;: { \u0026#34;name\u0026#34;: \u0026#34;Jordi Mallach\u0026#34;, \u0026#34;email\u0026#34;: \u0026#34;jordi@softcatala.org\u0026#34; }, \u0026#34;added\u0026#34;: [\u0026#34;CHANGELOG\u0026#34;], \u0026#34;modified\u0026#34;: [\u0026#34;app/controller/application.rb\u0026#34;], \u0026#34;removed\u0026#34;: [] }, { \u0026#34;id\u0026#34;: \u0026#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7\u0026#34;, \u0026#34;message\u0026#34;: \u0026#34;fixed readme\u0026#34;, \u0026#34;timestamp\u0026#34;: \u0026#34;2012-01-03T23:36:29+02:00\u0026#34;, \u0026#34;url\u0026#34;: \u0026#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7\u0026#34;, \u0026#34;author\u0026#34;: { \u0026#34;name\u0026#34;: \u0026#34;GitLab dev user\u0026#34;, \u0026#34;email\u0026#34;: \u0026#34;gitlabdev@dv6700.(none)\u0026#34; }, \u0026#34;added\u0026#34;: [\u0026#34;CHANGELOG\u0026#34;], \u0026#34;modified\u0026#34;: [\u0026#34;app/controller/application.rb\u0026#34;], \u0026#34;removed\u0026#34;: [] } ], \u0026#34;total_commits_count\u0026#34;: 4 } ",
+  "keywords": [
+    "Jenkins"
+  ],
+  "articleBody": "jenkins安装Generic Webhook Trigger Plugin插件\n{% asset_img Generic_Webhook_Trgger.png Generic\\ Webhook\\ Trgger具体配置 %}\n创建任务，在构建触发器中勾选Generic Webhook Trigger, 在展开的页面中会有一个URL, 这个URL是配置Webhook使用的，一般形式是http://JENKINS_URL/generic-webhook-trigger/invoke, JENKINS_URL是初始配置jenkins时会有的，一般是http://IP:8080的形式。\n如果之前有配置过GitLab webhook, 请去除这个，不然Generic Webhook Trigger不会生效。\n如果Git仓库的验证使用的是用户名和密码，那么就不需要配置Token.\n复制这个URL，将JENKINS_URL替换为自己的真实数据，在GitLab的对应的项目的设置--\u003e集成中输入，没有安全令牌，勾选自己需要的触发器事件，SSL证书验证可以开启，也可以不开启，推荐开启。\n任务设置界面还有Post content parameters, Header parameters, Request parameters, 分别是请求的post数据，header头，请求头。\n一般我们只需要post的数据里的内容就够了。\n图片的3，4分别是变量名（3），值（4）。值是直接从post的json格式的数据中取出来的，注意，值的获取方式是JSONPath，并且里面有点，如果json数据有多层，那么就多点几次，比如$.project.name等，可以配置多个变量组。\n我们还可以Generic Webhook Trigger配置Optional filter，设置一个触发事件，比如只有当你推送的分支是develop的时候，才去构建。\n在Optional filter的Expression框中输入^(refs/heads/develop)$, 在下面的Text框中输入步骤3的变量名，这里写$ref。\n在shell中使用变量名的方式也是直接使用，例如echo $ref， 注意没有点。\n配置完成后，保存，可以点击刚刚配置的GitLab的webhook页面的Test对应的事件测试。\nGitLab的push的hook数据：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 { \"object_kind\": \"push\", \"before\": \"95790bf891e76fee5e1747ab589903a6a1f80f22\", \"after\": \"da1560886d4f094c3e6c9ef40349f7d38b5d27d7\", \"ref\": \"refs/heads/master\", \"checkout_sha\": \"da1560886d4f094c3e6c9ef40349f7d38b5d27d7\", \"user_id\": 4, \"user_name\": \"John Smith\", \"user_username\": \"jsmith\", \"user_email\": \"john@example.com\", \"user_avatar\": \"https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80\", \"project_id\": 15, \"project\":{ \"id\": 15, \"name\":\"Diaspora\", \"description\":\"\", \"web_url\":\"http://example.com/mike/diaspora\", \"avatar_url\":null, \"git_ssh_url\":\"git@example.com:mike/diaspora.git\", \"git_http_url\":\"http://example.com/mike/diaspora.git\", \"namespace\":\"Mike\", \"visibility_level\":0, \"path_with_namespace\":\"mike/diaspora\", \"default_branch\":\"master\", \"homepage\":\"http://example.com/mike/diaspora\", \"url\":\"git@example.com:mike/diaspora.git\", \"ssh_url\":\"git@example.com:mike/diaspora.git\", \"http_url\":\"http://example.com/mike/diaspora.git\" }, \"repository\":{ \"name\": \"Diaspora\", \"url\": \"git@example.com:mike/diaspora.git\", \"description\": \"\", \"homepage\": \"http://example.com/mike/diaspora\", \"git_http_url\":\"http://example.com/mike/diaspora.git\", \"git_ssh_url\":\"git@example.com:mike/diaspora.git\", \"visibility_level\":0 }, \"commits\": [ { \"id\": \"b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327\", \"message\": \"Update Catalan translation to e38cb41.\", \"timestamp\": \"2011-12-12T14:27:31+02:00\", \"url\": \"http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327\", \"author\": { \"name\": \"Jordi Mallach\", \"email\": \"jordi@softcatala.org\" }, \"added\": [\"CHANGELOG\"], \"modified\": [\"app/controller/application.rb\"], \"removed\": [] }, { \"id\": \"da1560886d4f094c3e6c9ef40349f7d38b5d27d7\", \"message\": \"fixed readme\", \"timestamp\": \"2012-01-03T23:36:29+02:00\", \"url\": \"http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7\", \"author\": { \"name\": \"GitLab dev user\", \"email\": \"gitlabdev@dv6700.(none)\" }, \"added\": [\"CHANGELOG\"], \"modified\": [\"app/controller/application.rb\"], \"removed\": [] } ], \"total_commits_count\": 4 } ",
+  "wordCount" : "229",
+  "inLanguage": "zh",
+  "datePublished": "2019-06-01T10:07:00+08:00",
+  "dateModified": "2019-06-01T10:07:00+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lei的博客",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zzhaolei.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -229,7 +462,7 @@ GitLab的push的hook数据：
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -255,17 +488,17 @@ GitLab的push的hook数据：
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archive/" title="归档">
+                <a href="https://zzhaolei.github.io/archive/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://zzhaolei.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="标签">
+                <a href="https://zzhaolei.github.io/tags/" title="标签">
                     <span>标签</span>
                 </a>
             </li>
@@ -447,15 +680,15 @@ GitLab的push的hook数据：
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/jenkins/">Jenkins</a></li>
+      <li><a href="https://zzhaolei.github.io/tags/jenkins/">Jenkins</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
+  <a class="prev" href="https://zzhaolei.github.io/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/">
     <span class="title">« 上一页</span>
     <br>
     <span>关于Go Modules的一些内容</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/">
+  <a class="next" href="https://zzhaolei.github.io/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/">
     <span class="title">下一页 »</span>
     <br>
     <span>Jenkins与RocketChat集成</span>
@@ -483,7 +716,7 @@ GitLab的push的hook数据：
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">lei的博客</a></span> · 
+        <span>&copy; 2024 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
 
     <span>
         Powered by
