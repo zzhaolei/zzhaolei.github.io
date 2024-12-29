@@ -78,8 +78,16 @@
           &lt;td&gt;加载或卸载当前目录（以及目录）的&lt;code&gt;.envrc&lt;/code&gt;或&lt;code&gt;.env&lt;/code&gt;&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/fastfetch-cli/fastfetch&#34;&gt;fastfetch&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;功能丰富、面向性能、类似 neofetch 的系统信息工具&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/sharkdp/fd&#34;&gt;fd&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;&lt;code&gt;find&lt;/code&gt;的现代替代品&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/junegunn/fzf&#34;&gt;fzf&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;命令行模糊查找器&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/fullstorydev/grpcurl&#34;&gt;grpcurl&lt;/a&gt;&lt;/td&gt;
