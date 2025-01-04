@@ -4,7 +4,7 @@
     <title>lei的博客</title>
     <link>https://zzhaolei.github.io/</link>
     <description>Recent content on lei的博客</description>
-    <generator>Hugo -- 0.140.0</generator>
+    <generator>Hugo -- 0.140.2</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 25 Nov 2024 10:20:20 +0800</lastBuildDate>
     <atom:link href="https://zzhaolei.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -151,6 +151,10 @@
       &lt;tr&gt;
           &lt;td&gt;&lt;a href=&#34;https://github.com/iina/iina&#34;&gt;iina&lt;/a&gt;&lt;/td&gt;
           &lt;td&gt;适用于&lt;code&gt;macOS&lt;/code&gt;的现代视频播放器&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;a href=&#34;https://github.com/noah-nuebling/mac-mouse-fix&#34;&gt;mac-mouse-fix&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;macOS&lt;/code&gt;平滑滚动&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;</description>
