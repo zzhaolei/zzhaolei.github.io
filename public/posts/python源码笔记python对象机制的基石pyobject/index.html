@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Python源码笔记——Python对象机制的基石【PyObject】 | lei的博客</title>
+<title>Python源码笔记——Python对象机制的基石【PyObject】 | Lei 的博客</title>
 <meta name="keywords" content="Python">
 <meta name="description" content="
 所有源码均基于Python 3.11.2
@@ -68,7 +68,7 @@ _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-re
 ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -114,7 +114,7 @@ ob_type是一个结构体，对应着Python内部的一种特殊的对象，用�
 
     </style>
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/">
-  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Python源码笔记——Python对象机制的基石【PyObject】">
   <meta property="og:description" content=" 所有源码均基于Python 3.11.2
 1.PyObject定义 1 2 3 4 5 6 7 8 // 实际上没有任何东西被声明为PyObject，但是每个指向Python对象的指针都可以转换为PyObject*。 // 这是手动模拟的继承。同样的，每个指向可变大小的Python对象的指针也可以转换为PyObject*，此外，也可以转换为PyVarObject*。 typedef struct _object { _PyObject_HEAD_EXTRA // 定义指针以支持所有活动堆对象的双向链表refchain Py_ssize_t ob_refcnt; PyTypeObject *ob_type; } PyObject; Python通过ob_refcnt字段实现基于引用计数的垃圾回收机制。对于某一个对象A，当有一个新的PyObject*引用A对象时，A的引用计数会增加1，当这个PyObject*引用被删除时，A的引用计数应当减1，当此字段为0时，进行垃圾回收（不一定会释放内存空间，Python中还有缓存机制）。
@@ -230,7 +230,7 @@ ob_type是一个结构体，对应着Python内部的一种特殊的对象，用�
   },
   "publisher": {
     "@type": "Organization",
-    "name": "lei的博客",
+    "name": "Lei 的博客",
     "logo": {
       "@type": "ImageObject",
       "url": "https://zzhaolei.github.io/favicon.ico"
@@ -255,7 +255,7 @@ ob_type是一个结构体，对应着Python内部的一种特殊的对象，用�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -306,7 +306,7 @@ ob_type是一个结构体，对应着Python内部的一种特殊的对象，用�
     <h1 class="post-title entry-hint-parent">
       Python源码笔记——Python对象机制的基石【PyObject】
     </h1>
-    <div class="post-meta"><span title='2023-04-07 13:43:34 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;2 分钟
+    <div class="post-meta"><span title='2023-04-07 13:43:34 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;2 分钟
 
 </div>
   </header> <div class="toc">
@@ -655,7 +655,7 @@ ob_type是一个结构体，对应着Python内部的一种特殊的对象，用�
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
+        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">Lei 的博客</a></span> · 
 
     <span>
         Powered by

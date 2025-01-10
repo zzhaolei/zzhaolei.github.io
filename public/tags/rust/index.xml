@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Rust on lei的博客</title>
+    <title>Rust on Lei 的博客</title>
     <link>https://zzhaolei.github.io/tags/rust/</link>
-    <description>Recent content in Rust on lei的博客</description>
+    <description>Recent content in Rust on Lei 的博客</description>
     <generator>Hugo -- 0.140.2</generator>
     <language>zh</language>
     <lastBuildDate>Sun, 01 Sep 2024 10:20:00 +0800</lastBuildDate>

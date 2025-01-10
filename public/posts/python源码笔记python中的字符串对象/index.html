@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Python源码笔记——Python中的字符串对象 | lei的博客</title>
+<title>Python源码笔记——Python中的字符串对象 | Lei 的博客</title>
 <meta name="keywords" content="Python">
 <meta name="description" content="1.字符串对象
 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
@@ -74,7 +74,7 @@ typedef struct {
 类型对象">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -120,7 +120,7 @@ typedef struct {
 
     </style>
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/">
-  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Python源码笔记——Python中的字符串对象">
   <meta property="og:description" content="1.字符串对象 在Python3.11.2中，字符串类型PyUnicodeObject的实现相当的复杂
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points. */ } PyCompactUnicodeObject; typedef struct { PyCompactUnicodeObject _base; union { void *any; Py_UCS1 *latin1; Py_UCS2 *ucs2; Py_UCS4 *ucs4; } data; /* Canonical, smallest-form Unicode buffer */ } PyUnicodeObject; 类型对象">
@@ -240,7 +240,7 @@ typedef struct {
   },
   "publisher": {
     "@type": "Organization",
-    "name": "lei的博客",
+    "name": "Lei 的博客",
     "logo": {
       "@type": "ImageObject",
       "url": "https://zzhaolei.github.io/favicon.ico"
@@ -265,7 +265,7 @@ typedef struct {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -316,7 +316,7 @@ typedef struct {
     <h1 class="post-title entry-hint-parent">
       Python源码笔记——Python中的字符串对象
     </h1>
-    <div class="post-meta"><span title='2023-04-07 13:53:00 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;4 分钟
+    <div class="post-meta"><span title='2023-04-07 13:53:00 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;4 分钟
 
 </div>
   </header> <div class="toc">
@@ -796,7 +796,7 @@ typedef struct {
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
+        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">Lei 的博客</a></span> · 
 
     <span>
         Powered by

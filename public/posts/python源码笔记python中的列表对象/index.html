@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Python源码笔记——Python中的列表对象 | lei的博客</title>
+<title>Python源码笔记——Python中的列表对象 | Lei 的博客</title>
 <meta name="keywords" content="Python">
 <meta name="description" content="1.列表结构体
 
@@ -67,7 +67,7 @@ typedef struct {
 ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素时，实际上是获取的ob_item[0]的元素。ob_item的类型是PyObject*，由此我们可以知道，为什么Python中的list能存储任意对象的数据，这是因为任何Python对象都可以强转为PyObject*的指针类型。">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -113,7 +113,7 @@ ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素
 
     </style>
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/">
-  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Python源码笔记——Python中的列表对象">
   <meta property="og:description" content="1.列表结构体 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.sort() temporarily sets allocated to -1 to detect mutations. * * Items must normally not be NULL, except during construction when * the list is not yet visible outside the function that builds it. */ Py_ssize_t allocated; } PyListObject; ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素时，实际上是获取的ob_item[0]的元素。ob_item的类型是PyObject*，由此我们可以知道，为什么Python中的list能存储任意对象的数据，这是因为任何Python对象都可以强转为PyObject*的指针类型。">
   <meta property="og:locale" content="zh">
@@ -225,7 +225,7 @@ ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素
   },
   "publisher": {
     "@type": "Organization",
-    "name": "lei的博客",
+    "name": "Lei 的博客",
     "logo": {
       "@type": "ImageObject",
       "url": "https://zzhaolei.github.io/favicon.ico"
@@ -250,7 +250,7 @@ ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -301,7 +301,7 @@ ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素
     <h1 class="post-title entry-hint-parent">
       Python源码笔记——Python中的列表对象
     </h1>
-    <div class="post-meta"><span title='2023-04-07 14:00:50 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;6 分钟
+    <div class="post-meta"><span title='2023-04-07 14:00:50 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;6 分钟
 
 </div>
   </header> <div class="toc">
@@ -1105,7 +1105,7 @@ ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
+        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">Lei 的博客</a></span> · 
 
     <span>
         Powered by

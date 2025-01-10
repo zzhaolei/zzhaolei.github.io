@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Python源码笔记——Python中的整数对象 | lei的博客</title>
+<title>Python源码笔记——Python中的整数对象 | Lei 的博客</title>
 <meta name="keywords" content="Python">
 <meta name="description" content="1.整数对象
 在Python3.11.2中，整数结构体叫做PyLongObject。
@@ -144,7 +144,7 @@ PyTypeObject PyLong_Type = {
 PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -190,7 +190,7 @@ PyLongObject对象的各种操作（比较、运算等）实际上就是调用Py
 
     </style>
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/">
-  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Python源码笔记——Python中的整数对象">
   <meta property="og:description" content="1.整数对象 在Python3.11.2中，整数结构体叫做PyLongObject。
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 #if PYLONG_BITS_IN_DIGIT == 30 typedef uint32_t digit; ... #elif PYLONG_BITS_IN_DIGIT == 15 typedef unsigned short digit; ... #else #error &#34;PYLONG_BITS_IN_DIGIT should be 15 or 30&#34; #endif typedef struct _longobject { /* PyObject ob_base; Py_ssize_t ob_size; */ PyObject_VAR_HEAD digit ob_digit[1]; } PyLongObject; 通过PyObject_VAR_HEAD我们可以确定，在新版Python中，整形是一个不定长对象。
@@ -382,7 +382,7 @@ PyLongObject对象的各种操作（比较、运算等）实际上就是调用Py
   },
   "publisher": {
     "@type": "Organization",
-    "name": "lei的博客",
+    "name": "Lei 的博客",
     "logo": {
       "@type": "ImageObject",
       "url": "https://zzhaolei.github.io/favicon.ico"
@@ -407,7 +407,7 @@ PyLongObject对象的各种操作（比较、运算等）实际上就是调用Py
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -458,7 +458,7 @@ PyLongObject对象的各种操作（比较、运算等）实际上就是调用Py
     <h1 class="post-title entry-hint-parent">
       Python源码笔记——Python中的整数对象
     </h1>
-    <div class="post-meta"><span title='2023-04-07 13:45:10 +0800 CST'>四月 7, 2023</span>&nbsp;·&nbsp;5 分钟
+    <div class="post-meta"><span title='2023-04-07 13:45:10 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;5 分钟
 
 </div>
   </header> <div class="toc">
@@ -1049,7 +1049,7 @@ PyLongObject对象的各种操作（比较、运算等）实际上就是调用Py
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
+        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">Lei 的博客</a></span> · 
 
     <span>
         Powered by

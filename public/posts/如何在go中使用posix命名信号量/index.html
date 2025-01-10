@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>如何在Go中使用POSIX命名信号量 | lei的博客</title>
+<title>如何在Go中使用POSIX命名信号量 | Lei 的博客</title>
 <meta name="keywords" content="Go">
 <meta name="description" content="go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用
@@ -29,7 +29,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 因为系统调用的参数有 4 个，而 Syscall 接收的全部形参才 4 个，所以 Syscall 不能满足我们的需求，只能使用 Syscall6 这个函数。而 Syscall6 总共需要 7 个形参，其中有 6 个是系统调用参数，我们只有 4 个系统调用参数，那么剩下的 2 个系统调用参数，我们就可以使用 0 替代，例如：">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.263bac85f191a9f304e91b8bb5ec997c174abef0bec446591945462e5fdff366.css" integrity="sha256-JjushfGRqfME6RuLteyZfBdKvvC&#43;xEZZGUVGLl/f82Y=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -75,7 +75,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 
     </style>
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/%E5%A6%82%E4%BD%95%E5%9C%A8go%E4%B8%AD%E4%BD%BF%E7%94%A8posix%E5%91%BD%E5%90%8D%E4%BF%A1%E5%8F%B7%E9%87%8F/">
-  <meta property="og:site_name" content="lei的博客">
+  <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="如何在Go中使用POSIX命名信号量">
   <meta property="og:description" content="go 本身提供的 semaphore 只能在同一个进程多个协程或线程间使用，无法在不同的 go 进程之间使用，所以本文介绍，如何使用 go 中的 syscall 来使用 POSIX 系统提供的命名信号量。
 Go 中的系统调用 在 go 中，系统调用是通过 syscall 包提供的 Syscall 函数来进行系统调用的，不同的系统调用有不同的 trap，以及不同长度的参数。
@@ -157,7 +157,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
   },
   "publisher": {
     "@type": "Organization",
-    "name": "lei的博客",
+    "name": "Lei 的博客",
     "logo": {
       "@type": "ImageObject",
       "url": "https://zzhaolei.github.io/favicon.ico"
@@ -182,7 +182,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zzhaolei.github.io/" accesskey="h" title="lei的博客 (Alt + H)">lei的博客</a>
+            <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -233,7 +233,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
     <h1 class="post-title entry-hint-parent">
       如何在Go中使用POSIX命名信号量
     </h1>
-    <div class="post-meta"><span title='2024-09-01 10:09:00 +0800 CST'>九月 1, 2024</span>&nbsp;·&nbsp;3 分钟
+    <div class="post-meta"><span title='2024-09-01 10:09:00 +0800 CST'>2024-09-01</span>&nbsp;·&nbsp;3 分钟
 
 </div>
   </header> <div class="toc">
@@ -622,7 +622,7 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">lei的博客</a></span> · 
+        <span>&copy; 2025 <a href="https://zzhaolei.github.io/">Lei 的博客</a></span> · 
 
     <span>
         Powered by
