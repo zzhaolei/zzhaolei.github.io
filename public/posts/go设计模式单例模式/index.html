@@ -693,11 +693,11 @@ ok  	design-pattern/tests	3.798s
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package singleton
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">singleton</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package singleton</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">singleton</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// singleton 饿汉式
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">singleton</span> <span class="o">*</span><span class="nx">File</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// singleton 饿汉式</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">singleton</span> <span class="o">*</span><span class="nx">File</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">File</span> <span class="kd">struct</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">
@@ -746,13 +746,13 @@ ok  	design-pattern/tests	3.798s
 </span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/stretchr/testify/assert&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// TestSingleton 测试单例
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">TestInstance</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// TestSingleton 测试单例</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestInstance</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">assert</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">singleton</span><span class="p">.</span><span class="nf">GetInstance</span><span class="p">(),</span> <span class="nx">singleton</span><span class="p">.</span><span class="nf">GetInstance</span><span class="p">())</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// BenchmarkSingleton 测试并发访问单例
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">BenchmarkInstance</span><span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// BenchmarkSingleton 测试并发访问单例</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">BenchmarkInstance</span><span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">b</span><span class="p">.</span><span class="nf">RunParallel</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">PB</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">			<span class="nx">assert</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">singleton</span><span class="p">.</span><span class="nf">GetInstance</span><span class="p">(),</span> <span class="nx">singleton</span><span class="p">.</span><span class="nf">GetInstance</span><span class="p">())</span>
@@ -788,8 +788,8 @@ ok  	design-pattern/tests	3.798s
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package lazysingleton 懒汉式单例
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">lazysingleton</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package lazysingleton 懒汉式单例</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">lazysingleton</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;sync&#34;</span>
 </span></span><span class="line"><span class="cl">
@@ -802,8 +802,8 @@ ok  	design-pattern/tests	3.798s
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetLazyInstance</span><span class="p">()</span> <span class="o">*</span><span class="nx">File</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">lazySingleton</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="c1">// 使用sync.Once来确保单例在并发时只被初始化一次
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 使用sync.Once来确保单例在并发时只被初始化一次</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">			<span class="nx">lazySingleton</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">File</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">		<span class="p">})</span>
 </span></span><span class="line"><span class="cl">	<span class="p">}</span>
@@ -847,13 +847,13 @@ ok  	design-pattern/tests	3.798s
 </span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/stretchr/testify/assert&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// TestLazySingleton 测试懒汉式单例
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">TestLazyInstance</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// TestLazySingleton 测试懒汉式单例</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestLazyInstance</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">assert</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">lazysingleton</span><span class="p">.</span><span class="nf">GetLazyInstance</span><span class="p">(),</span> <span class="nx">lazysingleton</span><span class="p">.</span><span class="nf">GetLazyInstance</span><span class="p">())</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// BenchmarkGetLazyInstance 测试懒汉式单例
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">BenchmarkGetLazyInstance</span><span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// BenchmarkGetLazyInstance 测试懒汉式单例</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">BenchmarkGetLazyInstance</span><span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">B</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">b</span><span class="p">.</span><span class="nf">RunParallel</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">PB</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">			<span class="nx">assert</span><span class="p">.</span><span class="nf">Equal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">lazysingleton</span><span class="p">.</span><span class="nf">GetLazyInstance</span><span class="p">(),</span> <span class="nx">lazysingleton</span><span class="p">.</span><span class="nf">GetLazyInstance</span><span class="p">())</span>

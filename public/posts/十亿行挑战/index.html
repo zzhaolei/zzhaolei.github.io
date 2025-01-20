@@ -618,8 +618,8 @@ python3 create_measurements.py 1000000000
 </span></span><span class="line"><span class="cl">		<span class="p">)</span>
 </span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">			<span class="nx">cityByte</span><span class="p">,</span> <span class="nx">tempByte</span><span class="p">,</span> <span class="nx">newBuf</span><span class="p">,</span> <span class="nx">next</span> <span class="p">=</span> <span class="nf">parseLine</span><span class="p">(</span><span class="nx">newBuf</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">!</span><span class="nx">next</span> <span class="p">{</span> <span class="c1">// 没有下一行，退出循环重新读取
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nb">copy</span><span class="p">(</span><span class="nx">remain</span><span class="p">,</span> <span class="nx">newBuf</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">!</span><span class="nx">next</span> <span class="p">{</span> <span class="c1">// 没有下一行，退出循环重新读取</span>
+</span></span><span class="line"><span class="cl">				<span class="nb">copy</span><span class="p">(</span><span class="nx">remain</span><span class="p">,</span> <span class="nx">newBuf</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">				<span class="nx">remain</span> <span class="p">=</span> <span class="nx">remain</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">newBuf</span><span class="p">)]</span>
 </span></span><span class="line"><span class="cl">				<span class="k">break</span>
 </span></span><span class="line"><span class="cl">			<span class="p">}</span>

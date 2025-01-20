@@ -403,9 +403,9 @@ func main() {
 </span><span class="lnt">32
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 开闭原则 Open-Closed Principle
-</span></span></span><span class="line"><span class="cl"><span class="c1">// 开闭原则包含了：单一职责原则
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">main</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 开闭原则 Open-Closed Principle</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 开闭原则包含了：单一职责原则</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 </span></span><span class="line"><span class="cl">
@@ -504,14 +504,14 @@ func main() {
 </span><span class="lnt">61
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 开闭原则 Open-Closed Principle
-</span></span></span><span class="line"><span class="cl"><span class="c1">// 开闭原则包含了：单一职责原则
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">main</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 开闭原则 Open-Closed Principle</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 开闭原则包含了：单一职责原则</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// MsgFomatter 通过Format的抽象，我们可以发送string、int、image、video等等数据类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">MsgFomatter</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// MsgFomatter 通过Format的抽象，我们可以发送string、int、image、video等等数据类型</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">MsgFomatter</span> <span class="kd">interface</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">Format</span><span class="p">()</span> <span class="kt">string</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
@@ -546,8 +546,8 @@ func main() {
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">queue</span><span class="p">.</span><span class="nf">SendMsg</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// MyStr 实现MsgFormatter接口，我们可以更通用的处理每一种类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">MyStr</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// MyStr 实现MsgFormatter接口，我们可以更通用的处理每一种类型</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">MyStr</span> <span class="kt">string</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">str</span> <span class="nx">MyStr</span><span class="p">)</span> <span class="nf">Format</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
@@ -557,12 +557,12 @@ func main() {
 </span></span><span class="line"><span class="cl">	<span class="nx">demo</span> <span class="o">:=</span> <span class="nx">Demo</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">s</span> <span class="nx">MyStr</span> <span class="p">=</span> <span class="s">&#34;test&#34;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// kafka
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">var</span> <span class="nx">kafka</span> <span class="nx">Queue</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">KafkaQueue</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// kafka</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">kafka</span> <span class="nx">Queue</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">KafkaQueue</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="nx">demo</span><span class="p">.</span><span class="nf">SendMsg</span><span class="p">(</span><span class="nx">kafka</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// rabbitmq
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">var</span> <span class="nx">rabbitmq</span> <span class="nx">Queue</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">RabbitQueue</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// rabbitmq</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">rabbitmq</span> <span class="nx">Queue</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">RabbitQueue</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="nx">demo</span><span class="p">.</span><span class="nf">SendMsg</span><span class="p">(</span><span class="nx">rabbitmq</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>

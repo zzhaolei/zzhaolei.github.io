@@ -471,21 +471,21 @@ func (tb *TransferBanker) DoSomething(cfg Config) error {
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 单一职责原则 Single-Responsibility Principle
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">main</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 单一职责原则 Single-Responsibility Principle</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Banker</span> <span class="kd">struct</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Save 存钱
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Banker</span><span class="p">)</span> <span class="nf">Save</span><span class="p">(</span><span class="nx">money</span> <span class="kt">uint64</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Save 存钱</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Banker</span><span class="p">)</span> <span class="nf">Save</span><span class="p">(</span><span class="nx">money</span> <span class="kt">uint64</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;成功存入: %d\n&#34;</span><span class="p">,</span> <span class="nx">money</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Transfer 转账
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Banker</span><span class="p">)</span> <span class="nf">Transfer</span><span class="p">(</span><span class="nx">money</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">to</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Transfer 转账</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Banker</span><span class="p">)</span> <span class="nf">Transfer</span><span class="p">(</span><span class="nx">money</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">to</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;成功向: %s转入: %d\n&#34;</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">money</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -529,8 +529,8 @@ func (tb *TransferBanker) DoSomething(cfg Config) error {
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 单一职责原则 Single-Responsibility Principle
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">package</span> <span class="nx">main</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Package main 单一职责原则 Single-Responsibility Principle</span>
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 </span></span><span class="line"><span class="cl">

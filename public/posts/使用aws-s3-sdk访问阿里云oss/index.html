@@ -544,9 +544,9 @@ func main() {
 </span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">	<span class="p">}</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">s3</span><span class="p">.</span><span class="nf">NewFromConfig</span><span class="p">(</span><span class="nx">cfg</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">s3</span><span class="p">.</span><span class="nx">Options</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="c1">// 此选项可用于调试
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">o</span><span class="p">.</span><span class="nx">UsePathStyle</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 此选项可用于调试</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// o.ClientLogMode = aws.LogSigning | aws.LogRequest | aws.LogResponseWithBody</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">o</span><span class="p">.</span><span class="nx">UsePathStyle</span> <span class="p">=</span> <span class="kc">true</span>
 </span></span><span class="line"><span class="cl">	<span class="p">})</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
@@ -609,9 +609,9 @@ func main() {
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewS3Client</span><span class="p">(</span><span class="nx">bucket</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">s3</span><span class="p">.</span><span class="nx">Client</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">cfg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">config</span><span class="p">.</span><span class="nf">LoadDefaultConfig</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">				<span class="c1">// ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// 修改返回的 endpoint 为阿里云的服务
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="k">return</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">Endpoint</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// ...</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// 修改返回的 endpoint 为阿里云的服务</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">Endpoint</span><span class="p">{</span>
 </span></span><span class="line"><span class="cl">					<span class="nx">PartitionID</span><span class="p">:</span>   <span class="s">&#34;oss&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">					<span class="nx">URL</span><span class="p">:</span>           <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;https://%s.oss-cn-beijing.aliyuncs.com&#34;</span><span class="p">,</span> <span class="nx">bucket</span><span class="p">),</span>
 </span></span><span class="line"><span class="cl">					<span class="nx">SigningRegion</span><span class="p">:</span> <span class="s">&#34;cn-beijing&#34;</span><span class="p">,</span>
@@ -619,17 +619,17 @@ func main() {
 </span></span><span class="line"><span class="cl">			<span class="p">}),</span>
 </span></span><span class="line"><span class="cl">		<span class="p">),</span>
 </span></span><span class="line"><span class="cl">	<span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">// ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="nx">s3</span><span class="p">.</span><span class="nf">NewFromConfig</span><span class="p">(</span><span class="nx">cfg</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">s3</span><span class="p">.</span><span class="nx">Options</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">s3</span><span class="p">.</span><span class="nf">NewFromConfig</span><span class="p">(</span><span class="nx">cfg</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">s3</span><span class="p">.</span><span class="nx">Options</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">		<span class="nx">o</span><span class="p">.</span><span class="nx">UsePathStyle</span> <span class="p">=</span> <span class="kc">true</span>
 </span></span><span class="line"><span class="cl">	<span class="p">})</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">// ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">client</span> <span class="o">:=</span> <span class="nf">NewS3Client</span><span class="p">(</span><span class="nx">bucket</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">// ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">client</span> <span class="o">:=</span> <span class="nf">NewS3Client</span><span class="p">(</span><span class="nx">bucket</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>需要注意的是 <code>aws.Endpoint</code> 的 <code>URL</code> 字段的修改，一定要符合 <code>oss</code> 的访问约束。</p>

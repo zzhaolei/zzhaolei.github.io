@@ -305,12 +305,12 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r1</span><span class="p">,</span> <span class="nx">r2</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">syscall</span><span class="p">.</span><span class="nf">Syscall6</span><span class="p">(</span>
 </span></span><span class="line"><span class="cl">  <span class="nx">syscall</span><span class="p">.</span><span class="nx">SYS_SEM_OPEN</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">)),</span>  <span class="c1">// name
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="nx">O_CREAT</span><span class="p">),</span>  <span class="c1">// flag
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">mode</span><span class="p">),</span>  <span class="c1">// mode
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">value</span><span class="p">),</span>  <span class="c1">// value
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="mi">0</span><span class="p">,</span>  <span class="c1">// 没有更多参数，使用 0
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">)),</span>  <span class="c1">// name</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="nx">O_CREAT</span><span class="p">),</span>  <span class="c1">// flag</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">mode</span><span class="p">),</span>  <span class="c1">// mode</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">uintptr</span><span class="p">(</span><span class="nx">value</span><span class="p">),</span>  <span class="c1">// value</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">0</span><span class="p">,</span>  <span class="c1">// 没有更多参数，使用 0</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">0</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl"><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -359,13 +359,13 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 </span></span><span class="line"><span class="cl">	<span class="s">&#34;unsafe&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Semaphore 是一个用来保存 信号描述符 的结构体
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Semaphore</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Semaphore 是一个用来保存 信号描述符 的结构体</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Semaphore</span> <span class="kd">struct</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">sd</span> <span class="kt">uintptr</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// New 创建一个空的信号量结构体
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">New</span><span class="p">()</span> <span class="o">*</span><span class="nx">Semaphore</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// New 创建一个空的信号量结构体</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">New</span><span class="p">()</span> <span class="o">*</span><span class="nx">Semaphore</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">Semaphore</span><span class="p">{}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -418,14 +418,14 @@ sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">sem</span> <span class="o">*</span><span class="nx">Semaphore</span><span class="p">)</span> <span class="nf">Open</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">mode</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">// 将 go 字符串转为 C 字符串
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">cs</span> <span class="o">:=</span> <span class="nx">C</span><span class="p">.</span><span class="nf">CString</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">// C.CString 会在 C 侧重新申请内存，所以需要在使用后释放(在 stdlib.h 中)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">defer</span> <span class="nx">C</span><span class="p">.</span><span class="nf">free</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 将 go 字符串转为 C 字符串</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cs</span> <span class="o">:=</span> <span class="nx">C</span><span class="p">.</span><span class="nf">CString</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// C.CString 会在 C 侧重新申请内存，所以需要在使用后释放(在 stdlib.h 中)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">C</span><span class="p">.</span><span class="nf">free</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">))</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 调用 sem_open 系统调用，传递必须参数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// C.O_CREAT 表示创建(在 fcntl.h 中)，value 是信号量的值，mode 为打开的 信号描述符 的状态
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">r1</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">syscall</span><span class="p">.</span><span class="nf">Syscall6</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 调用 sem_open 系统调用，传递必须参数</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// C.O_CREAT 表示创建(在 fcntl.h 中)，value 是信号量的值，mode 为打开的 信号描述符 的状态</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r1</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">syscall</span><span class="p">.</span><span class="nf">Syscall6</span><span class="p">(</span>
 </span></span><span class="line"><span class="cl">		<span class="nx">syscall</span><span class="p">.</span><span class="nx">SYS_SEM_OPEN</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">		<span class="nb">uintptr</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">)),</span>
 </span></span><span class="line"><span class="cl">		<span class="nb">uintptr</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="nx">O_CREAT</span><span class="p">),</span>
