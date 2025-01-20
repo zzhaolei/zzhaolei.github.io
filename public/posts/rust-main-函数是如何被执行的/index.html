@@ -7,8 +7,8 @@
 <meta name="robots" content="index, follow">
 <title>Rust main 函数是如何被执行的 | Lei 的博客</title>
 <meta name="keywords" content="Rust">
-<meta name="description" content="Rust main 函数到底是如何被执行的呢？
-让我们看一个关于 main 函数的示例：
+<meta name="description" content="Rust的main函数到底是如何被执行的呢？
+让我们看一个关于main函数的示例：
 
 
 1
@@ -27,13 +27,13 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
 }
 
 
-从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
-接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
+从这个示例我们可以看到，rust的main函数竟然还可以返回Result枚举，这是为什么？rust到底是如何执行用户定义的main函数的呢？
+接下来让我们对rust的源码进行剖析，看一看rust到底是如何运行main函数的。
 Rust 运行时
-首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
-你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
-让我们先从 init 开始：
+首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的main函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化GC等等。
+而rust也不例外，也会在实际调用用户执行的main之前进行一些初始化的操作。
+你没看错，rust也是有运行时的，只不过这个运行时没有GC，非常的轻量级，主要是执行上面所说的初始化操作以及对main函数的执行和收尾。
+让我们先从init开始：
 
 
  1
@@ -95,12 +95,12 @@ pub(crate) fn cleanup() {
 
 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中
 
-sys::init 在 ffi 中不保证被调用
+sys::init 在ffi中不保证被调用
 
 
 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码
 
-现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：">
+现在我们终于可以进入重点了，rust对main函数的处理逻辑：">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
@@ -151,14 +151,14 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/rust-main-%E5%87%BD%E6%95%B0%E6%98%AF%E5%A6%82%E4%BD%95%E8%A2%AB%E6%89%A7%E8%A1%8C%E7%9A%84/">
   <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Rust main 函数是如何被执行的">
-  <meta property="og:description" content="Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：
-1 2 3 4 5 6 use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
-接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
-Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
-你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
-让我们先从 init 开始：
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在 ffi 中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：">
+  <meta property="og:description" content="Rust的main函数到底是如何被执行的呢？ 让我们看一个关于main函数的示例：
+1 2 3 4 5 6 use std::error::Error; fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { println!(&#34;hello world&#34;); Ok(()) } 从这个示例我们可以看到，rust的main函数竟然还可以返回Result枚举，这是为什么？rust到底是如何执行用户定义的main函数的呢？
+接下来让我们对rust的源码进行剖析，看一看rust到底是如何运行main函数的。
+Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的main函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化GC等等。
+而rust也不例外，也会在实际调用用户执行的main之前进行一些初始化的操作。
+你没看错，rust也是有运行时的，只不过这个运行时没有GC，非常的轻量级，主要是执行上面所说的初始化操作以及对main函数的执行和收尾。
+让我们先从init开始：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = &#34;teeos&#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在ffi中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust对main函数的处理逻辑：">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -167,8 +167,8 @@ Rust 运行时 首先，在几乎所有的语言中（目前我不知道哪个�
     <meta property="article:tag" content="Rust">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust main 函数是如何被执行的">
-<meta name="twitter:description" content="Rust main 函数到底是如何被执行的呢？
-让我们看一个关于 main 函数的示例：
+<meta name="twitter:description" content="Rust的main函数到底是如何被执行的呢？
+让我们看一个关于main函数的示例：
 
 
 1
@@ -187,13 +187,13 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
 }
 
 
-从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？
-接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。
+从这个示例我们可以看到，rust的main函数竟然还可以返回Result枚举，这是为什么？rust到底是如何执行用户定义的main函数的呢？
+接下来让我们对rust的源码进行剖析，看一看rust到底是如何运行main函数的。
 Rust 运行时
-首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。
-而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。
-你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。
-让我们先从 init 开始：
+首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的main函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化GC等等。
+而rust也不例外，也会在实际调用用户执行的main之前进行一些初始化的操作。
+你没看错，rust也是有运行时的，只不过这个运行时没有GC，非常的轻量级，主要是执行上面所说的初始化操作以及对main函数的执行和收尾。
+让我们先从init开始：
 
 
  1
@@ -255,12 +255,12 @@ pub(crate) fn cleanup() {
 
 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中
 
-sys::init 在 ffi 中不保证被调用
+sys::init 在ffi中不保证被调用
 
 
 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码
 
-现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：">
+现在我们终于可以进入重点了，rust对main函数的处理逻辑：">
 
 
 <script type="application/ld+json">
@@ -289,12 +289,12 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
   "@type": "BlogPosting",
   "headline": "Rust main 函数是如何被执行的",
   "name": "Rust main 函数是如何被执行的",
-  "description": "Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：\n1 2 3 4 5 6 use std::error::Error; fn main() -\u0026gt; Result\u0026lt;(), Box\u0026lt;dyn Error\u0026gt;\u0026gt; { println!(\u0026#34;hello world\u0026#34;); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？\n接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。\nRust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。\n而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。\n你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。\n让我们先从 init 开始：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = \u0026#34;teeos\u0026#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在 ffi 中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：\n",
+  "description": "Rust的main函数到底是如何被执行的呢？ 让我们看一个关于main函数的示例：\n1 2 3 4 5 6 use std::error::Error; fn main() -\u0026gt; Result\u0026lt;(), Box\u0026lt;dyn Error\u0026gt;\u0026gt; { println!(\u0026#34;hello world\u0026#34;); Ok(()) } 从这个示例我们可以看到，rust的main函数竟然还可以返回Result枚举，这是为什么？rust到底是如何执行用户定义的main函数的呢？\n接下来让我们对rust的源码进行剖析，看一看rust到底是如何运行main函数的。\nRust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的main函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化GC等等。\n而rust也不例外，也会在实际调用用户执行的main之前进行一些初始化的操作。\n你没看错，rust也是有运行时的，只不过这个运行时没有GC，非常的轻量级，主要是执行上面所说的初始化操作以及对main函数的执行和收尾。\n让我们先从init开始：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = \u0026#34;teeos\u0026#34;, allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在ffi中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust对main函数的处理逻辑：\n",
   "keywords": [
     "Rust"
   ],
-  "articleBody": "Rust main 函数到底是如何被执行的呢？ 让我们看一个关于 main 函数的示例：\n1 2 3 4 5 6 use std::error::Error; fn main() -\u003e Result\u003c(), Box\u003cdyn Error\u003e\u003e { println!(\"hello world\"); Ok(()) } 从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？\n接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。\nRust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。\n而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。\n你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。\n让我们先从 init 开始：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = \"teeos\", allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在 ffi 中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 #[lang = \"start\"] fn lang_start\u003cT: crate::process::Termination + 'static\u003e( main: fn() -\u003e T, argc: isize, argv: *const *const u8, sigpipe: u8 ) -\u003e isize { let Ok(v) = lang_start_internal( \u0026(move || crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()), argc, argv, sigpipe ); v } fn lang_start_internal( main: \u0026(dyn (Fn() -\u003e i32) + Sync + crate::panic::RefUnwindSafe), argc: isize, argv: *const *const u8, sigpipe: u8 ) -\u003e Result\u003cisize, !\u003e { use crate::{ mem, panic }; let rt_abort = move |e| { mem::forget(e); rtabort!(\"initialization or cleanup bug\"); }; // 初始化参数、栈等信息，并捕获可能的异常信息，展开异常的栈调用路径 panic::catch_unwind(move || unsafe { init(argc, argv, sigpipe) }).map_err(rt_abort)?; // 调用用户定义的 main 函数 // 这里会尝试获取用户返回的 exitcode，通过 Termination::report let ret_code = panic ::catch_unwind(move || panic::catch_unwind(main).unwrap_or(101) as isize) .map_err(move |e| { mem::forget(e); rtabort!(\"drop of the panic payload panicked\"); }); // 执行清理程序 panic::catch_unwind(cleanup).map_err(rt_abort)?; // 退出主线程 panic::catch_unwind(|| crate::sys::exit_guard::unique_thread_exit()).map_err(rt_abort)?; ret_code } 让我们一步步分析 lang_start 函数：\n在 lang_start 中我们可以看到这个函数被标记了 #[lang = \"start\"] 这表明是语言的入口函数。\nlang_start 本质是调用的 lang_start_internal ，在 lang_start_internal 中对资源进行初始化、执行 main、清理资源。\n我们可以看到 lang_start 函数的参数有一个 main，而 main 的类型是一个函数，类型声明为 fn() → T，T 的约束是 T: crate::process::Termination + 'static ，对于我们这次分析来说，最重要的是 trait Termination 。\nTermination 相关签名（删除了一些属性宏，不影响理解）：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #[derive(PartialEq, Eq, Clone, Copy)] pub struct ExitCode(u8); impl ExitCode { pub const SUCCESS: ExitCode = ExitCode(EXIT_SUCCESS as _); pub const FAILURE: ExitCode = ExitCode(EXIT_FAILURE as _); #[inline] pub fn as_i32(\u0026self) -\u003e i32 { self.0 as i32 } } impl From\u003cu8\u003e for ExitCode { fn from(code: u8) -\u003e Self { Self(code) } } pub trait Termination { /// Is called to get the representation of the value as status code. /// This status code is returned to the operating system. #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] fn report(self) -\u003e ExitCode; } 现在我们的疑问有了答案，是因为 Result 枚举实现了 Termination，所以用户定义的 main 函数可以返回 Result 枚举：\n1 2 3 4 5 6 7 8 9 10 11 12 #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] impl\u003cT: Termination, E: fmt::Debug\u003e Termination for Result\u003cT, E\u003e { fn report(self) -\u003e ExitCode { match self { Ok(val) =\u003e val.report(), Err(err) =\u003e { io::attempt_print_to_stderr(format_args_nl!(\"Error: {err:?}\")); ExitCode::FAILURE } } } } 通过代码 crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32() 可以看到，实际调用了 main 返回值的 report 函数，也就是 Result::report，这会返回一个 i32 值，用于标识程序是否正常退出。 __rust_begin_short_backtrace 实际就是一个包装函数，用于防止尾部调用优化的。 新的问题又出现了 最开始的问题解决了，但是我们又想到了一个新的问题。\n既然 rust 的 lang_start 需要一个 fn → T, T: crate::process::Termination + 'static 的类型约束，为什么 main 函数什么也不返回也可以呢？\n看这个示例：\n1 2 3 fn main() { println!(\"hello world!\"); } 回答这个问题，我们首先要知道，在 rust 中函数什么也没返回的情况下，其实也是有返回的，只是可以省略不写而已，上面示例的实际脱糖（剥离语法糖）形式为：\n1 2 3 fn main() -\u003e () { println!(\"hello world!\"); } 即：默认会返回一个()，实际类型名字叫做 unit ，中文一般称作单元类型。\n恰好，unit 类型，也实现了 Termination trai，所以 main 函数什么也不返回也是可以的。\n1 2 3 4 5 6 7 #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] impl Termination for () { #[inline] fn report(self) -\u003e ExitCode { ExitCode::SUCCESS } } 并且 Termination::report 签名要求返回一个 ExitCode，而 ExitCode 又实现了 From，所以实际上还可以在 main 函数中返回一个 u8 的数字。\n例如：\n1 2 3 4 5 6 use std::process::ExitCode; fn main() -\u003e ExitCode { println!(\"hello world!\"); 0.into() // program success } 还可以自定义返回类型，只要实现了 Termination 即可，下面是一个示例：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 use std::process::{ExitCode, Termination}; struct MyExit { msg: String, } impl MyExit { fn new(msg: String) -\u003e Self { MyExit { msg } } } impl Termination for MyExit { fn report(self) -\u003e ExitCode { if self.msg.eq(\"ok\".into()) { 0.into() } else { 1.into() } } } fn main() -\u003e MyExit { let exit = MyExit::new(\"ok\".into()); exit } 补充资料 rust 的 lang_start 也是被调用者，是调用的它呢？在 rust 中有一个 create_entry_fn 负责创建 entry 函数，这个函数中会调用 lang_start 函数。源码。 在裸机开发中（no_std），通常 main 函数是不会返回的，所以是没有 exitcode 的。 ",
-  "wordCount" : "778",
+  "articleBody": "Rust的main函数到底是如何被执行的呢？ 让我们看一个关于main函数的示例：\n1 2 3 4 5 6 use std::error::Error; fn main() -\u003e Result\u003c(), Box\u003cdyn Error\u003e\u003e { println!(\"hello world\"); Ok(()) } 从这个示例我们可以看到，rust的main函数竟然还可以返回Result枚举，这是为什么？rust到底是如何执行用户定义的main函数的呢？\n接下来让我们对rust的源码进行剖析，看一看rust到底是如何运行main函数的。\nRust 运行时 首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的main函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化GC等等。\n而rust也不例外，也会在实际调用用户执行的main之前进行一些初始化的操作。\n你没看错，rust也是有运行时的，只不过这个运行时没有GC，非常的轻量级，主要是执行上面所说的初始化操作以及对main函数的执行和收尾。\n让我们先从init开始：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 // 在执行 main 之前执行 unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) { #[cfg_attr(target_os = \"teeos\", allow(unused_unsafe))] unsafe { // 实际的资源初始化逻辑 sys::init(argc, argv, sigpipe) }; // 设置主线程，并设置一个名字 let thread = Thread::new_main(); thread::set_current(thread); } // 运行时只会执行一次 cleanup。 // 在 main 或程序退出的时候执行 // NOTE: 当程序被终止的时候，不能保证执行 cleanup // （终止是 kill 等强制终止，或段错误等行为，程序无法继续执行，资源由操作系统进行回收） pub(crate) fn cleanup() { static CLEANUP: Once = Once::new(); CLEANUP.call_once(|| unsafe { // 刷新 stdout 缓冲区的数据，并禁用缓冲区 crate::io::cleanup(); // SAFETY: 通过 Once 保证，只会执行一次 cleanup sys::cleanup(); }); } 系统资源的初始化和清理在 sys::init 和 sys::cleanup 中 sys::init 在ffi中不保证被调用 sys::init 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读源码 现在我们终于可以进入重点了，rust对main函数的处理逻辑：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 #[lang = \"start\"] fn lang_start\u003cT: crate::process::Termination + 'static\u003e( main: fn() -\u003e T, argc: isize, argv: *const *const u8, sigpipe: u8 ) -\u003e isize { let Ok(v) = lang_start_internal( \u0026(move || crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()), argc, argv, sigpipe ); v } fn lang_start_internal( main: \u0026(dyn (Fn() -\u003e i32) + Sync + crate::panic::RefUnwindSafe), argc: isize, argv: *const *const u8, sigpipe: u8 ) -\u003e Result\u003cisize, !\u003e { use crate::{ mem, panic }; let rt_abort = move |e| { mem::forget(e); rtabort!(\"initialization or cleanup bug\"); }; // 初始化参数、栈等信息，并捕获可能的异常信息，展开异常的栈调用路径 panic::catch_unwind(move || unsafe { init(argc, argv, sigpipe) }).map_err(rt_abort)?; // 调用用户定义的 main 函数 // 这里会尝试获取用户返回的 exitcode，通过 Termination::report let ret_code = panic ::catch_unwind(move || panic::catch_unwind(main).unwrap_or(101) as isize) .map_err(move |e| { mem::forget(e); rtabort!(\"drop of the panic payload panicked\"); }); // 执行清理程序 panic::catch_unwind(cleanup).map_err(rt_abort)?; // 退出主线程 panic::catch_unwind(|| crate::sys::exit_guard::unique_thread_exit()).map_err(rt_abort)?; ret_code } 让我们一步步分析lang_start函数：\n在lang_start中我们可以看到这个函数被标记了#[lang = \"start\"]这表明是语言的入口函数。 lang_start本质是调用的lang_start_internal，在lang_start_internal中对资源进行初始化、执行main、清理资源。 我们可以看到lang_start函数的参数有一个main，而main的类型是一个函数，类型声明为fn() → T，T的约束是T: crate::process::Termination + 'static，对于我们这次分析来说，最重要的是trait Termination。 Termination相关签名（删除了一些属性宏，不影响理解）：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #[derive(PartialEq, Eq, Clone, Copy)] pub struct ExitCode(u8); impl ExitCode { pub const SUCCESS: ExitCode = ExitCode(EXIT_SUCCESS as _); pub const FAILURE: ExitCode = ExitCode(EXIT_FAILURE as _); #[inline] pub fn as_i32(\u0026self) -\u003e i32 { self.0 as i32 } } impl From\u003cu8\u003e for ExitCode { fn from(code: u8) -\u003e Self { Self(code) } } pub trait Termination { /// Is called to get the representation of the value as status code. /// This status code is returned to the operating system. #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] fn report(self) -\u003e ExitCode; } 现在我们的疑问有了答案，是因为Result枚举实现了Termination，所以用户定义的main函数可以返回Result枚举：\n1 2 3 4 5 6 7 8 9 10 11 12 #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] impl\u003cT: Termination, E: fmt::Debug\u003e Termination for Result\u003cT, E\u003e { fn report(self) -\u003e ExitCode { match self { Ok(val) =\u003e val.report(), Err(err) =\u003e { io::attempt_print_to_stderr(format_args_nl!(\"Error: {err:?}\")); ExitCode::FAILURE } } } } 通过代码crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()可以看到，实际调用了main返回值的report函数，也就是Result::report，这会返回一个i32值，用于标识程序是否正常退出。 __rust_begin_short_backtrace实际就是一个包装函数，用于防止尾部调用优化的。 新的问题又出现了 最开始的问题解决了，但是我们又想到了一个新的问题。\n既然rust的lang_start需要一个fn → T, T: crate::process::Termination + 'static的类型约束，为什么main函数什么也不返回也可以呢？\n看这个示例：\n1 2 3 fn main() { println!(\"hello world!\"); } 回答这个问题，我们首先要知道，在rust中函数什么也没返回的情况下，其实也是有返回的，只是可以省略不写而已，上面示例的实际脱糖（剥离语法糖）形式为：\n1 2 3 fn main() -\u003e () { println!(\"hello world!\"); } 即：默认会返回一个()，实际类型名字叫做unit，中文一般称作单元类型。\n恰好，unit类型，也实现了Termination trait，所以main函数什么也不返回也是可以的。\n1 2 3 4 5 6 7 #[stable(feature = \"termination_trait_lib\", since = \"1.61.0\")] impl Termination for () { #[inline] fn report(self) -\u003e ExitCode { ExitCode::SUCCESS } } 并且Termination::report签名要求返回一个ExitCode，而ExitCode又实现了From，所以实际上还可以在main函数中返回一个u8的数字。\n例如：\n1 2 3 4 5 6 use std::process::ExitCode; fn main() -\u003e ExitCode { println!(\"hello world!\"); 0.into() // program success } 还可以自定义返回类型，只要实现了Termination即可，下面是一个示例：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 use std::process::{ExitCode, Termination}; struct MyExit { msg: String, } impl MyExit { fn new(msg: String) -\u003e Self { MyExit { msg } } } impl Termination for MyExit { fn report(self) -\u003e ExitCode { if self.msg.eq(\"ok\".into()) { 0.into() } else { 1.into() } } } fn main() -\u003e MyExit { let exit = MyExit::new(\"ok\".into()); exit } 补充资料 rust的lang_start也是被调用者，是调用的它呢？在rust中有一个create_entry_fn负责创建entry函数，这个函数中会调用lang_start函数。源码。 在裸机开发中（no_std），通常main函数是不会返回的，所以是没有exitcode的。 ",
+  "wordCount" : "658",
   "inLanguage": "zh",
   "datePublished": "2024-09-01T10:20:00+08:00",
   "dateModified": "2024-09-01T10:20:00+08:00",
@@ -391,7 +391,7 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#rust-main-%e5%87%bd%e6%95%b0%e5%88%b0%e5%ba%95%e6%98%af%e5%a6%82%e4%bd%95%e8%a2%ab%e6%89%a7%e8%a1%8c%e7%9a%84%e5%91%a2" aria-label="Rust main 函数到底是如何被执行的呢？">Rust main 函数到底是如何被执行的呢？</a><ul>
+                    <a href="#rust%e7%9a%84main%e5%87%bd%e6%95%b0%e5%88%b0%e5%ba%95%e6%98%af%e5%a6%82%e4%bd%95%e8%a2%ab%e6%89%a7%e8%a1%8c%e7%9a%84%e5%91%a2" aria-label="Rust的main函数到底是如何被执行的呢？">Rust的main函数到底是如何被执行的呢？</a><ul>
                         <ul>
                         
                 <li>
@@ -409,8 +409,8 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
     </details>
 </div>
 
-  <div class="post-content"><h1 id="rust-main-函数到底是如何被执行的呢">Rust main 函数到底是如何被执行的呢？<a hidden class="anchor" aria-hidden="true" href="#rust-main-函数到底是如何被执行的呢">#</a></h1>
-<p>让我们看一个关于 main 函数的示例：</p>
+  <div class="post-content"><h1 id="rust的main函数到底是如何被执行的呢">Rust的main函数到底是如何被执行的呢？<a hidden class="anchor" aria-hidden="true" href="#rust的main函数到底是如何被执行的呢">#</a></h1>
+<p>让我们看一个关于<code>main</code>函数的示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -429,13 +429,13 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>从这个示例我们可以看到，rust 的 main 函数竟然还可以返回 Result 枚举，这是为什么？rust 到底是如何执行用户定义的 main 函数的呢？</p>
-<p>接下来让我们对 rust 的源码进行剖析，看一看 rust 到底是如何运行 main 函数的。</p>
+</div><p>从这个示例我们可以看到，<code>rust</code>的<code>main</code>函数竟然还可以返回<code>Result</code>枚举，这是为什么？<code>rust</code>到底是如何执行用户定义的<code>main</code>函数的呢？</p>
+<p>接下来让我们对<code>rust</code>的源码进行剖析，看一看<code>rust</code>到底是如何运行<code>main</code>函数的。</p>
 <h3 id="rust-运行时">Rust 运行时<a hidden class="anchor" aria-hidden="true" href="#rust-运行时">#</a></h3>
-<p>首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的 main 函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化 GC等等。</p>
-<p>而 rust 也不例外，也会在实际调用用户执行的 main 之前进行一些初始化的操作。</p>
-<p>你没看错，rust 也是有运行时的，只不过这个运行时没有 GC，非常的轻量级，主要是执行上面所说的初始化操作以及对 main 函数的执行和收尾。</p>
-<p>让我们先从 <code>init</code> 开始：</p>
+<p>首先，在几乎所有的语言中（目前我不知道哪个语言会不进行处理），在执行用户的<code>main</code>函数之前都需要进行一些初始化工作，比如分配堆栈、创建并绑定主线程、初始化通用寄存器、初始化<code>GC</code>等等。</p>
+<p>而<code>rust</code>也不例外，也会在实际调用用户执行的<code>main</code>之前进行一些初始化的操作。</p>
+<p>你没看错，<code>rust</code>也是有运行时的，只不过这个运行时没有<code>GC</code>，非常的轻量级，主要是执行上面所说的初始化操作以及对<code>main</code>函数的执行和收尾。</p>
+<p>让我们先从<code>init</code>开始：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -497,12 +497,12 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </div><ul>
 <li>系统资源的初始化和清理在 <code>sys::init</code> 和 <code>sys::cleanup</code> 中
 <ul>
-<li><code>sys::init</code> 在 <code>ffi</code> 中不保证被调用</li>
+<li><code>sys::init</code> 在<code>ffi</code>中不保证被调用</li>
 </ul>
 </li>
 <li><code>sys::init</code> 的源码不是算复杂，主要是保证打开标准输入输出流、初始化栈，感兴趣的可以自行阅读<a href="https://github.com/rust-lang/rust/blob/4074d4902dc19ff1bbce1d74ef9ceae15b5f41ce/library/std/src/sys/pal/unix/mod.rs#L44">源码</a></li>
 </ul>
-<p>现在我们终于可以进入重点了，rust 对 main 函数的处理逻辑：</p>
+<p>现在我们终于可以进入重点了，<code>rust</code>对<code>main</code>函数的处理逻辑：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -597,17 +597,13 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>让我们一步步分析 <code>lang_start</code> 函数：</p>
+</div><p>让我们一步步分析<code>lang_start</code>函数：</p>
 <ol>
-<li>
-<p>在 <code>lang_start</code> 中我们可以看到这个函数被标记了 <code>#[lang = &quot;start&quot;]</code> 这表明是语言的入口函数。</p>
-</li>
-<li>
-<p><code>lang_start</code> 本质是调用的 <code>lang_start_internal</code> ，在 <code>lang_start_internal</code> 中对资源进行初始化、执行 main、清理资源。</p>
-</li>
-<li>
-<p>我们可以看到 <code>lang_start</code> 函数的参数有一个 <code>main</code>，而 <code>main</code> 的类型是一个函数，类型声明为 <code>fn() → T</code>，T 的约束是 <code>T: crate::process::Termination + 'static</code> ，对于我们这次分析来说，最重要的是 <code>trait Termination</code> 。</p>
-<p>Termination 相关签名（删除了一些属性宏，不影响理解）：</p>
+<li>在<code>lang_start</code>中我们可以看到这个函数被标记了<code>#[lang = &quot;start&quot;]</code>这表明是语言的入口函数。</li>
+<li><code>lang_start</code>本质是调用的<code>lang_start_internal</code>，在<code>lang_start_internal</code>中对资源进行初始化、执行<code>main</code>、清理资源。</li>
+<li>我们可以看到<code>lang_start</code>函数的参数有一个<code>main</code>，而<code>main</code>的类型是一个函数，类型声明为<code>fn() → T</code>，<code>T</code>的约束是<code>T: crate::process::Termination + 'static</code>，对于我们这次分析来说，最重要的是<code>trait Termination</code>。</li>
+</ol>
+<p><code>Termination</code>相关签名（删除了一些属性宏，不影响理解）：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -664,9 +660,7 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-<p>现在我们的疑问有了答案，是因为 <code>Result</code> 枚举实现了 <code>Termination</code>，所以用户定义的 main 函数可以返回 Result 枚举：</p>
+</div><p>现在我们的疑问有了答案，是因为<code>Result</code>枚举实现了<code>Termination</code>，所以用户定义的<code>main</code>函数可以返回<code>Result</code>枚举：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -698,12 +692,12 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>通过代码 <code>crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()</code> 可以看到，实际调用了 main 返回值的 report 函数，也就是 <code>Result::report</code>，这会返回一个 i32 值，用于标识程序是否正常退出。</li>
-<li><code>__rust_begin_short_backtrace</code> 实际就是一个包装函数，用于防止尾部调用优化的。</li>
+<li>通过代码<code>crate::sys::backtrace::__rust_begin_short_backtrace(main).report().to_i32()</code>可以看到，实际调用了<code>main</code>返回值的<code>report</code>函数，也就是<code>Result::report</code>，这会返回一个<code>i32</code>值，用于标识程序是否正常退出。</li>
+<li><code>__rust_begin_short_backtrace</code>实际就是一个包装函数，用于防止尾部调用优化的。</li>
 </ul>
 <h3 id="新的问题又出现了">新的问题又出现了<a hidden class="anchor" aria-hidden="true" href="#新的问题又出现了">#</a></h3>
 <p>最开始的问题解决了，但是我们又想到了一个新的问题。</p>
-<p>既然 rust 的 lang_start 需要一个 <code>fn → T, T: crate::process::Termination + 'static</code> 的类型约束，为什么 main 函数什么也不返回也可以呢？</p>
+<p>既然<code>rust</code>的<code>lang_start</code>需要一个<code>fn → T, T: crate::process::Termination + 'static</code>的类型约束，为什么<code>main</code>函数什么也不返回也可以呢？</p>
 <p>看这个示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -717,7 +711,7 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>回答这个问题，我们首先要知道，在 rust 中函数什么也没返回的情况下，其实也是有返回的，只是可以省略不写而已，上面示例的实际脱糖（剥离语法糖）形式为：</p>
+</div><p>回答这个问题，我们首先要知道，在<code>rust</code>中函数什么也没返回的情况下，其实也是有返回的，只是可以省略不写而已，上面示例的实际脱糖（剥离语法糖）形式为：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -730,8 +724,8 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>即：默认会返回一个<code>()</code>，实际类型名字叫做 <code>unit</code> ，中文一般称作单元类型。</p>
-<p>恰好，unit 类型，也实现了 Termination trai，所以 main 函数什么也不返回也是可以的。</p>
+</div><p>即：默认会返回一个<code>()</code>，实际类型名字叫做<code>unit</code>，中文一般称作单元类型。</p>
+<p>恰好，<code>unit</code>类型，也实现了<code>Termination trait</code>，所以<code>main</code>函数什么也不返回也是可以的。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -752,7 +746,7 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>并且 <code>Termination::report</code> 签名要求返回一个 <code>ExitCode</code>，而 <code>ExitCode</code> 又实现了 <code>From&lt;u8&gt;</code>，所以实际上还可以在 <code>main</code> 函数中返回一个 <code>u8</code> 的数字。</p>
+</div><p>并且<code>Termination::report</code>签名要求返回一个<code>ExitCode</code>，而<code>ExitCode</code>又实现了<code>From&lt;u8&gt;</code>，所以实际上还可以在<code>main</code>函数中返回一个<code>u8</code>的数字。</p>
 <p>例如：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -772,7 +766,7 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>还可以自定义返回类型，只要实现了 Termination 即可，下面是一个示例：</p>
+</div><p>还可以自定义返回类型，只要实现了<code>Termination</code>即可，下面是一个示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -833,8 +827,8 @@ sys::init 的源码不是算复杂，主要是保证打开标准输入输出流�
 </div>
 </div><h3 id="补充资料">补充资料<a hidden class="anchor" aria-hidden="true" href="#补充资料">#</a></h3>
 <ol>
-<li>rust 的 lang_start 也是被调用者，是调用的它呢？在 rust 中有一个 <code>create_entry_fn</code> 负责创建 entry 函数，这个函数中会调用 lang_start 函数。<a href="https://github.com/rust-lang/rust/blob/38030ffb4e735b26260848b744c0910a5641e1db/compiler/rustc_codegen_ssa/src/base.rs#L382-L454">源码</a>。</li>
-<li>在裸机开发中（no_std），通常 main 函数是不会返回的，所以是没有 exitcode 的。</li>
+<li><code>rust</code>的<code>lang_start</code>也是被调用者，是调用的它呢？在<code>rust</code>中有一个<code>create_entry_fn</code>负责创建<code>entry</code>函数，这个函数中会调用<code>lang_start</code>函数。<a href="https://github.com/rust-lang/rust/blob/38030ffb4e735b26260848b744c0910a5641e1db/compiler/rustc_codegen_ssa/src/base.rs#L382-L454">源码</a>。</li>
+<li>在裸机开发中（<code>no_std</code>），通常<code>main</code>函数是不会返回的，所以是没有<code>exitcode</code>的。</li>
 </ol>
 
 

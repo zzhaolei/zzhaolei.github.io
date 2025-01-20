@@ -20,11 +20,11 @@ draft = false
 
 `slave`：从配置
 
-`docker-compose`：通过 docker-compose 进行容器配置和启动
+`docker-compose`：通过`docker-compose`进行容器配置和启动
 
-**master/my.cnf**
+### master/my.cnf
 
-```go
+```ini
 # For advice on how to change settings please see
 # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html
 
@@ -51,9 +51,9 @@ socket=/var/run/mysqld/mysqld.sock
 !includedir /etc/mysql/conf.d/
 ```
 
-**slave/my.cnf** 和 master/my.cnf 内容基本一致，但是 server-id 不能重复
+**slave/my.cnf** 和`master/my.cnf`内容基本一致，但是`server-id`不能重复
 
-```go
+```ini
 # For advice on how to change settings please see
 # http://dev.mysql.com/doc/refman/8.3/en/server-configuration-defaults.html
 
@@ -80,10 +80,10 @@ socket=/var/run/mysqld/mysqld.sock
 !includedir /etc/mysql/conf.d/
 ```
 
-**docker-compose.yml**
+### docker-compose.yml
 
 ```yaml
-version: '3'
+version: "3"
 
 # 定义一个 network，方便主从容器之间通信。名字可以随便起。
 networks:
@@ -98,12 +98,12 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - "./master/:/etc/mysql/conf.d"  # 将 master 中的配置映射到容器内
+      - "./master/:/etc/mysql/conf.d" # 将 master 中的配置映射到容器内
     environment:
-      MYSQL_ROOT_PASSWORD: root  # 设置 MySQL root 密码
-    restart: unless-stopped  # 启动方式
+      MYSQL_ROOT_PASSWORD: root # 设置 MySQL root 密码
+    restart: unless-stopped # 启动方式
     networks:
-      - mysql-master-slave-network  # 必须指定容器的网络，不然在 bridge 模式下容器无法正确通信
+      - mysql-master-slave-network # 必须指定容器的网络，不然在 bridge 模式下容器无法正确通信
 
   mysql-slave:
     image: mysql
@@ -121,9 +121,9 @@ services:
 
 ## 主从设置
 
-### 获取 master 的状态
+### 获取`master`的状态
 
-1. 连接进 `master`，然后执行查看命令
+连接进`master`，然后执行查看命令
 
 ```bash
 $ mycli mysql://root:root@localhost:3306
@@ -135,25 +135,26 @@ $ mycli mysql://root:root@localhost:3306
 +-------------------+----------+--------------+------------------+-------------------+
 ```
 
-`File` 就是当前 `binlog` 文件，`Position` 是偏移量，说明下一条命令从这里开始。`File` 和 `Position` 后面在 `slave` 中会使用到。
+`File`就是当前`binlog`文件，`Position`是偏移量，说明下一条命令从这里开始。`File`和`Position`后面在`slave`中会使用到。
 
-1. 如果没有数据库，则需要先创建一个数据库，否则 `slave` 不会正常同步。（`slave` 也需要先创建一个相同的数据库，才能开始同步）
-
-```sql
+> [!TIP]
+> 如果没有数据库，则需要先创建一个数据库，否则`slave`不会正常同步。（`slave`也需要先创建一个相同的数据库，才能开始同步）
+>
+> ```sql
 > create database test;
-Query OK, 1 row affected
-Time: 0.006s
-```
+> Query OK, 1 row affected
+> Time: 0.006s
+> ```
 
 ### 配置从库
 
-1. 连接进 `slave`
+1. 连接进`slave`
 
 ```go
 $ mycli mysql://root:root@localhost:3307
 ```
 
-1. 查看 `slave` 的状态，默认应该是空的
+2. 查看`slave`的状态，默认应该是空的
 
 ```sql
 > show slave status\G;
@@ -172,7 +173,7 @@ Slave_IO_Running              |
 Slave_SQL_Running             |
 ```
 
-1. 创建数据库
+3. 创建数据库
 
 ```sql
 > create database test;
@@ -180,7 +181,7 @@ Query OK, 1 row affected
 Time: 0.006s
 ```
 
-1. 连接到主库
+4. 连接到主库
 
 ```sql
 > change master to master_host='mysql-master',master_user='root',master_password='root',master_port=3306,master_log_file='master-bin.000003',master_log_pos=352;
@@ -188,17 +189,17 @@ Query OK, 0 rows affected
 Time: 0.017s
 ```
 
-`master_host`：可以填写 `mysql-master`，因为我们已经指定了主和从都在这个网络里面，只是他们的 `ip` 不同，`docker` 会帮我们进行转发
+`master_host`：可以填写`mysql-master`，因为我们已经指定了主和从都在这个网络里面，只是他们的`ip`不同，`docker`会帮我们进行转发
 
 `master_port`：是主机容器内部的端口，而不是我们映射出来的端口，因为我们是直接连接的容器内部。
 
-`master_log_file`：就是我们看到的 master 的 FIle 信息，指定我们的 slave 从这个 binlog 开始同步
+`master_log_file`：就是我们看到的`master`的`File`信息，指定我们的`slave`从这个`binlog`开始同步
 
-`master_log_pos`：就是我们看到的 master 的 Position 信息，指定我们的 slave 从这个偏移量开始同步
+`master_log_pos`：就是我们看到的`master`的`Position`信息，指定我们的`slave`从这个偏移量开始同步
 
-其他的配置都是 mysql 的账户信息。
+其他的配置都是`mysql`的账户信息。
 
-1. 启动主从复制
+5. 启动主从复制
 
 ```sql
 > start slave;
@@ -206,9 +207,9 @@ Query OK, 0 rows affected
 Time: 0.018s
 ```
 
-查看 `slave` 状态，如果 `Slave_IO_Running` 和 `Slave_SQL_Running` 都为 `Yes`，则说明启动成功，如果有一个显示为 `No`，则可以查看 `Last_IO_Error` 或 `Last_SQL_Error` 的错误信息。
+查看`slave`状态，如果`Slave_IO_Running`和`Slave_SQL_Running`都为`Yes`，则说明启动成功，如果有一个显示为`No`，则可以查看`Last_IO_Error`或`Last_SQL_Error`的错误信息。
 
-- 失败示例，可以看到 `Last_IO_Error` 字段显示主从的 `server-id` 重复了，所以启动失败
+- 失败示例，可以看到`Last_IO_Error`字段显示主从的`server-id`重复了，所以启动失败
 
 ```sql
 > show slave status\G
@@ -235,7 +236,7 @@ Replicate_Ignore_Server_Ids   |
 ...
 ```
 
-- 成功示例，`Slave_IO_Running` 和 `Slave_SQL_Running` 均为 Yes
+- 成功示例，`Slave_IO_Running`和`Slave_SQL_Running`均为`Yes`
 
 ```sql
 > show slave status\G
@@ -263,7 +264,7 @@ Replicate_Ignore_Server_Ids   |
 
 ### 测试同步
 
-1. 连接到 `master`，在 `test` 库中新建一个表
+1. 连接到`master`，在`test`库中新建一个表
 
 ```sql
 $ mycli mysql://root:root@localhost:3306
@@ -278,7 +279,7 @@ Query OK, 0 rows affected
 Time: 0.027s
 ```
 
-1. 连接到 `slave`，进入 `test` 库查看所有的表，会发现自动创建了一个 T 表
+2. 连接到`slave`，进入`test`库查看所有的表，会发现自动创建了一个 T 表
 
 ```sql
 $ mycli mysql://root:root@localhost:3307

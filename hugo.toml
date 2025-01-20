@@ -2,7 +2,7 @@ baseURL = 'https://zzhaolei.github.io/'
 languageCode = 'zh'
 defaultContentLanguage = 'zh'
 title = 'Lei 的博客'
-theme = 'PaperMod'
+theme = ["hugo-admonitions", "PaperMod"]
 
 [params]
 comments = true
