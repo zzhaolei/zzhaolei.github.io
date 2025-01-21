@@ -175,6 +175,7 @@
   <div class="entry-content">
     <p> 十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）
 原始仓库
+文中源码仓库: https://github.com/zzhaolei/1brc
 目标 文本文件包含了一系列气象站的温度值。每行是一个测量值，格式为&lt;string: station name&gt;;&lt;double: measurement&gt;，其中测量值精确到一位小数。以下是一些示例行：
 1 2 3 4 5 6 7 8 9 10 Hamburg;12.0 Bulawayo;8.9 Palembang;38.8 St. John&#39;s;15.2 Cracow;12.6 Bridgetown;26.9 Istanbul;6.2 Roseau;34.4 Conakry;31.2 Istanbul;23.0 任务是编写一个程序，该程序读取文本文件，计算每个气象站的最低、平均和最高温度值，并将结果输出到stdout， 格式如下（按气象站名称字母顺序排序，并且每个气象站的结果值格式为&lt;min&gt;/&lt;mean&gt;/&lt;max&gt;，保留一位小数点）：
 1 {Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, Addis Ababa=-23.7/16.0/67.0, Adelaide=-27.8/17.3/58.5, ...} 限制 只能使用标准库实现。

@@ -167,6 +167,7 @@
       <description>&lt;blockquote&gt;
 &lt;p&gt;十亿行挑战（1️⃣🐝🏎️ The One Billion Row Challenge）&lt;/p&gt;
 &lt;p&gt;原始&lt;a href=&#34;https://github.com/gunnarmorling/1brc&#34;&gt;仓库&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;文中源码&lt;a href=&#34;https://github.com/zzhaolei/1brc&#34;&gt;仓库&lt;/a&gt;: &lt;a href=&#34;https://github.com/zzhaolei/1brc&#34;&gt;https://github.com/zzhaolei/1brc&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;目标&#34;&gt;目标&lt;/h2&gt;
 &lt;p&gt;文本文件包含了一系列气象站的温度值。每行是一个测量值，格式为&lt;code&gt;&amp;lt;string: station name&amp;gt;;&amp;lt;double: measurement&amp;gt;&lt;/code&gt;，其中测量值精确到一位小数。以下是一些示例行：&lt;/p&gt;
