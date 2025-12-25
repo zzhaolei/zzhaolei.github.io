@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" dir="auto">
+<html lang="zh" dir="auto" data-theme="auto">
 
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,12 +49,10 @@ func Multiply(a, b int) int {
 func main() {}
 
 
-go 的文件名称在当前示例中无关紧要，这里定义为 main.go。
-main 函数是必须的，但是可以为空。
-注意：代码中的 //export Add 表示导出 Add 函数，export 和 // 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 //go:build 等。">
+go 的文件名称在当前示例中无关紧要，这里定义为 main.go。">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7fd5946ed5ddb1e9fb7a77146c9cacb56c0e888cde2d0793c11333e1b2cbe925.css" integrity="sha256-f9WUbtXdsen7encUbJystWwOiIzeLQeTwRMz4bLL6SU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -83,30 +81,43 @@ main 函数是必须的，但是可以为空。
                 --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
+                color-scheme: dark;
             }
 
             .list {
                 background: var(--theme);
             }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
+            .toc {
+                background: var(--entry);
             }
+        }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
             }
         }
 
     </style>
-</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://zzhaolei.github.io/posts/go-%E5%9C%A8-mac-%E6%88%96-linux-%E4%B8%8A%E6%9E%84%E5%BB%BA%E5%8A%A8%E6%80%81%E5%BA%93/">
   <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Go 在 Mac 或 Linux 上构建动态库">
   <meta property="og:description" content="Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。
 下面详细讲解一下用法：
-Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} go 的文件名称在当前示例中无关紧要，这里定义为 main.go。
-main 函数是必须的，但是可以为空。
-注意：代码中的 //export Add 表示导出 Add 函数，export 和 // 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 //go:build 等。">
+Go 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import &#34;C&#34; //export Add func Add(a, b int) int { return a &#43; b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} go 的文件名称在当前示例中无关紧要，这里定义为 main.go。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -159,9 +170,7 @@ func Multiply(a, b int) int {
 func main() {}
 
 
-go 的文件名称在当前示例中无关紧要，这里定义为 main.go。
-main 函数是必须的，但是可以为空。
-注意：代码中的 //export Add 表示导出 Add 函数，export 和 // 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 //go:build 等。">
+go 的文件名称在当前示例中无关紧要，这里定义为 main.go。">
 
 
 <script type="application/ld+json">
@@ -190,7 +199,7 @@ main 函数是必须的，但是可以为空。
   "@type": "BlogPosting",
   "headline": "Go 在 Mac 或 Linux 上构建动态库",
   "name": "Go 在 Mac 或 Linux 上构建动态库",
-  "description": "Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。\n下面详细讲解一下用法：\nGo 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import \u0026#34;C\u0026#34; //export Add func Add(a, b int) int { return a + b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} go 的文件名称在当前示例中无关紧要，这里定义为 main.go。\nmain 函数是必须的，但是可以为空。\n注意：代码中的 //export Add 表示导出 Add 函数，export 和 // 之间没有空格。这是 Go 中的一种特殊指令，类似的还有 //go:build 等。\n",
+  "description": "Go 可以导出 C ABI，然后在其它兼容 C ABI 的语言中调用。\n下面详细讲解一下用法：\nGo 构建动态库 定义一个 go 文件，包含以下代码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import \u0026#34;C\u0026#34; //export Add func Add(a, b int) int { return a + b } //export Multiply func Multiply(a, b int) int { return a * b } func main() {} go 的文件名称在当前示例中无关紧要，这里定义为 main.go。\n",
   "keywords": [
     "Go", "C", "Zig"
   ],
@@ -214,25 +223,13 @@ main 函数是必须的，但是可以为空。
 }
 </script>
 </head>
-
-<body class="" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
+<body id="top">
+    <header class="header">
     <nav class="nav">
         <div class="logo">
             <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -281,7 +278,7 @@ main 函数是必须的，但是可以为空。
     <h1 class="post-title entry-hint-parent">
       Go 在 Mac 或 Linux 上构建动态库
     </h1>
-    <div class="post-meta"><span title='2024-09-11 10:55:43 +0800 CST'>2024-09-11</span>&nbsp;·&nbsp;2 分钟
+    <div class="post-meta"><span title='2024-09-11 10:55:43 +0800 CST'>2024-09-11</span>&nbsp;·&nbsp;<span>2 分钟</span>
 
 </div>
   </header> <div class="toc">
@@ -326,22 +323,22 @@ main 函数是必须的，但是可以为空。
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;C&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">//export Add</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">//export Multiply</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Multiply</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">//export Add</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">Add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">b</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">//export Multiply</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">Multiply</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">b</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>go 的文件名称在当前示例中无关紧要，这里定义为 main.go。</p>
 <p>main 函数是必须的，但是可以为空。</p>
@@ -400,7 +397,7 @@ main 函数是必须的，但是可以为空。
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;libmylib.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;3 + 4 = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">Add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;5 * 6 = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">Multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">));</span>
@@ -507,9 +504,14 @@ main 函数是必须的，但是可以为空。
 </a>
 
 <script>
-    let menu = document.getElementById('menu')
+    let menu = document.getElementById('menu');
     if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
         menu.onscroll = function () {
             localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
@@ -550,11 +552,12 @@ main 函数是必须的，但是可以为空。
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
         } else {
-            document.body.classList.add('dark');
+            html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
         }
     })

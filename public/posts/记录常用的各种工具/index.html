@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" dir="auto">
+<html lang="zh" dir="auto" data-theme="auto">
 
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -154,7 +154,7 @@ App
 ">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7fd5946ed5ddb1e9fb7a77146c9cacb56c0e888cde2d0793c11333e1b2cbe925.css" integrity="sha256-f9WUbtXdsen7encUbJystWwOiIzeLQeTwRMz4bLL6SU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -183,23 +183,38 @@ App
                 --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
+                color-scheme: dark;
             }
 
             .list {
                 background: var(--theme);
             }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
+            .toc {
+                background: var(--entry);
             }
+        }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
             }
         }
 
     </style>
-</noscript><meta property="og:url" content="https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/">
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://zzhaolei.github.io/posts/%E8%AE%B0%E5%BD%95%E5%B8%B8%E7%94%A8%E7%9A%84%E5%90%84%E7%A7%8D%E5%B7%A5%E5%85%B7/">
   <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="记录常用的各种工具">
   <meta property="og:description" content="用于Go项目 名称 描述 gopkgview 交互式的基于Web的Go包依赖图可视化 gup 更新由go install安装的二进制文件 gsa 分析编译后的Go二进制文件大小的工具，可以清晰的了解每个包或依赖在二进制中占用的大小 mockgen gomock是Go编程语言的模拟框架 nilaway 静态分析工具，用于检测Go代码中的潜在nil恐慌 命令行 名称 描述 bat cat的现代替代品 curlie curl的力量，httpie的使用便捷性 croc 轻松安全地将内容从一台计算机发送到另一台计算机 difft 结构化差异，理解语法。也可用于git diff direnv 加载或卸载当前目录（以及目录）的.envrc或.env fastfetch 功能丰富、面向性能、类似 neofetch 的系统信息工具 fd find的现代替代品 fzf 命令行模糊查找器 grpcurl 与cURL类似，但针对gRPC：与gRPC服务器交互的命令行工具 htop top的替代品。一个交互式流程查看器 hyperfine 命令行基准测试工具 jq 命令行JSON处理器 lsd ls的现代替代品 mycli MySQL自动补全和语法高亮的终端客户端 ouch 支持多种格式的压缩和解压缩，tar、zip、7z、gz、rar等 pgcli Postgres自动补全和语法高亮的终端客户端 rg 一个面向行的搜索工具，它递归地搜索当前目录中的正则表达式模式 scc 一个类似于cloc、sloccount和tokei的工具。用于统计多种编程语言的代码行数、空白行、注释行和源代码的物理行数 sd sed的现代替代品 vivid 具有丰富文件类型数据库的主题化LS_COLORS生成器 zoxide 更智能的cd命令，支持jump App 名称 描述 iina 适用于macOS的现代视频播放器 mac-mouse-fix macOS平滑滚动 ">
@@ -408,25 +423,13 @@ App
 }
 </script>
 </head>
-
-<body class="" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
+<body id="top">
+    <header class="header">
     <nav class="nav">
         <div class="logo">
             <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -475,7 +478,7 @@ App
     <h1 class="post-title entry-hint-parent">
       记录常用的各种工具
     </h1>
-    <div class="post-meta"><span title='2024-11-25 10:20:20 +0800 CST'>2024-11-25</span>&nbsp;·&nbsp;1 分钟
+    <div class="post-meta"><span title='2024-11-25 10:20:20 +0800 CST'>2024-11-25</span>&nbsp;·&nbsp;<span>1 分钟</span>
 
 </div>
   </header> <div class="toc">
@@ -694,9 +697,14 @@ App
 </a>
 
 <script>
-    let menu = document.getElementById('menu')
+    let menu = document.getElementById('menu');
     if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
         menu.onscroll = function () {
             localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
@@ -737,11 +745,12 @@ App
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
         } else {
-            document.body.classList.add('dark');
+            html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
         }
     })

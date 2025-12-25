@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh" dir="auto">
+<html lang="zh" dir="auto" data-theme="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.141.0"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.153.2"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="https://zzhaolei.github.io/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.0957b579b0279552dcacb4ca66f82650340a0d99a4bd6a3752490f441fe3e1ec.css" integrity="sha256-CVe1ebAnlVLcrLTKZvgmUDQKDZmkvWo3UkkPRB/j4ew=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7fd5946ed5ddb1e9fb7a77146c9cacb56c0e888cde2d0793c11333e1b2cbe925.css" integrity="sha256-f9WUbtXdsen7encUbJystWwOiIzeLQeTwRMz4bLL6SU=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://zzhaolei.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://zzhaolei.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://zzhaolei.github.io/favicon-32x32.png">
@@ -19,8 +19,8 @@
 <link rel="mask-icon" href="https://zzhaolei.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://zzhaolei.github.io/index.xml">
-<link rel="alternate" type="application/json" href="https://zzhaolei.github.io/index.json">
+<link rel="alternate" type="application/rss+xml" href="https://zzhaolei.github.io/index.xml" title="rss">
+<link rel="alternate" type="application/json" href="https://zzhaolei.github.io/index.json" title="json">
 <link rel="alternate" hreflang="zh" href="https://zzhaolei.github.io/">
 <noscript>
     <style>
@@ -42,23 +42,38 @@
                 --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
+                color-scheme: dark;
             }
 
             .list {
                 background: var(--theme);
             }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
+            .toc {
+                background: var(--entry);
             }
+        }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
             }
         }
 
     </style>
-</noscript><meta property="og:url" content="https://zzhaolei.github.io/">
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://zzhaolei.github.io/">
   <meta property="og:site_name" content="Lei 的博客">
   <meta property="og:title" content="Lei 的博客">
   <meta property="og:locale" content="zh">
@@ -81,25 +96,13 @@
 }
 </script>
 </head>
-
 <body class="list" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
+    <header class="header">
     <nav class="nav">
         <div class="logo">
             <a href="https://zzhaolei.github.io/" accesskey="h" title="Lei 的博客 (Alt + H)">Lei 的博客</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -151,7 +154,7 @@
     <p>1.列表结构体 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 #define PyObject_VAR_HEAD PyVarObject ob_base; typedef struct { PyObject ob_base; Py_ssize_t ob_size; /* Number of items in variable part */ } PyVarObject; typedef struct { PyObject_VAR_HEAD /* Vector of pointers to list elements. list[0] is ob_item[0], etc. */ PyObject **ob_item; /* ob_item contains space for &#39;allocated&#39; elements. The number * currently in use is ob_size. * Invariants: * 0 &lt;= ob_size &lt;= allocated * len(list) == ob_size * ob_item == NULL implies ob_size == allocated == 0 * list.sort() temporarily sets allocated to -1 to detect mutations. * * Items must normally not be NULL, except during construction when * the list is not yet visible outside the function that builds it. */ Py_ssize_t allocated; } PyListObject; ob_item是指向列表元素的指针向量，当我们通过list[0]获取元素时，实际上是获取的ob_item[0]的元素。ob_item的类型是PyObject*，由此我们可以知道，为什么Python中的list能存储任意对象的数据，这是因为任何Python对象都可以强转为PyObject*的指针类型。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;6 分钟</footer>
+  <footer class="entry-footer"><span title='2023-04-07 14:00:50 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;<span>6 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的列表对象" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1/"></a>
 </article>
 
@@ -165,7 +168,7 @@
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 typedef struct { PyObject_HEAD Py_ssize_t length; /* Number of code points in the string */ Py_hash_t hash; /* Hash value; -1 if not set */ struct { ... } state; wchar_t *wstr; /* wchar_t representation (null-terminated) */ } PyASCIIObject; typedef struct { PyASCIIObject _base; Py_ssize_t utf8_length; /* Number of bytes in utf8, excluding the * terminating \0. */ char *utf8; /* UTF-8 representation (null-terminated) */ Py_ssize_t wstr_length; /* Number of code points in wstr, possible * surrogates count as two code points. */ } PyCompactUnicodeObject; typedef struct { PyCompactUnicodeObject _base; union { void *any; Py_UCS1 *latin1; Py_UCS2 *ucs2; Py_UCS4 *ucs4; } data; /* Canonical, smallest-form Unicode buffer */ } PyUnicodeObject; 类型对象
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;4 分钟</footer>
+  <footer class="entry-footer"><span title='2023-04-07 13:53:00 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;<span>4 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的字符串对象" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1/"></a>
 </article>
 
@@ -181,7 +184,7 @@
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 PyTypeObject PyLong_Type = { PyVarObject_HEAD_INIT(&amp;PyType_Type, 0) &#34;int&#34;, /* tp_name */ offsetof(PyLongObject, ob_digit), /* tp_basicsize */ sizeof(digit), /* tp_itemsize */ 0, /* tp_dealloc */ 0, /* tp_vectorcall_offset */ 0, /* tp_getattr */ 0, /* tp_setattr */ 0, /* tp_as_async */ long_to_decimal_string, /* tp_repr */ &amp;long_as_number, /* tp_as_number */ 0, /* tp_as_sequence */ 0, /* tp_as_mapping */ (hashfunc)long_hash, /* tp_hash */ 0, /* tp_call */ 0, /* tp_str */ PyObject_GenericGetAttr, /* tp_getattro */ 0, /* tp_setattro */ 0, /* tp_as_buffer */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LONG_SUBCLASS | _Py_TPFLAGS_MATCH_SELF, /* tp_flags */ long_doc, /* tp_doc */ 0, /* tp_traverse */ 0, /* tp_clear */ long_richcompare, /* tp_richcompare */ 0, /* tp_weaklistoffset */ 0, /* tp_iter */ 0, /* tp_iternext */ long_methods, /* tp_methods */ 0, /* tp_members */ long_getset, /* tp_getset */ 0, /* tp_base */ 0, /* tp_dict */ 0, /* tp_descr_get */ 0, /* tp_descr_set */ 0, /* tp_dictoffset */ 0, /* tp_init */ 0, /* tp_alloc */ long_new, /* tp_new */ PyObject_Free, /* tp_free */ }; PyLongObject对象的各种操作（比较、运算等）实际上就是调用PyLong_Type中的tp_as_number这个结构体中定义的各种函数指针。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-04-07 13:45:10 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;5 分钟</footer>
+  <footer class="entry-footer"><span title='2023-04-07 13:45:10 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;<span>5 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python中的整数对象" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%AF%B9%E8%B1%A1/"></a>
 </article>
 
@@ -197,7 +200,7 @@ _PyObject_HEAD_EXTRA是一个宏，当编译Python时指定参数--with-trace-re
 1 2 3 4 5 6 7 8 9 10 11 12 #ifdef Py_TRACE_REFS /* Define pointers to support a doubly-linked list of all live heap objects. */ #define _PyObject_HEAD_EXTRA \ PyObject *_ob_next; \ PyObject *_ob_prev; #define _PyObject_EXTRA_INIT _Py_NULL, _Py_NULL, #else # define _PyObject_HEAD_EXTRA # define _PyObject_EXTRA_INIT #endif ob_type是一个结构体，对应着Python内部的一种特殊的对象，用来指定一个对象类型的类型对象。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-04-07 13:43:34 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;2 分钟</footer>
+  <footer class="entry-footer"><span title='2023-04-07 13:43:34 +0800 CST'>2023-04-07</span>&nbsp;·&nbsp;<span>2 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Python源码笔记——Python对象机制的基石【PyObject】" href="https://zzhaolei.github.io/posts/python%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0python%E5%AF%B9%E8%B1%A1%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E7%9F%B3pyobject/"></a>
 </article>
 
@@ -224,7 +227,7 @@ Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前
 1 $ sudo apt install libncurses5-dev protobuf-compiler 1 2 3 4 5 6 $ git clone https://github.com/mobile-shell/mosh.git $ cd mosh $ ./autogen.sh $ ./configure $ make $ sudo make install 最后执行make install的时候，最好添加sudo，因为涉及到将编译生成的可执行文件复制到系统可查找到的bin目录下。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:09:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;1 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:09:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>1 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Mosh连接服务器时终端颜色显示问题" href="https://zzhaolei.github.io/posts/mosh%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E7%BB%88%E7%AB%AF%E9%A2%9C%E8%89%B2%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/"></a>
 </article>
 
@@ -243,7 +246,7 @@ Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前
 1 2 3 module project go 1.12 go.mod只需要在项目的根目录创建一次即可，在项目中Go会自动查找当前目录的全部父级目录，直到找到go.mod。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:08:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;1 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:08:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>1 分钟</span></footer>
   <a class="entry-link" aria-label="post link to 关于Go Modules的一些内容" href="https://zzhaolei.github.io/posts/%E5%85%B3%E4%BA%8Ego-modules%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9/"></a>
 </article>
 
@@ -269,7 +272,7 @@ Linux 在Ubuntu 20.04上安装，需要手动克隆mosh的仓库 在安装之前
 GitLab的push的hook数据：
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 { &#34;object_kind&#34;: &#34;push&#34;, &#34;before&#34;: &#34;95790bf891e76fee5e1747ab589903a6a1f80f22&#34;, &#34;after&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;ref&#34;: &#34;refs/heads/master&#34;, &#34;checkout_sha&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;user_id&#34;: 4, &#34;user_name&#34;: &#34;John Smith&#34;, &#34;user_username&#34;: &#34;jsmith&#34;, &#34;user_email&#34;: &#34;john@example.com&#34;, &#34;user_avatar&#34;: &#34;https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80&#34;, &#34;project_id&#34;: 15, &#34;project&#34;:{ &#34;id&#34;: 15, &#34;name&#34;:&#34;Diaspora&#34;, &#34;description&#34;:&#34;&#34;, &#34;web_url&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;avatar_url&#34;:null, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;namespace&#34;:&#34;Mike&#34;, &#34;visibility_level&#34;:0, &#34;path_with_namespace&#34;:&#34;mike/diaspora&#34;, &#34;default_branch&#34;:&#34;master&#34;, &#34;homepage&#34;:&#34;http://example.com/mike/diaspora&#34;, &#34;url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34; }, &#34;repository&#34;:{ &#34;name&#34;: &#34;Diaspora&#34;, &#34;url&#34;: &#34;git@example.com:mike/diaspora.git&#34;, &#34;description&#34;: &#34;&#34;, &#34;homepage&#34;: &#34;http://example.com/mike/diaspora&#34;, &#34;git_http_url&#34;:&#34;http://example.com/mike/diaspora.git&#34;, &#34;git_ssh_url&#34;:&#34;git@example.com:mike/diaspora.git&#34;, &#34;visibility_level&#34;:0 }, &#34;commits&#34;: [ { &#34;id&#34;: &#34;b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;message&#34;: &#34;Update Catalan translation to e38cb41.&#34;, &#34;timestamp&#34;: &#34;2011-12-12T14:27:31&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;Jordi Mallach&#34;, &#34;email&#34;: &#34;jordi@softcatala.org&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] }, { &#34;id&#34;: &#34;da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;message&#34;: &#34;fixed readme&#34;, &#34;timestamp&#34;: &#34;2012-01-03T23:36:29&#43;02:00&#34;, &#34;url&#34;: &#34;http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7&#34;, &#34;author&#34;: { &#34;name&#34;: &#34;GitLab dev user&#34;, &#34;email&#34;: &#34;gitlabdev@dv6700.(none)&#34; }, &#34;added&#34;: [&#34;CHANGELOG&#34;], &#34;modified&#34;: [&#34;app/controller/application.rb&#34;], &#34;removed&#34;: [] } ], &#34;total_commits_count&#34;: 4 } </p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:07:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;2 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:07:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>2 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Jenkins处理GitLab Hook" href="https://zzhaolei.github.io/posts/jenkins%E5%A4%84%E7%90%86gitlab-hook/"></a>
 </article>
 
@@ -287,7 +290,7 @@ Build Server URL, 构建的服务器和端口, http://192.168.0.1:8080
 点击Test Connection, Success表示配置成功.
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:06:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;1 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:06:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>1 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Jenkins与RocketChat集成" href="https://zzhaolei.github.io/posts/jenkins%E4%B8%8Erocketchat%E9%9B%86%E6%88%90/"></a>
 </article>
 
@@ -310,7 +313,7 @@ Build Server URL, 构建的服务器和端口, http://192.168.0.1:8080
 在GitLab服务器上的相对应的项目的Settings里面的Integrations中，配置webhook,输入在jenkins中获取的URL,和token，可以根据需要勾选事件，开启SSL，点击Add webhook。会在Add webhook按钮下生成一个webhook，点击test,会弹出勾选的事件，选择相应的事件，会在页顶弹出Hook executed successfully: HTTP 200,到此，webhook配置完成。
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:05:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;2 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:05:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>2 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Jenkins&#43;Python&#43;GitLab持续集成" href="https://zzhaolei.github.io/posts/jenkins&#43;python&#43;gitlab%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"></a>
 </article>
 
@@ -330,7 +333,7 @@ ls查看，会有.gitmodules和子模块的项目名。
 submodule可以进行tag和merge git submodule foreach可以分别对子模块进行操作, 所以对所有子模块进行tag和merge操作, 就相当于对总项目进行相应的操作.
 </p>
   </div>
-  <footer class="entry-footer"><span title='2019-06-01 10:04:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;1 分钟</footer>
+  <footer class="entry-footer"><span title='2019-06-01 10:04:00 +0800 CST'>2019-06-01</span>&nbsp;·&nbsp;<span>1 分钟</span></footer>
   <a class="entry-link" aria-label="post link to Jenkins&#43;Git子模块自动拉取代码" href="https://zzhaolei.github.io/posts/jenkins&#43;git%E5%AD%90%E6%A8%A1%E5%9D%97%E8%87%AA%E5%8A%A8%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81/"></a>
 </article>
 <footer class="page-footer">
@@ -360,9 +363,14 @@ submodule可以进行tag和merge git submodule foreach可以分别对子模块�
 </a>
 
 <script>
-    let menu = document.getElementById('menu')
+    let menu = document.getElementById('menu');
     if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
         menu.onscroll = function () {
             localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
@@ -403,11 +411,12 @@ submodule可以进行tag和merge git submodule foreach可以分别对子模块�
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
         } else {
-            document.body.classList.add('dark');
+            html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
         }
     })
