@@ -1,0 +1,7 @@
+{{- $path := .Get "path" -}}
+{{- $lang := .Get "lang" | default "text" -}}
+{{- if fileExists $path -}}
+{{- highlight (readFile $path) $lang "" -}}
+{{- else -}}
+文件不存在：`{{ $path }}`
+{{- end -}}

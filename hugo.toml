@@ -1,5 +1,5 @@
 baseURL = 'https://zzhaolei.github.io/'
-languageCode = 'zh'
+locale = 'zh'
 defaultContentLanguage = 'zh'
 title = 'Lei 的博客'
 theme = ["hugo-admonitions", "PaperMod"]
