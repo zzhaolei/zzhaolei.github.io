@@ -43,7 +43,7 @@ jobs:
           go-version: stable
       - name: Install Hugo CLI
         run: |
-          make update-hugo
+          make install-hugo
           echo "$(go env GOPATH)/bin" >> "${GITHUB_PATH}"
       - name: Install Dart Sass
         run: sudo snap install dart-sass

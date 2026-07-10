@@ -20,8 +20,8 @@ ShowAllPagesInArchive = true
 favicon = false
 
 [params.homeInfoParams]
-Title = "Lei 的博客"
-Content = "(ง•_•)ง"
+Title = "Lei的博客"
+Content = "( ˘ ³˘)♥ 这里是Lei的博客。"
 
 [[params.socialIcons]]
 name = "Github"
