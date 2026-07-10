@@ -1,8 +1,9 @@
-.PHONY: update update-theme dev build
+.PHONY: update update-hugo update-theme dev build
 
-update:
+update: update-hugo update-theme
+
+update-hugo:
 	CGO_ENABLED=1 go install -tags extended,withdeploy github.com/gohugoio/hugo@latest
-	$(MAKE) update-theme
 
 update-theme:
 	git submodule update --init --recursive
